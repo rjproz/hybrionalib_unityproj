@@ -1,0 +1,14 @@
+{
+    "name": "com.hybrionalib.ads",
+    "displayName": "Hybriona Lib - Ads Manager",
+    "version": "0.0.1",
+    "unity": "2021.0",
+    "description": "Hybriona Lib - Ads Manager",
+   
+   
+    "author": {
+        "name": "Rajkumar Pramanik - RJproz",
+        "email": "rjproz@gmail.com",
+        "url": "https://www.hybriona.com/"
+    }
+}
