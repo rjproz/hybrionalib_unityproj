@@ -12,10 +12,10 @@ namespace Hybriona
         public string ios_unitID { get; private set; }
         public string android_unitId { get; private set; }
        
-        public UnityEvent onAdLoaded { get; private set; }
-        public UnityEvent onAdFailedToLoad { get; private set; }
-        public UnityEvent onAdClosed { get; private set; }
-        public UnityEvent onRewardGranted { get; private set; }
+        public System.Action onAdLoaded { get;  set; }
+        public System.Action onAdFailedToLoad { get; set; }
+        public System.Action onAdClosed { get; set; }
+        public System.Action onRewardGranted { get; set; }
 
         private InterstitialAd interstitialAd;
         private RewardedAd rewardedAd;
