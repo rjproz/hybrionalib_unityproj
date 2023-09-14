@@ -21,7 +21,7 @@ namespace Hybriona
         private void OnEnable()
         {
             ApplyChanges();
-            Debug.Log("HybrionaUnityLibActivator patched ScriptingDefineSymbols.");
+            //Debug.Log("HybrionaUnityLibActivator patched ScriptingDefineSymbols.");
         }
 
         private static ModulesData modulesData;
