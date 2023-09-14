@@ -16,7 +16,7 @@
         {
             "displayName": "HDRP Shaders",
             "description": "Contains sample shaders for the High Definition render pipeline",
-            "path": "Samples~/SampleCache"
+            "path": "Samples/SampleCache"
         }
     ]
 }
