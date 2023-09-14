@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Text;
+using Ionic.Zlib;
 
-
-namespace Hybriona
+namespace Assets.SimpleZip
 {
     public static class Zip
     {
@@ -11,8 +11,7 @@ namespace Hybriona
         /// </summary>
         public static byte[] Compress(string text)
         {
-           
-            return Ionic.Zlib.ZlibStream.CompressString(text);
+            return ZlibStream.CompressString(text);
         }
 
         /// <summary>
@@ -28,7 +27,7 @@ namespace Hybriona
         /// </summary>
         public static string Decompress(byte[] bytes)
         {
-            return Encoding.UTF8.GetString(Ionic.Zlib.ZlibStream.UncompressBuffer(bytes));
+            return Encoding.UTF8.GetString(ZlibStream.UncompressBuffer(bytes));
         }
 
         /// <summary>
