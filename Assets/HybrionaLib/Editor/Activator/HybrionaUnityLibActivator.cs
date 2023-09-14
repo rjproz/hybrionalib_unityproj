@@ -102,6 +102,16 @@ namespace Hybriona
                     string newPath = modulesData.modulesConfigPath.Replace("/module.json", "/Runtime/testsss.cs");
                     System.IO.File.WriteAllText(newPath, "using UnityEngine;\nusing System.Collections.Generic;");
                     AssetDatabase.Refresh();
+
+                    string directory = modulesData.modulesConfigPath.Replace("/module.json", "/Runtime");
+                    if(System.IO.Directory.Exists(directory + "/~Hidethis"))
+                    {
+                        System.IO.Directory.Move(directory + "/~Hidethis", directory + "/Hidethis");
+                    }
+                    else
+                    {
+                        System.IO.Directory.Move(directory + "/Hidethis", directory + "/~Hidethis");
+                    }
                 }
 
                 EditorGUILayout.EndVertical();
