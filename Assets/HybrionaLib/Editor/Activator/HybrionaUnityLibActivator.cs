@@ -100,7 +100,7 @@ namespace Hybriona
                 {
 
                     string newPath = modulesData.modulesConfigPath.Replace("/module.json", "/Runtime/testsss.cs");
-                    System.IO.File.WriteAllText(newPath, "using UnityEngine;\nusing using System.Collections.Generic;");
+                    System.IO.File.WriteAllText(newPath, "using UnityEngine;\nusing System.Collections.Generic;");
                     AssetDatabase.Refresh();
                 }
 
