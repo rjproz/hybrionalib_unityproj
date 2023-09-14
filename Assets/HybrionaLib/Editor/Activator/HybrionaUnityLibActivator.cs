@@ -33,12 +33,23 @@ namespace Hybriona
                 //string path = AssetDatabase.GetAssetPath(MonoScript.FromScriptableObject(this));
                 string[] resultGuids = AssetDatabase.FindAssets("t:Script HybrionaUnityLibActivator");
                 string path = AssetDatabase.GUIDToAssetPath(resultGuids[0]);
-                path = path.Replace("/Editor/Activator/HybrionaUnityLibActivator.cs", "/modules.json");
 
+                if (path.Contains("\\"))
+                {
+                    path = path.Replace("\\Editor\\Activator\\HybrionaUnityLibActivator.cs", "\\modules.json");
+                    modulesData = JsonUtility.FromJson<ModulesData>(System.IO.File.ReadAllText(path));
+                    modulesData.modulesConfigPath = path;
+                    modulesData.rootPath = path.Replace("\\modules.json", "\\");
+                }
+                else
+                {
+                    path = path.Replace("/Editor/Activator/HybrionaUnityLibActivator.cs", "/modules.json");
+                    modulesData = JsonUtility.FromJson<ModulesData>(System.IO.File.ReadAllText(path));
+                    modulesData.modulesConfigPath = path;
+                    modulesData.rootPath = path.Replace("/modules.json", "/");
+                }
                 //Debug.Log("Path: "+path);
-                modulesData = JsonUtility.FromJson<ModulesData>(System.IO.File.ReadAllText(path));
-                modulesData.modulesConfigPath = path;
-                modulesData.rootPath = path.Replace("/modules.json", "/");
+               
 
 
             }
