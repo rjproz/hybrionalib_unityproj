@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
-
+using System.IO;
 namespace Hybriona
 {
     [InitializeOnLoad]
@@ -33,12 +33,14 @@ namespace Hybriona
                 //string path = AssetDatabase.GetAssetPath(MonoScript.FromScriptableObject(this));
                 string[] resultGuids = AssetDatabase.FindAssets("t:Script HybrionaUnityLibActivator");
                 string path = AssetDatabase.GUIDToAssetPath(resultGuids[0]);
-                path = path.Replace("/Editor/Activator/HybrionaUnityLibActivator.cs", "/module.json");
+                path = path.Replace("/Editor/Activator/HybrionaUnityLibActivator.cs", "/modules.json");
 
                 //Debug.Log("Path: "+path);
                 modulesData = JsonUtility.FromJson<ModulesData>(System.IO.File.ReadAllText(path));
                 modulesData.modulesConfigPath = path;
-               
+                modulesData.rootPath = path.Replace("/modules.json", "/");
+
+
             }
         }
 
@@ -96,24 +98,7 @@ namespace Hybriona
                     ApplyChanges();
                 }
 
-                if (GUILayout.Button("Write Test"))
-                {
-
-                    string newPath = modulesData.modulesConfigPath.Replace("/module.json", "/Runtime/testsss.cs");
-                    System.IO.File.WriteAllText(newPath, "using UnityEngine;\nusing System.Collections.Generic;");
-                    AssetDatabase.Refresh();
-
-                    string directory = modulesData.modulesConfigPath.Replace("/module.json", "/Runtime");
-                    if(System.IO.Directory.Exists(directory + "/~Hidethis"))
-                    {
-                        System.IO.Directory.Move(directory + "/~Hidethis", directory + "/Hidethis");
-                    }
-                    else
-                    {
-                        System.IO.Directory.Move(directory + "/Hidethis", directory + "/~Hidethis");
-                    }
-                }
-
+               
                 EditorGUILayout.EndVertical();
 
             }
@@ -134,6 +119,75 @@ namespace Hybriona
         static void ApplyChanges()
         {
             InitializeModulesData();
+
+
+
+            for (int i = 0; i < modulesData.modules.Count; i++)
+            {
+                var moduleData = modulesData.modules[i];
+
+                var isActivated = false;
+                if (ModulesUserPrefs.Instance().dic.ContainsKey(moduleData.id))
+                {
+                    isActivated = ModulesUserPrefs.Instance().dic.GetValue(moduleData.id);
+
+                }
+                else
+                {
+                    isActivated = moduleData.enabled;
+                }
+
+
+                for (int folderCounter = 0; folderCounter < moduleData.folders.Count; folderCounter++)
+                {
+                    string fullFolderPath = System.IO.Path.Combine(modulesData.rootPath, moduleData.folders[folderCounter]);
+
+                    if (isActivated)
+                    {
+
+                        string fromPath = fullFolderPath + "~";
+                        string toPath = fullFolderPath;
+
+                        if(Directory.Exists(fromPath))
+                        {
+                            Directory.Move(fromPath, toPath);
+                        }
+
+                        fromPath = fullFolderPath + ".meta~";
+                        toPath = fullFolderPath + ".meta";
+
+                        if(File.Exists(fromPath))
+                        {
+                            File.Move(fromPath, toPath);
+                        }
+                    }
+                    else
+                    {
+
+                        string fromPath = fullFolderPath;
+                        string toPath = fullFolderPath + "~";
+
+                        if (Directory.Exists(fromPath))
+                        {
+                            Directory.Move(fromPath, toPath);
+                        }
+
+                        fromPath = fullFolderPath + ".meta";
+                        toPath = fullFolderPath + ".meta~";
+
+                        if (File.Exists(fromPath))
+                        {
+                            File.Move(fromPath, toPath);
+                        }
+                    }
+                }
+
+                
+
+            }
+            AssetDatabase.Refresh();
+
+            return;
             List<string> scriptingDefineSymbols = new List<string>();
 
             BuildTarget buildTarget = EditorUserBuildSettings.activeBuildTarget;

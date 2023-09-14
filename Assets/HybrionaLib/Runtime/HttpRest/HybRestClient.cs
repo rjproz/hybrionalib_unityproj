@@ -1,4 +1,4 @@
-﻿#if HYBRIONA_LIB_ENABLE_HTTP_CLIENT
+﻿//#if HYBRIONA_LIB_ENABLE_HTTP_CLIENT
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -90,7 +90,7 @@ namespace Hybriona
 			if(data != null && data.Length > 0)
 			{
 				request.uploadHandler = new UploadHandlerRaw(data);
-				request.chunkedTransfer = false;
+				
 			}
 			if(headers != null)
 			{
@@ -173,4 +173,4 @@ namespace Hybriona
 		}
 	}
 }
-#endif
+//#endif

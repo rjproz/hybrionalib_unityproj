@@ -1,4 +1,4 @@
-#if HYBRIONA_LIB_ENABLE_EVENT_TRIGGER
+//#if HYBRIONA_LIB_ENABLE_EVENT_TRIGGER
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -133,4 +133,4 @@ namespace Hybriona
 
     
 }
-#endif
+//#endif

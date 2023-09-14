@@ -6,6 +6,7 @@ namespace Hybriona
     public class ModulesData
     {
         public string modulesConfigPath;
+        public string rootPath;
         public List<Module> modules = new List<Module>();
     }
 
@@ -17,6 +18,7 @@ namespace Hybriona
         public bool alwaysEnabled;
         public string define_symbol;
         public List<string> dependencies;
+        public List<string> folders;
 
     }
 
