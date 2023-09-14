@@ -16,6 +16,7 @@ namespace Hybriona
         public bool alwaysEnabled;
         public string define_symbol;
         public List<string> dependencies;
+
     }
 
 }

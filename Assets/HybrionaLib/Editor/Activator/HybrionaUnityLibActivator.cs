@@ -132,6 +132,10 @@ namespace Hybriona
                     isActivated = ModulesUserPrefs.Instance().dic.GetValue(moduleData.id);
 
                 }
+                else
+                {
+                    isActivated = moduleData.enabled;
+                }
 
                 if (isActivated)
                 {
