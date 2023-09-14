@@ -5,7 +5,12 @@
             "id": "hybriona.core",
             "enabled": true,
             "alwaysEnabled": true
-            
+
+        },
+        {
+            "id": "hybriona.event_trigger",
+            "define_symbol": "HYBRIONA_LIB_ENABLE_EVENT_TRIGGER",
+            "enabled": true
         },
         {
             "id": "hybriona.adsmanager",

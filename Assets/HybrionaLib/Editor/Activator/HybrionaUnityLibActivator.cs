@@ -74,6 +74,10 @@ namespace Hybriona
                         {
                             oldValue = ModulesUserPrefs.Instance().dic.GetValue(moduleData.id);
                         }
+                        else
+                        {
+                            oldValue = moduleData.enabled;
+                        }
 
                         var newValueIfChanged = EditorGUILayout.Toggle(moduleData.id, oldValue);
                         ModulesUserPrefs.Instance().dic.Add(moduleData.id, newValueIfChanged);

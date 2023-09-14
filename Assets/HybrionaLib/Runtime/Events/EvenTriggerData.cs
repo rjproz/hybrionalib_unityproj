@@ -1,3 +1,4 @@
+#if HYBRIONA_LIB_ENABLE_EVENT_TRIGGER
 using UnityEngine;
 
 namespace Hybriona
@@ -56,3 +57,4 @@ namespace Hybriona
         }
     }
 }
+#endif
