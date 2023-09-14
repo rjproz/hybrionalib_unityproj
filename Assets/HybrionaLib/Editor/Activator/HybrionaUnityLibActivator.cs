@@ -26,9 +26,9 @@ namespace Hybriona
 
         private static ModulesData modulesData;
 
-        private static void InitializeModulesData()
+        private static void InitializeModulesData(bool forceReload = false)
         {
-            if (modulesData == null)
+            if (modulesData == null || forceReload)
             {
                 //string path = AssetDatabase.GetAssetPath(MonoScript.FromScriptableObject(this));
                 string[] resultGuids = AssetDatabase.FindAssets("t:Script HybrionaUnityLibActivator");
@@ -45,7 +45,7 @@ namespace Hybriona
         {
 
 
-            InitializeModulesData();
+            InitializeModulesData(forceReload: true);
 
             float padding = 10;
             Rect area = new Rect(padding, padding,
