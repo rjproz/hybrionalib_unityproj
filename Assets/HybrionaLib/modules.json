@@ -16,6 +16,14 @@
             ]
         },
         {
+            "id": "hybriona.version_manager",
+            
+            "enabled": true,
+            "folders": [
+                "Runtime/VersionManager"
+            ]
+        },
+        {
             "id": "hybriona.httpclient",
             "define_symbol": "HYBRIONA_LIB_ENABLE_HTTP_CLIENT",
             "enabled": false,
