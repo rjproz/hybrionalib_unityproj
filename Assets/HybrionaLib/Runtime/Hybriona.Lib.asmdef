@@ -1,9 +1,7 @@
 {
-    "name": "Hybriona.Lib.Editor",
+    "name": "Hybriona.Lib",
     "rootNamespace": "",
-    "references": [
-        "GUID:83a4c2cb8675c4dc2a1d09b605cfebe8"
-    ],
+    "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

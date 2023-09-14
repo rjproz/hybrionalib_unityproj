@@ -1,4 +1,4 @@
-using UnityEngine;
+#if HYBRIONA_LIB_ENABLE_ADSMANAGER
 using GoogleMobileAds.Api;
 using System.Collections.Generic;
 
@@ -45,3 +45,4 @@ namespace Hybriona
 
 
 }
+#endif

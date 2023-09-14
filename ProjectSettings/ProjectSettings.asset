@@ -155,6 +155,7 @@ PlayerSettings:
   androidSupportedAspectRatio: 1
   androidMaxAspectRatio: 2.1
   applicationIdentifier:
+    Android: com.DefaultCompany.HybrionaLibUnityProj
     Standalone: com.DefaultCompany.HybrionaLibUnityProj
   buildNumber:
     Standalone: 0
@@ -806,7 +807,9 @@ PlayerSettings:
   webGLThreadsSupport: 0
   webGLDecompressionFallback: 0
   webGLPowerPreference: 2
-  scriptingDefineSymbols: {}
+  scriptingDefineSymbols:
+    Android: HYBRIONA_LIB_ENABLE_ADSMANAGER
+    Standalone: sdsd;HYBRIONA_LIB_ENABLE_ADSMANAGER
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend: {}

@@ -1,6 +1,6 @@
+#if HYBRIONA_LIB_ENABLE_ADSMANAGER
 using GoogleMobileAds.Api;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace Hybriona
 {
@@ -276,3 +276,4 @@ namespace Hybriona
        
     }
 }
+#endif
