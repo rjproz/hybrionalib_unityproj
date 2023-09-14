@@ -60,6 +60,8 @@ namespace Hybriona
 		{
 
 			PlayerSettings.bundleVersion = appversion.ToString();
+			PlayerSettings.macOS.buildNumber = appversion.build_number.ToString();
+			
 			PlayerSettings.Android.bundleVersionCode = appversion.build_number;
 			PlayerSettings.iOS.buildNumber =  appversion.build_number.ToString();
 		
