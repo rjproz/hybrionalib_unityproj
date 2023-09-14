@@ -17,7 +17,7 @@
         },
         {
             "id": "hybriona.version_manager",
-            
+
             "enabled": true,
             "folders": [
                 "Runtime/VersionManager"
@@ -32,12 +32,33 @@
             ]
         },
         {
+            "id": "hybriona.persistentData",
+
+            "enabled": false,
+            "folders": [
+                "Runtime/PersistentData"
+            ],
+            "dependencies": [
+                "hybriona.hybriona.version_manager",
+                "hybriona.hybriona.simple_zip"
+            ]
+        },
+        {
+            "id": "hybriona.simple_zip",
+
+            "enabled": false,
+            "folders": [
+                "Runtime/SimpleZip"
+            ]
+           
+        },
+        {
             "id": "hybriona.cache",
             "define_symbol": "HYBRIONA_LIB_ENABLE_CACHE",
             "enabled": false,
             "folders": [
-                "Runtime/Cache",
-                "Samples/Cache"
+                "Runtime/Cache"
+
             ]
         },
         {
