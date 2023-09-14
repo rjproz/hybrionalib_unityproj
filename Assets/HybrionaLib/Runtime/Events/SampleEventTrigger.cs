@@ -42,6 +42,11 @@ public class SampleEventTrigger : MonoBehaviour
         {
             Debug.Log("This should be called after 10 second or in user clicks mouse left button");
         });
+
+        EventTriggerManager.AddTriggerEvent( conditionTrigger: IsMouseClicked, () =>
+        {
+            Debug.Log("This should be called when user clicks mouse left button");
+        });
     }
    
     bool IsMouseClicked()

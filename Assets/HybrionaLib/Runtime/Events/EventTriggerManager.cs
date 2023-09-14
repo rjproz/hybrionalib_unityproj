@@ -6,12 +6,18 @@ namespace Hybriona
 {
     public class EventTriggerManager : MonoBehaviour
     {
+        [SerializeField]
+        public int poolCount;
 
-        private Queue<EvenTriggerData> evenTriggerDataPool = new Queue<EvenTriggerData>();
-        private List<EvenTriggerData> activeEventTriggers = new List<EvenTriggerData>();
+        [SerializeField]
+        public int activeCount;
 
+        private Queue<EventTriggerData> evenTriggerDataPool = new Queue<EventTriggerData>();
+        private List<EventTriggerData> activeEventTriggers = new List<EventTriggerData>();
+
+        
         private static EventTriggerManager instance;
-
+        private static object readLock = new object();
         protected static EventTriggerManager Instance
         {
             get
@@ -42,6 +48,11 @@ namespace Hybriona
             AddTriggerEvent(triggerTimeElasped, false, null, completion);
         }
 
+        public static void AddTriggerEvent(System.Func<bool> conditionTrigger, System.Action completion)
+        {
+            AddTriggerEvent(-1, false, conditionTrigger, completion);
+        }
+
 
         public static void AddTriggerEvent(float triggerTimeElasped, bool timeScaleIndependent, System.Action completion)
         {
@@ -55,22 +66,33 @@ namespace Hybriona
 
         public static void AddTriggerEvent(float triggerTimeElasped, bool timeScaleIndependent, System.Func<bool> conditionTrigger, System.Action completion)
         {
-            EvenTriggerData evenTriggerData = null;
-            if (Instance.evenTriggerDataPool.Count == 0)
+            EventTriggerData evenTriggerData = null;
+
+            lock (readLock)
             {
-                evenTriggerData = new EvenTriggerData();
-            }
-            else
-            {
-                evenTriggerData = Instance.evenTriggerDataPool.Dequeue();
+                if (Instance.evenTriggerDataPool.Count == 0)
+                {
+                    evenTriggerData = new EventTriggerData();
+                }
+                else
+                {
+                    evenTriggerData = Instance.evenTriggerDataPool.Dequeue();
+                }
+
+
+                evenTriggerData.triggerTimeElasped = triggerTimeElasped;
+                evenTriggerData.isTimeScaleIndependent = timeScaleIndependent;
+                evenTriggerData.conditionTrigger = conditionTrigger;
+                evenTriggerData.completionAction = completion;
+                evenTriggerData.StartTracking();
+                Instance.activeEventTriggers.Add(evenTriggerData);
+
+#if UNITY_EDITOR
+                Instance.poolCount = Instance.evenTriggerDataPool.Count;
+                Instance.activeCount = Instance.activeEventTriggers.Count;
+#endif
             }
 
-            evenTriggerData.triggerTimeElasped = triggerTimeElasped;
-            evenTriggerData.isTimeScaleIndependent = timeScaleIndependent;
-            evenTriggerData.conditionTrigger = conditionTrigger;
-            evenTriggerData.completionAction = completion;
-            evenTriggerData.StartTracking();
-            Instance.activeEventTriggers.Add(evenTriggerData);
         }
 
 
@@ -83,11 +105,23 @@ namespace Hybriona
                     var triggerData = activeEventTriggers[i];
                     if(triggerData.HasCompleted())
                     {
-                        if(triggerData.completionAction != null)
+                        System.Action actionCached = triggerData.completionAction;
+                        triggerData.Clean();
+                        lock (readLock)
                         {
-                            triggerData.completionAction();
+                            evenTriggerDataPool.Enqueue(triggerData);
+                            activeEventTriggers.RemoveAt(i);
                         }
-                        activeEventTriggers.RemoveAt(i);
+                        
+#if UNITY_EDITOR
+                        Instance.poolCount = Instance.evenTriggerDataPool.Count;
+                        Instance.activeCount = Instance.activeEventTriggers.Count;
+#endif
+                        if (actionCached != null)
+                        {
+                            actionCached();
+                        }
+                       
                     }
                 }
                 yield return null;
@@ -96,46 +130,5 @@ namespace Hybriona
         
     }
 
-    public class EvenTriggerData
-    {
-        public float triggerTimeElasped { get; set; }
-        public bool isTimeScaleIndependent { get; set; }
-        public System.Func<bool> conditionTrigger { get; set; }
-        public System.Action completionAction { get; set; }
-
-        private float timeTrackingStarted;
-        public void StartTracking()
-        {
-            if(isTimeScaleIndependent)
-            {
-                timeTrackingStarted = Time.realtimeSinceStartup;
-            }
-            else
-            {
-                timeTrackingStarted = Time.time;
-            }
-        }
-
-
-        public bool HasCompleted()
-        {
-            if(conditionTrigger != null)
-            {
-                if(conditionTrigger.Invoke())
-                {
-                    return true;
-                }
-            }
-
-            if (isTimeScaleIndependent)
-            {
-                return Time.realtimeSinceStartup - timeTrackingStarted >= triggerTimeElasped;
-            }
-            else
-            {
-                return Time.time - timeTrackingStarted >= triggerTimeElasped;
-            }
-           
-        }
-    }
+    
 }
