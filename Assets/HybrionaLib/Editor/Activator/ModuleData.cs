@@ -5,6 +5,7 @@ namespace Hybriona
     [System.Serializable]
     public class ModulesData
     {
+        public string modulesConfigPath;
         public List<Module> modules = new List<Module>();
     }
 

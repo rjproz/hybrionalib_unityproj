@@ -34,14 +34,19 @@ namespace Hybriona
                 string[] resultGuids = AssetDatabase.FindAssets("t:Script HybrionaUnityLibActivator");
                 string path = AssetDatabase.GUIDToAssetPath(resultGuids[0]);
                 path = path.Replace("/Editor/Activator/HybrionaUnityLibActivator.cs", "/module.json");
+
                 //Debug.Log("Path: "+path);
                 modulesData = JsonUtility.FromJson<ModulesData>(System.IO.File.ReadAllText(path));
-
+                modulesData.modulesConfigPath = path;
                
             }
         }
 
-        void OnGUI()
+        private void OnFocus()
+        {
+            InitializeModulesData(forceReload: true);
+        }
+        private void OnGUI()
         {
 
 
@@ -89,6 +94,14 @@ namespace Hybriona
                 {
                     ModulesUserPrefs.Instance().Save();
                     ApplyChanges();
+                }
+
+                if (GUILayout.Button("Write Test"))
+                {
+
+                    string newPath = modulesData.modulesConfigPath.Replace("/module.json", "/testsss.cs");
+                    System.IO.File.WriteAllText(newPath, "using UnityEngine;\nusing using System.Collections.Generic;");
+                    AssetDatabase.Refresh();
                 }
 
                 EditorGUILayout.EndVertical();
