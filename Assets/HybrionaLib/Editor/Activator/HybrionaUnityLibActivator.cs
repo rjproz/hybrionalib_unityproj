@@ -99,7 +99,7 @@ namespace Hybriona
                 if (GUILayout.Button("Write Test"))
                 {
 
-                    string newPath = modulesData.modulesConfigPath.Replace("/module.json", "/testsss.cs");
+                    string newPath = modulesData.modulesConfigPath.Replace("/module.json", "/Runtime/testsss.cs");
                     System.IO.File.WriteAllText(newPath, "using UnityEngine;\nusing using System.Collections.Generic;");
                     AssetDatabase.Refresh();
                 }
