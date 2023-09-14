@@ -58,16 +58,26 @@ namespace Hybriona
                 EditorGUILayout.BeginVertical(GUI.skin.box);
                 for (int i = 0; i < modulesData.modules.Count; i++)
                 {
+                    
                     var moduleData = modulesData.modules[i];
 
-                    var oldValue = false;
-                    if(ModulesUserPrefs.Instance().dic.ContainsKey(moduleData.id))
+                    if (moduleData.alwaysEnabled)
                     {
-                        oldValue = ModulesUserPrefs.Instance().dic.GetValue(moduleData.id);
+                       
+                        EditorGUILayout.LabelField(moduleData.id + " - Always Enabled");
+                        
                     }
+                    else
+                    {
+                        var oldValue = false;
+                        if (ModulesUserPrefs.Instance().dic.ContainsKey(moduleData.id))
+                        {
+                            oldValue = ModulesUserPrefs.Instance().dic.GetValue(moduleData.id);
+                        }
 
-                    var newValueIfChanged = EditorGUILayout.Toggle(moduleData.id, oldValue);
-                    ModulesUserPrefs.Instance().dic.Add(moduleData.id, newValueIfChanged);
+                        var newValueIfChanged = EditorGUILayout.Toggle(moduleData.id, oldValue);
+                        ModulesUserPrefs.Instance().dic.Add(moduleData.id, newValueIfChanged);
+                    }
 
                 }
 
