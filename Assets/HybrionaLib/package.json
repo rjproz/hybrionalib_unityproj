@@ -12,11 +12,5 @@
         "url": "https://www.hybriona.com/"
     },
 
-    "samples": [
-        {
-            "displayName": "HDRP Shaders",
-            "description": "Contains sample shaders for the High Definition render pipeline",
-            "path": "Samples/SampleCache"
-        }
-    ]
+   
 }

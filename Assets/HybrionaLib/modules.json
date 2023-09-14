@@ -28,7 +28,8 @@
             "define_symbol": "HYBRIONA_LIB_ENABLE_CACHE",
             "enabled": false,
             "folders": [
-                "Runtime/Cache"
+                "Runtime/Cache",
+                "Samples/Cache"
             ]
         },
         {
