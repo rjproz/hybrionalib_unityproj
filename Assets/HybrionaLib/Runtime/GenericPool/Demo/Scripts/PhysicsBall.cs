@@ -8,12 +8,11 @@
 
 *************************************************************************/
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Hybriona
 {
-	public class PhysicsBall : MonobehaviorPool 
+    public class PhysicsBall : MonobehaviorPoolObject 
 	{
 
         public Rigidbody rigidbody;

@@ -20,10 +20,51 @@ namespace Hybriona
 		{
 			StartCoroutine(CustomClassPoolingTest());
 			StartCoroutine(MonobehaviorDemo());
-			
+			StartCoroutine(DirectReferenceDemo());
 		}
-        #region Template Demo
-        public PhysicsBall ballPrefab;
+
+		#region Direct Reference Demo
+		public Rigidbody cubeRigidBodyPrefab;
+		private GenericPool<Rigidbody> cubeRigidBodyPool;
+		IEnumerator DirectReferenceDemo()
+		{
+			cubeRigidBodyPrefab.gameObject.SetActive(false);
+
+			cubeRigidBodyPool = new GenericPool<Rigidbody>(createCopyFunction: () =>
+			{
+				return Instantiate(cubeRigidBodyPrefab.gameObject).GetComponent<Rigidbody>();
+			},onReturnedToPoolCallback: (rb) =>{
+
+				//Reset Values
+				rb.velocity = Vector3.zero;
+				rb.angularVelocity = Vector3.zero;
+				rb.gameObject.SetActive(false);
+			});
+
+			while (true)
+			{
+
+				yield return new WaitForSeconds(Random.Range(.2f, 1f));
+				
+				var rb = cubeRigidBodyPool.FetchFromPool();
+				rb.transform.position = cubeRigidBodyPrefab.transform.position; // set position
+				rb.gameObject.SetActive(true);
+				rb.velocity = new Vector3(Random.Range(-.1f, .1f), 1, Random.Range(-.1f, .1f)) * 30;
+
+				StartCoroutine(CustomLife(rb, 10));
+			}
+		}
+
+		IEnumerator CustomLife(Rigidbody rb,float life)
+        {
+			yield return new WaitForSeconds(life);
+			cubeRigidBodyPool.ReturnToPool(rb);
+
+		}
+		#endregion
+
+		#region Template Demo
+		public PhysicsBall ballPrefab;
 		IEnumerator MonobehaviorDemo()
         {
 			ballPrefab.gameObject.SetActive(false);
@@ -32,7 +73,6 @@ namespace Hybriona
 			{
 
 				yield return new WaitForSeconds(Random.Range(.2f, 1f));
-				//var script = (PhysicsBall)GenericPoolManager<MonobehaviorPool>.GetPool(ballPrefab.poolId).FetchFromPool();
 				var script = (PhysicsBall)pool.FetchFromPool();
 				script.transform.position = ballPrefab.transform.position; // set position
 				script.Activate();
@@ -54,7 +94,7 @@ namespace Hybriona
 
 		IEnumerator CustomClassPoolingTest()
 		{
-			processorPool = new GenericPool<Processor>( () =>
+			processorPool = new GenericPool<Processor>(createCopyFunction:() =>
 			{
 				totalCreatedCount = totalCreatedCount + 1;
 				return new Processor();

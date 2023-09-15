@@ -11,19 +11,19 @@ using UnityEngine;
 
 namespace Hybriona
 {
-	public class MonobehaviorPool : MonoBehaviour 
+	public class MonobehaviorPoolObject : MonoBehaviour 
 	{
 
 		
-		public GenericPool<MonobehaviorPool> pool {  get; set; }
-		public GenericPool<MonobehaviorPool> RegisterPool()
+		public GenericPool<MonobehaviorPoolObject> pool {  get; set; }
+		public GenericPool<MonobehaviorPoolObject> RegisterPool()
         {
 			gameObject.SetActive(false);
 
-			pool = new GenericPool<MonobehaviorPool>(createCopyFunction: () =>
+			pool = new GenericPool<MonobehaviorPoolObject>(createCopyFunction: () =>
 			{
 				GameObject o = Instantiate(this.gameObject);
-				var script = o.GetComponent<MonobehaviorPool>();
+				var script = o.GetComponent<MonobehaviorPoolObject>();
 				script.pool = this.pool;
 
 				return script;
@@ -34,13 +34,19 @@ namespace Hybriona
 
 			});
 
-			pool.PreCache(10);
+			
 			
 			return pool;
 			
 
 		}
 
+
+		public bool ObjectInsidePool(MonobehaviorPoolObject obj)
+		{
+			return pool.ObjectInsidePool(obj);
+
+		}
 
 		public void ReturnToPool()
         {
@@ -58,5 +64,7 @@ namespace Hybriona
         {
 			gameObject.SetActive(false);
         }
+
+		
 	}
 }

@@ -56,6 +56,7 @@ namespace Hybriona
 
 		public void PreCache(uint preCacheCount = 5)
         {
+
 			for (int i = 0; i < preCacheCount; i++)
 			{
 				var copy = createCopyFunction();
@@ -86,13 +87,22 @@ namespace Hybriona
 
 		public void ReturnToPool(T obj)
         {
-			pool.Enqueue(obj);
-			if (onReturnedToPoolCallback != null)
+			if (!pool.Contains(obj))
 			{
-				onReturnedToPoolCallback(obj);
+				pool.Enqueue(obj);
+				if (onReturnedToPoolCallback != null)
+				{
+					onReturnedToPoolCallback(obj);
+				}
 			}
 			
         }
+
+		public bool ObjectInsidePool(T obj)
+        {
+			return pool.Contains(obj);
+
+		}
 
 
 		public void Clean()
