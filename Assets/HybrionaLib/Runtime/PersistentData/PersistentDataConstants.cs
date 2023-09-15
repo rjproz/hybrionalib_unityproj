@@ -15,7 +15,7 @@ namespace Hybriona
 {
 	public class PersistentDataConstants
 	{
-		public const string saveFileFormat = "profile_{0}.db";
+		public const string saveFileFormat = "data_{0}.db";
 		public static string saveFileDirectory;
 	}
 

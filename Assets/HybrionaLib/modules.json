@@ -8,6 +8,14 @@
 
         },
         {
+            "id": "hybriona.poolmanager",
+           
+            "enabled": false,
+            "folders": [
+                "Runtime/GenericPool"
+            ]
+        },
+        {
             "id": "hybriona.event_trigger",
             "define_symbol": "HYBRIONA_LIB_ENABLE_EVENT_TRIGGER",
             "enabled": true,
@@ -50,7 +58,7 @@
             "folders": [
                 "Runtime/SimpleZip"
             ]
-           
+
         },
         {
             "id": "hybriona.cache",

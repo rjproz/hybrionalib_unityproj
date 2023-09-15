@@ -1,0 +1,25 @@
+﻿/*************************************************************************
+ *------------------------------------------------------------------------
+ *  File         :  #CLASSNAME#.cs
+ *  Description  :  Null.
+ *------------------------------------------------------------------------
+ *  Author       :  #AUTHOR#
+ *  Date         :  #CREATIONDATE#
+
+*************************************************************************/
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+namespace #NAMESPACE#
+{
+	public class #CLASSNAME# : MonoBehaviour 
+	{
+		void Start () 
+		{
+			
+		}
+
+
+	}
+}

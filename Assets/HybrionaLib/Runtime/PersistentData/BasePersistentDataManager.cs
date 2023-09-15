@@ -7,12 +7,12 @@
  *  Date         :  07/19/2018 12:22:07
 
 *************************************************************************/
-
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using Assets.SimpleZip;
-
+using System.Threading;
 namespace Hybriona
 {
 	[System.Serializable]
@@ -23,6 +23,7 @@ namespace Hybriona
 		public string version;
 		public PersistentDictionary<string> dictionary = new PersistentDictionary<string>();
 
+		private object writeLock = new object();
 
 		// Tag Check Starts here
 		[SerializeField]
@@ -37,6 +38,8 @@ namespace Hybriona
 			{
 				tags.Add(tag);
 			}
+
+
 		}
 		public void RemoveTag(string tag)
 		{
@@ -51,6 +54,7 @@ namespace Hybriona
 
 		public string profilename {get;private set;}
 		public string saveFilePath {get; private set;}
+		
 
 		//Static Methods & Params
 		public static T current {get;set;}
@@ -80,6 +84,7 @@ namespace Hybriona
 			}
 		}
 
+		
 
 		public virtual byte [] ToBytesEncrypted()
 		{
@@ -89,23 +94,32 @@ namespace Hybriona
 		public virtual void Save()
 		{
 			CreateGameSaveDirectory();
-			lastWriteTime = System.DateTime.UtcNow.ToString();
-			File.WriteAllBytes( saveFilePath , ToBytesEncrypted());
+			new Thread(() =>
+			{
+				lock (writeLock)
+				{
+					
+					lastWriteTime = System.DateTime.UtcNow.ToString();
+					File.WriteAllBytes(saveFilePath, ToBytesEncrypted());
 
 #if UNITY_EDITOR
-            File.WriteAllText(saveFilePath+".txt", JsonUtility.ToJson(this));
+					File.WriteAllText(saveFilePath + ".txt", JsonUtility.ToJson(this));
 #endif
+				}
+			}).Start();
 
         }
 
 
 		private void PrepareWritePath()
 		{
-			saveFilePath = PersistentDataConstants.saveFileDirectory + string.Format(PersistentDataConstants.saveFileFormat,profilename);
+			saveFilePath = Path.Combine(PersistentDataConstants.saveFileDirectory , string.Format(PersistentDataConstants.saveFileFormat,profilename));
+
+			
 		}
 		private void CreateGameSaveDirectory()
 		{
-			PersistentDataConstants.saveFileDirectory = Application.persistentDataPath + "/GameSave02142010/";
+			PersistentDataConstants.saveFileDirectory = Path.Combine(Application.persistentDataPath,"files");
 			if(!Directory.Exists(PersistentDataConstants.saveFileDirectory))
 			{
 				Directory.CreateDirectory(PersistentDataConstants.saveFileDirectory);
