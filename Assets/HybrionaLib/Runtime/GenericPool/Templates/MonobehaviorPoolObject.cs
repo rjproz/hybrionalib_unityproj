@@ -15,16 +15,17 @@ namespace Hybriona
 	{
 
 		
-		public GenericPool<MonobehaviorPoolObject> pool {  get; set; }
+		public GenericPool<MonobehaviorPoolObject> pool { get { return m_Pool; } }
+		internal GenericPool<MonobehaviorPoolObject> m_Pool;
 		public GenericPool<MonobehaviorPoolObject> RegisterPool()
         {
 			gameObject.SetActive(false);
 
-			pool = new GenericPool<MonobehaviorPoolObject>(createCopyFunction: () =>
+			m_Pool = new GenericPool<MonobehaviorPoolObject>(createCopyFunction: () =>
 			{
 				GameObject o = Instantiate(this.gameObject);
 				var script = o.GetComponent<MonobehaviorPoolObject>();
-				script.pool = this.pool;
+				script.m_Pool = this.pool;
 
 				return script;
 			},onReturnedToPoolCallback: (obj) =>

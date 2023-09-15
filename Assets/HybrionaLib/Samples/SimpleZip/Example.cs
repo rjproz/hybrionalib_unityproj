@@ -1,7 +1,6 @@
 ﻿using System;
 using Assets.SimpleZip;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Hybriona
 {

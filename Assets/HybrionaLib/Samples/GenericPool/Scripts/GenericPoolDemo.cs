@@ -69,6 +69,7 @@ namespace Hybriona
         {
 			ballPrefab.gameObject.SetActive(false);
 			var pool = ballPrefab.RegisterPool();
+			
 			while (true)
 			{
 

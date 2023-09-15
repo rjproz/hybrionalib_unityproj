@@ -12,7 +12,8 @@
            
             "enabled": false,
             "folders": [
-                "Runtime/GenericPool"
+                "Runtime/GenericPool",
+                "Samples/GenericPool"
             ]
         },
         {
@@ -20,7 +21,8 @@
             "define_symbol": "HYBRIONA_LIB_ENABLE_EVENT_TRIGGER",
             "enabled": true,
             "folders": [
-                "Runtime/Events"
+                "Runtime/Events",
+                "Samples/Events"
             ]
         },
         {
@@ -44,7 +46,8 @@
 
             "enabled": false,
             "folders": [
-                "Runtime/PersistentData"
+                "Runtime/PersistentData",
+                "Samples/PersistentData"
             ],
             "dependencies": [
                 "hybriona.hybriona.version_manager",
@@ -56,7 +59,8 @@
 
             "enabled": false,
             "folders": [
-                "Runtime/SimpleZip"
+                "Runtime/SimpleZip",
+                "Samples/SimpleZip"
             ]
 
         },
@@ -65,7 +69,8 @@
             "define_symbol": "HYBRIONA_LIB_ENABLE_CACHE",
             "enabled": false,
             "folders": [
-                "Runtime/Cache"
+                "Runtime/Cache",
+                "Samples/Cache"
 
             ]
         },

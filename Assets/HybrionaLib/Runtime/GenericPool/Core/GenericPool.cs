@@ -7,9 +7,8 @@
  *  Date         :  15-09-2023 12:05:42
 
 *************************************************************************/
-using System.Collections;
+
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace Hybriona
 {
@@ -41,9 +40,7 @@ namespace Hybriona
 
 		
 		private void Initialized( System.Func<T> createCopyFunction, System.Action<T> onReturnedToPoolCallback = null)
-        {
-			//this.poolId = poolId;
-			
+        {			
 			this.createCopyFunction = createCopyFunction;
 			this.onReturnedToPoolCallback = onReturnedToPoolCallback;
 
@@ -101,7 +98,6 @@ namespace Hybriona
 		public bool ObjectInsidePool(T obj)
         {
 			return pool.Contains(obj);
-
 		}
 
 
