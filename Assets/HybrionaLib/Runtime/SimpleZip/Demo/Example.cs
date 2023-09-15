@@ -7,11 +7,7 @@ namespace Hybriona
 {
     public class Example : MonoBehaviour
     {
-        public Text Text;
-
-        /// <summary>
-        /// Usage example
-        /// </summary>
+       
         public void Start()
         {
             try
@@ -23,14 +19,11 @@ namespace Hybriona
                 var compressed = Zip.CompressToString(sample);
                 var decompressed = Zip.Decompress(compressed);
 
-                Text.text = string.Format("Plain text: {0}\n\nCompressed: {1}\n\nDecompressed: {2}",
-                    sample,
-                    compressed,
-                    decompressed);
+                
             }
             catch (Exception e)
             {
-                Text.text = e.ToString();
+                
             }
         }
     }
