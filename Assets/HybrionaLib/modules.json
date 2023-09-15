@@ -8,7 +8,7 @@
 
         },
         {
-            "id": "hybriona.poolmanager",
+            "id": "hybriona.generic_pool",
            
             "enabled": false,
             "folders": [
