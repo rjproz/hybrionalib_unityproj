@@ -27,6 +27,11 @@ namespace Hybriona
             return instance;
         }
 
+        public void Reset()
+        {
+            instance = new ModulesUserPrefs();
+            Save();
+        }
        
         public PersistentDictionary<bool> dic = new PersistentDictionary<bool>();
         public void Save()

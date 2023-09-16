@@ -1,7 +1,10 @@
 using UnityEngine;
 using UnityEditor;
-using System.Collections.Generic;
+using SimpleJSON;
 using System.IO;
+using UnityEditorInternal;
+using System.Collections.Generic;
+
 namespace Hybriona
 {
     [InitializeOnLoad]
@@ -109,7 +112,14 @@ namespace Hybriona
                     ApplyChanges();
                 }
 
-               
+                if (GUILayout.Button("Reset"))
+                {
+                    ModulesUserPrefs.Instance().Reset();
+                    ApplyChanges();
+                    
+                }
+
+
                 EditorGUILayout.EndVertical();
 
             }
@@ -132,7 +142,7 @@ namespace Hybriona
             InitializeModulesData();
 
 
-
+            /*
             for (int i = 0; i < modulesData.modules.Count; i++)
             {
                 var moduleData = modulesData.modules[i];
@@ -199,6 +209,70 @@ namespace Hybriona
             AssetDatabase.Refresh();
 
             return;
+            */
+
+            List<string> scriptingDefineSymbols = new List<string>();
+
+            for (int i = 0; i < modulesData.modules.Count; i++)
+            {
+                var moduleData = modulesData.modules[i];
+
+                var isActivated = false;
+                if (ModulesUserPrefs.Instance().dic.ContainsKey(moduleData.id))
+                {
+                    isActivated = ModulesUserPrefs.Instance().dic.GetValue(moduleData.id);
+
+                }
+                else
+                {
+                    isActivated = moduleData.enabled;
+                }
+
+                if (isActivated)
+                {
+                    if (!scriptingDefineSymbols.Contains(moduleData.define_symbol))
+                    {
+                        scriptingDefineSymbols.Add(moduleData.define_symbol);
+                    }
+
+                }
+                
+
+            }
+
+
+            string newSymbolsCombined = "";
+
+            for (int i = 0; i < scriptingDefineSymbols.Count; i++)
+            {
+                if (i == scriptingDefineSymbols.Count - 1)
+                {
+                    newSymbolsCombined += scriptingDefineSymbols[i];
+                }
+                else
+                {
+                    newSymbolsCombined += scriptingDefineSymbols[i] + ";";
+                }
+            }
+
+            string pathOfAssemblyDef = Path.Combine(modulesData.rootPath, "Runtime/Hybriona.Lib.asmdef");
+            AssemblyDefinitionAsset assemblyDef = AssetDatabase.LoadAssetAtPath<AssemblyDefinitionAsset>(pathOfAssemblyDef);
+            var jsonNode = JSON.Parse(assemblyDef.text);
+
+            jsonNode["versionDefines"] = new JSONArray();
+            jsonNode["versionDefines"].Add(JSON.Parse("{\n}"));
+            var enabledDefinesNode = jsonNode["versionDefines"][0];
+            enabledDefinesNode["name"] = "Unity";
+            enabledDefinesNode["expression"] = "";
+            enabledDefinesNode["define"] = newSymbolsCombined;
+
+            jsonNode["versionDefines"][0] = enabledDefinesNode;
+
+            File.WriteAllText(pathOfAssemblyDef, jsonNode.ToString());
+            AssetDatabase.Refresh();
+            //EditMode json
+
+            /*
             List<string> scriptingDefineSymbols = new List<string>();
 
             BuildTarget buildTarget = EditorUserBuildSettings.activeBuildTarget;
@@ -259,7 +333,7 @@ namespace Hybriona
                 }
             }
             PlayerSettings.SetScriptingDefineSymbolsForGroup(targetGroup, newSymbolsCombined);
-
+            */
         }
     }
 }

@@ -1,7 +1,5 @@
-﻿//#if HYBRIONA_LIB_ENABLE_HTTP_CLIENT
-using System.Collections;
+﻿#if HYBRIONA_LIB_ENABLE_HTTP_CLIENT
 using System.Collections.Generic;
-using UnityEngine;
 using UnityEngine.Networking;
 namespace Hybriona
 {
@@ -62,4 +60,4 @@ namespace Hybriona
 		}
 	}
 }
-//#endif
+#endif

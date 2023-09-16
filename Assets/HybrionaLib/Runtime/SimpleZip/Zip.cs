@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if HYBRIONA_LIB_ENABLE_SIMPLEZIP
+using System;
 using System.Text;
 using Ionic.Zlib;
 
@@ -39,3 +40,4 @@ namespace Assets.SimpleZip
         }
     }
 }
+#endif
