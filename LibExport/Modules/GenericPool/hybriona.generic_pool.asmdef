@@ -1,1 +1,1 @@
-{"name":"hybriona.generic_pool","references":["hybriona.core","hybriona.event_trigger"],"allowUnsafeCode":false,"autoReferenced":true,"defineConstraints":["HYBRIONA_LIB_ENABLE_GENERIC_POOL"],"versionDefines":[{"name":"Unity","define":"HYBRIONA_LIB_ENABLE_GENERIC_POOL"}]}
+{"name":"hybriona.generic_pool","references":["hybriona.core","hybriona.event_trigger"],"allowUnsafeCode":false,"autoReferenced":true,"defineConstraints":["HYBRIONA_LIB_ENABLE_GENERIC_POOL"],"versionDefines":[]}

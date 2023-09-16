@@ -1,1 +1,1 @@
-{"name":"hybriona.adsmanager","references":["hybriona.event_trigger"],"allowUnsafeCode":false,"autoReferenced":true,"defineConstraints":["HYBRIONA_LIB_ENABLE_ADSMANAGER"],"versionDefines":[{"name":"Unity","define":"HYBRIONA_LIB_ENABLE_ADSMANAGER"}]}
+{"name":"hybriona.adsmanager","references":["hybriona.event_trigger"],"allowUnsafeCode":false,"autoReferenced":true,"defineConstraints":["HYBRIONA_LIB_ENABLE_ADSMANAGER"],"versionDefines":[]}

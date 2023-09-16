@@ -85,7 +85,7 @@ namespace Hybriona
 							}
 							
 
-							//File.WriteAllText(assemblyPath, assemblyJsonData.ToString());
+							File.WriteAllText(assemblyPath, assemblyJsonData.ToString());
 						}
                     }
                 }
