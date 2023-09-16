@@ -7,7 +7,23 @@ using System.Collections.Generic;
 
 namespace Hybriona
 {
+
     [InitializeOnLoad]
+    static class HybrionaUnityLibInit
+    {
+        static HybrionaUnityLibInit()
+        {
+            AssemblyReloadEvents.beforeAssemblyReload += AssemblyReloadEvents_beforeAssemblyReload;
+        }
+
+        private static void AssemblyReloadEvents_beforeAssemblyReload()
+        {
+            Debug.Log("AssemblyReloadEvents_beforeAssemblyReload");
+            HybrionaUnityLibActivator.ApplyChanges(doAssetDatabaseRefresh: false);
+        }
+    }
+
+   
     public class HybrionaUnityLibActivator : EditorWindow
     {
 
@@ -18,28 +34,18 @@ namespace Hybriona
             EditorWindow.GetWindow(typeof(HybrionaUnityLibActivator));
         }
 
-        static HybrionaUnityLibActivator()
-        {
-           
-        }
+       
 
         private void OnEnable()
         {
-            AssemblyReloadEvents.beforeAssemblyReload += AssemblyReloadEvents_beforeAssemblyReload;
+            
             ApplyChanges();
             //Debug.Log("HybrionaUnityLibActivator patched ScriptingDefineSymbols.");
         }
 
-        private void OnDisable()
-        {
-            AssemblyReloadEvents.beforeAssemblyReload -= AssemblyReloadEvents_beforeAssemblyReload;
-        }
+        
 
-        private void AssemblyReloadEvents_beforeAssemblyReload()
-        {
-            Debug.Log("AssemblyReloadEvents_beforeAssemblyReload");
-            ApplyChanges(doAssetDatabaseRefresh: true);
-        }
+       
 
         private static ModulesData modulesData;
 
