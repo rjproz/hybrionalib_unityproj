@@ -99,10 +99,10 @@ namespace Hybriona
 
                     {
 						packageJsonNode["version"] = VersionManager.Version().ToString();
+					}
 
 
-					}					
-
+					
 					File.WriteAllText(packageJsonPath, packageJsonNode.ToString());
 					
 					EditorUtility.DisplayDialog("Alert!", "Package exported with version " + packageJsonNode["version"].Value, "Ok");

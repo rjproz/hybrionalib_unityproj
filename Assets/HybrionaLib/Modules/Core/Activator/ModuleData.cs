@@ -20,6 +20,11 @@ namespace Hybriona
         public List<string> dependencies;
         public string root;
         public string samples;
+        public string description;
+
+
+        public string displayname;
+        
 
     }
 
