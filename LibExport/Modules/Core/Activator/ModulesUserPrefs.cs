@@ -36,6 +36,7 @@ namespace Hybriona
         }
        
         public PersistentDictionary<bool> dic = new PersistentDictionary<bool>();
+        public string selectedModuleId;
         public void Save()
         {
             EditorPrefs.SetString(SaveKey,JsonUtility.ToJson(this));

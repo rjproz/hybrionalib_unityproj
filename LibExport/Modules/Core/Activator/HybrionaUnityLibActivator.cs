@@ -35,7 +35,34 @@ namespace Hybriona
      
     }
 
-   
+
+    public class HybrionaUnityLibActivatorUIStyle
+    {
+        public GUIStyle detailedViewTitleStyle { get; private set; }
+        public GUIStyle detailedViewIdStyle { get; private set; }
+        public GUIStyle moduleInstalledIconStyle { get; private set; }
+
+        public HybrionaUnityLibActivatorUIStyle()
+        {
+            detailedViewTitleStyle = new GUIStyle(GUI.skin.label);
+            detailedViewIdStyle = new GUIStyle(GUI.skin.label);
+            moduleInstalledIconStyle = new GUIStyle(GUI.skin.label);
+
+
+            detailedViewTitleStyle.fontSize = 20;
+            detailedViewTitleStyle.alignment = TextAnchor.MiddleLeft;
+            
+            detailedViewTitleStyle.fontStyle = FontStyle.Bold;
+           
+
+            detailedViewIdStyle.fontStyle = FontStyle.Italic;
+            detailedViewIdStyle.alignment = TextAnchor.MiddleLeft;
+
+            moduleInstalledIconStyle.alignment = TextAnchor.MiddleRight;
+        }
+    }
+
+
     public class HybrionaUnityLibActivator : EditorWindow
     {
 
@@ -60,7 +87,9 @@ namespace Hybriona
        
 
         private static ModulesData modulesData;
+        
 
+        static HybrionaUnityLibActivatorUIStyle uiStyle;
         private static void InitializeModulesData(bool forceReload = false)
         {
             if (modulesData == null || forceReload)
@@ -84,9 +113,13 @@ namespace Hybriona
                     modulesData.rootPath = path.Replace("/modules.json", "/");
                 }
                 //Debug.Log("Path: "+path);
+
+                if(string.IsNullOrEmpty( ModulesUserPrefs.Instance().selectedModuleId ))
+                {
+                    ModulesUserPrefs.Instance().selectedModuleId = modulesData.modules[0].id;
+                    ModulesUserPrefs.Instance().Save();
+                }
                
-
-
             }
         }
 
@@ -97,10 +130,14 @@ namespace Hybriona
 
 
         private Vector2 moduleListScrollPos;
+        
         private void OnGUI()
         {
 
-
+            if(uiStyle == null)
+            {
+                uiStyle = new HybrionaUnityLibActivatorUIStyle();
+            }
             InitializeModulesData(forceReload: true);
 
             float padding = 10;
@@ -128,9 +165,9 @@ namespace Hybriona
 #endif
 
                 EditorGUILayout.Separator();
-                EditorGUILayout.BeginHorizontal(GUILayout.Width(250));
-                moduleListScrollPos = EditorGUILayout.BeginScrollView(moduleListScrollPos,GUI.skin.box);
-                GUILayout.Label("Modules Settings", EditorStyles.boldLabel);
+                EditorGUILayout.BeginHorizontal();
+                moduleListScrollPos = EditorGUILayout.BeginScrollView(moduleListScrollPos,GUI.skin.box, GUILayout.Width(200));
+                GUILayout.Label("Modules Settings", uiStyle.detailedViewTitleStyle);
                 GUILayout.Space(5);
 
                 
@@ -139,36 +176,48 @@ namespace Hybriona
                     
                     var moduleData = modulesData.modules[i];
 
-                    if (moduleData.alwaysEnabled)
+                    
                     {
+                        var isActivated = moduleData.alwaysEnabled;
+                        if (!isActivated)
+                        {
+                            if (ModulesUserPrefs.Instance().dic.ContainsKey(moduleData.id))
+                            {
+                                isActivated = ModulesUserPrefs.Instance().dic.GetValue(moduleData.id);
+                            }
+                        }
                        
-                        EditorGUILayout.LabelField(moduleData.id + " - Always Enabled");
-                        
-                    }
-                    else
-                    {
-                        var oldValue = false;
-                        if (ModulesUserPrefs.Instance().dic.ContainsKey(moduleData.id))
-                        {
-                            oldValue = ModulesUserPrefs.Instance().dic.GetValue(moduleData.id);
-                        }
-                        else
-                        {
-                            oldValue = false;
-                        }
                         
                         EditorGUILayout.BeginVertical(EditorStyles.helpBox);
 
-                        var newValueIfChanged = EditorGUILayout.BeginToggleGroup(moduleData.displayname, oldValue);
-                        //var newValueIfChanged = EditorGUILayout.BeginToggleGroup(oldValue,moduleData.displayname);
 
-                        if (!string.IsNullOrEmpty(moduleData.description))
+                        //GUI.skin.button.alignment = TextAnchor.MiddleLeft;
+                        EditorGUILayout.BeginHorizontal();
+                        if (GUILayout.Button(moduleData.displayname,GUI.skin.label))
                         {
-                            //EditorGUILayout.LabelField(moduleData.description);
+                            
+                            
+                            ModulesUserPrefs.Instance().selectedModuleId = moduleData.id;
+                            ModulesUserPrefs.Instance().Save();
                         }
-                        EditorGUILayout.EndToggleGroup();
-                        //EditorGUILayout.EndFoldoutHeaderGroup();
-                        ModulesUserPrefs.Instance().dic.Add(moduleData.id, newValueIfChanged);
+                        if (isActivated)
+                        {
+                            GUILayout.Label(EditorGUIUtility.IconContent("Installed"), uiStyle.moduleInstalledIconStyle, GUILayout.Width(25),GUILayout.Height(25));
+                        }
+                        else
+                        {
+                            GUILayout.Label(EditorGUIUtility.IconContent("Add-Available"), uiStyle.moduleInstalledIconStyle, GUILayout.Width(25), GUILayout.Height(25));
+                           
+                        }
+                        EditorGUILayout.EndHorizontal();
+
+                        //var newValueIfChanged = EditorGUILayout.BeginToggleGroup(moduleData.displayname, oldValue);
+                      
+
+                      
+                        //EditorGUILayout.EndToggleGroup();
+                       
+                        //ModulesUserPrefs.Instance().dic.Add(moduleData.id, newValueIfChanged);
 
                         EditorGUILayout.EndVertical();
                         EditorGUILayout.Space(1);
@@ -177,21 +226,78 @@ namespace Hybriona
                 }
                
 
-                if (GUILayout.Button("Apply Changes"))
-                {
-                    ModulesUserPrefs.Instance().Save();
-                    ApplyChanges();
-                }
+                //if (GUILayout.Button("Apply Changes"))
+                //{
+                //    ModulesUserPrefs.Instance().Save();
+                //    ApplyChanges();
+                //}
 
-                if (GUILayout.Button("Reset"))
-                {
-                    ModulesUserPrefs.Instance().Reset();
-                    ApplyChanges();
+                //if (GUILayout.Button("Reset"))
+                //{
+                //    ModulesUserPrefs.Instance().Reset();
+                //    ApplyChanges();
                     
-                }
+                //}
 
 
                 EditorGUILayout.EndScrollView();
+                
+                EditorGUILayout.BeginVertical(GUI.skin.box);
+                {
+                    var selectedModule = modulesData.modules.FindLast( o => o.id == ModulesUserPrefs.Instance().selectedModuleId);
+                    if (selectedModule != null)
+                    {
+
+                        var isModuleActive = selectedModule.alwaysEnabled;
+                        if (!isModuleActive)
+                        {
+                            if (ModulesUserPrefs.Instance().dic.ContainsKey(selectedModule.id))
+                            {
+                                isModuleActive = ModulesUserPrefs.Instance().dic.GetValue(selectedModule.id);
+                            }
+                        }
+
+                        EditorGUILayout.BeginVertical(GUI.skin.textArea);
+                        {
+                            EditorGUILayout.LabelField(selectedModule.displayname, uiStyle.detailedViewTitleStyle);
+                            EditorGUILayout.LabelField(selectedModule.id, uiStyle.detailedViewIdStyle);
+                        }
+                        EditorGUILayout.EndVertical();
+                        GUILayout.Space(3);
+                    
+                        EditorGUILayout.BeginHorizontal(GUI.skin.box);
+                        if (!isModuleActive)
+                        {
+                            if (GUILayout.Button("Install Module", GUILayout.Width(150)))
+                            {
+                                ModulesUserPrefs.Instance().dic.Add(selectedModule.id, true);
+                                ApplyChanges();
+                            }
+                        }
+                        else
+                        {
+                            if (!string.IsNullOrEmpty(selectedModule.sample))
+                            {
+                                if (GUILayout.Button("Import Samples", GUILayout.Width(150)))
+                                {
+                                    
+                                }
+                            }
+                            if (GUILayout.Button("Remove Module", GUILayout.Width(150)))
+                            {
+                                ModulesUserPrefs.Instance().dic.Add(selectedModule.id, false);
+                                ApplyChanges();
+                            }
+                        }
+                        EditorGUILayout.EndHorizontal();
+
+                        GUILayout.Space(3);
+
+                        EditorGUILayout.LabelField(selectedModule.description, EditorStyles.wordWrappedLabel, GUILayout.Height(100));
+                        
+                    }
+                }
+                EditorGUILayout.EndVertical();
                 EditorGUILayout.EndHorizontal();
             }
             GUILayout.EndArea();

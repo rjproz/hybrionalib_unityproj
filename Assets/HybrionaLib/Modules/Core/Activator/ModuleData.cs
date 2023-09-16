@@ -19,7 +19,7 @@ namespace Hybriona
         public string define_symbol;
         public List<string> dependencies;
         public string root;
-        public string samples;
+        public string sample;
         public string description;
 
 

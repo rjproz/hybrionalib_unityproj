@@ -12,7 +12,7 @@
         {
             "id": "hybriona.generic_pool",
             "displayname": "Generic Pool",
-            "description": "Generic Pool",
+            "description": "Use Unity Timeline to create cinematic content, game-play sequences, audio sequences, and complex particle effects.",
             "define_symbol": "HYBRIONA_LIB_ENABLE_GENERIC_POOL",
 
             "root": "Modules/GenericPool",
