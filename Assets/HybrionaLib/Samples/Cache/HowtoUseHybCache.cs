@@ -24,7 +24,7 @@ public class HowtoUseHybCache : MonoBehaviour {
 		HybCache.SetExpiryAgeHours(10);
 		// or HybCache.SetExpiryAgeDays(1);
 		// or HybCache.SetExpiryAgeMinutes(1000);
-
+		
 
 		// To Clear cache
 		// HybCache.Clear();
