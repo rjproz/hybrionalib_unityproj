@@ -3,7 +3,7 @@ using System;
 using System.Text;
 using Ionic.Zlib;
 
-namespace Assets.SimpleZip
+namespace Hybriona
 {
     public static class Zip
     {

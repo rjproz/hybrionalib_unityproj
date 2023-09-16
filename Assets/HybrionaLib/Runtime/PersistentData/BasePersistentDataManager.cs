@@ -8,11 +8,9 @@
 
 *************************************************************************/
 #if HYBRIONA_LIB_ENABLE_PERSISTENT_DATA
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
-using Assets.SimpleZip;
 using System.Threading;
 namespace Hybriona
 {
