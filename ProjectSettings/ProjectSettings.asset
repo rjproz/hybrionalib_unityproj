@@ -134,7 +134,7 @@ PlayerSettings:
     16:10: 1
     16:9: 1
     Others: 1
-  bundleVersion: 0.1.100
+  bundleVersion: 0.1.101
   preloadedAssets: []
   metroInputSource: 0
   wsaTransparentSwapchain: 0
@@ -157,13 +157,14 @@ PlayerSettings:
   applicationIdentifier:
     Android: com.DefaultCompany.HybrionaLibUnityProj
     Standalone: com.DefaultCompany.HybrionaLibUnityProj
+    iPhone: com.DefaultCompany.HybrionaLibUnityProj
   buildNumber:
-    Standalone: 0
+    Standalone: 1
     VisionOS: 0
-    iPhone: 0
+    iPhone: 1
     tvOS: 0
   overrideDefaultApplicationIdentifier: 0
-  AndroidBundleVersionCode: 0
+  AndroidBundleVersionCode: 1
   AndroidMinSdkVersion: 22
   AndroidTargetSdkVersion: 0
   AndroidPreferredInstallLocation: 1
@@ -808,8 +809,10 @@ PlayerSettings:
   webGLDecompressionFallback: 0
   webGLPowerPreference: 2
   scriptingDefineSymbols:
-    Android: HYBRIONA_LIB_ENABLE_ADSMANAGER
-    Standalone: 
+    Android: HYBRIONA_LIB_ADMIN
+    Server: HYBRIONA_LIB_ADMIN
+    Standalone: HYBRIONA_LIB_ADMIN
+    iPhone: HYBRIONA_LIB_ADMIN
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend: {}

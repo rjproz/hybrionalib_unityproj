@@ -1,0 +1,16 @@
+{
+    "name": "NoCompile",
+    "rootNamespace": "",
+    "references": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [
+        "DONOT_COMPILE_HYBRIONA_LIB_SAMPLES"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
