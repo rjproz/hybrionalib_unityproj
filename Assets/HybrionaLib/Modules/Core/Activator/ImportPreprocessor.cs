@@ -8,8 +8,6 @@
 
 *************************************************************************/
 #if UNITY_EDITOR
-using System.Collections;
-using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
@@ -19,15 +17,21 @@ namespace Hybriona
 	{
 		void OnPreprocessAsset()
 		{
-			//HybrionaUnityLibActivator.ApplyChanges();
+			//Debug.Log("OnPreprocessAsset " + assetPath);
+			if(assetPath.Contains("hybriona.") && assetPath.Contains("asmdef"))
+            {
+				Debug.Log("hybriona lib patching " + assetPath);
+				HybrionaUnityLibActivator.ApplyChanges();
+			}
+			
 
 		}
 
-		static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths, bool didDomainReload)
-		{
-			Debug.Log("OnPostprocessAllAssets");
-			HybrionaUnityLibActivator.ApplyChanges();
-		}
+		//static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths, bool didDomainReload)
+		//{
+		//	Debug.Log("OnPostprocessAllAssets");
+		//	HybrionaUnityLibActivator.ApplyChanges();
+		//}
 	}
 }
 #endif
