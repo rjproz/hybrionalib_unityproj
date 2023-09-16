@@ -1,1 +1,1 @@
-{"name":"hybriona.event_trigger","references":[],"allowUnsafeCode":false,"autoReferenced":false,"defineConstraints":["HYBRIONA_LIB_ENABLE_EVENT_TRIGGER"],"versionDefines":[{"name":"Unity"}]}
+{"name":"hybriona.event_trigger","references":[],"allowUnsafeCode":false,"autoReferenced":true,"defineConstraints":["HYBRIONA_LIB_ENABLE_EVENT_TRIGGER"],"versionDefines":[{"name":"Unity"}]}

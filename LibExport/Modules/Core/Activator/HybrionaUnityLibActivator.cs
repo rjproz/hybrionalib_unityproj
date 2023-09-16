@@ -283,7 +283,44 @@ namespace Hybriona
 
             }
 
-           
+
+            for (int i = 0; i < modulesData.modules.Count; i++)
+            {
+                var moduleData = modulesData.modules[i];
+
+                bool toActivate = activateModuleList.Contains(moduleData);
+
+                //Generate Assemblies
+
+                string createPath = Path.Combine(modulesData.rootPath, moduleData.root);
+                createPath = Path.Combine(createPath, moduleData.id + ".asmdef");
+
+                var assemblyDataNode = JSON.Parse("{\n}");
+                assemblyDataNode["name"] = moduleData.id;
+                assemblyDataNode["references"] = new JSONArray();
+                foreach (var dependency in moduleData.dependencies)
+                {
+                    assemblyDataNode["references"].Add(dependency);
+                }
+
+                assemblyDataNode["allowUnsafeCode"] = false;
+                assemblyDataNode["autoReferenced"] = true;
+                assemblyDataNode["defineConstraints"] = new JSONArray();
+                assemblyDataNode["defineConstraints"].Add(moduleData.define_symbol);
+
+                assemblyDataNode["versionDefines"] = new JSONArray();
+                assemblyDataNode["versionDefines"].Add(JSON.Parse("{\n}"));
+                assemblyDataNode["versionDefines"][0]["name"] = "Unity";
+
+                if (toActivate)
+                {
+                    assemblyDataNode["versionDefines"][0]["define"] = moduleData.define_symbol;
+                    
+                }
+
+                File.WriteAllText(createPath, assemblyDataNode.ToString());
+            }
+
             /*
             {
                 //create main lib assembly
@@ -344,102 +381,102 @@ namespace Hybriona
             */
 
 
-                /*
-                string newSymbolsCombined = "";
+            /*
+            string newSymbolsCombined = "";
 
-                for (int i = 0; i < scriptingDefineSymbols.Count; i++)
+            for (int i = 0; i < scriptingDefineSymbols.Count; i++)
+            {
+                if (i == scriptingDefineSymbols.Count - 1)
                 {
-                    if (i == scriptingDefineSymbols.Count - 1)
-                    {
-                        newSymbolsCombined += scriptingDefineSymbols[i];
-                    }
-                    else
-                    {
-                        newSymbolsCombined += scriptingDefineSymbols[i] + ";";
-                    }
+                    newSymbolsCombined += scriptingDefineSymbols[i];
                 }
-
-                string pathOfAssemblyDef = Path.Combine(modulesData.rootPath, "Modules/Hybriona.Lib.asmdef");
-                AssemblyDefinitionAsset assemblyDef = AssetDatabase.LoadAssetAtPath<AssemblyDefinitionAsset>(pathOfAssemblyDef);
-                var jsonNode = JSON.Parse(assemblyDef.text);
-
-                jsonNode["versionDefines"] = new JSONArray();
-                jsonNode["versionDefines"].Add(JSON.Parse("{\n}"));
-                var enabledDefinesNode = jsonNode["versionDefines"][0];
-                enabledDefinesNode["name"] = "Unity";
-                enabledDefinesNode["expression"] = "";
-                enabledDefinesNode["define"] = newSymbolsCombined;
-
-                jsonNode["versionDefines"][0] = enabledDefinesNode;
-
-                File.WriteAllText(pathOfAssemblyDef, jsonNode.ToString());
-                AssetDatabase.Refresh();
-
-                */
-                //EditMode json
-
-                /*
-                List<string> scriptingDefineSymbols = new List<string>();
-
-                BuildTarget buildTarget = EditorUserBuildSettings.activeBuildTarget;
-                BuildTargetGroup targetGroup = BuildPipeline.GetBuildTargetGroup(buildTarget);
-
-                string activeSymbolsString = PlayerSettings.GetScriptingDefineSymbolsForGroup(targetGroup);
-                //Debug.Log(activeSymbolsString);
-                string[] existingSymbols = activeSymbolsString.Split(';');
-
-                scriptingDefineSymbols.AddRange(existingSymbols);
-
-                for (int i = 0; i < modulesData.modules.Count; i++)
+                else
                 {
-                    var moduleData = modulesData.modules[i];
-
-                    var isActivated = false;
-                    if (ModulesUserPrefs.Instance().dic.ContainsKey(moduleData.id))
-                    {
-                        isActivated = ModulesUserPrefs.Instance().dic.GetValue(moduleData.id);
-
-                    }
-                    else
-                    {
-                        isActivated = moduleData.enabled;
-                    }
-
-                    if (isActivated)
-                    {
-                        if (!scriptingDefineSymbols.Contains(moduleData.define_symbol))
-                        {
-                            scriptingDefineSymbols.Add(moduleData.define_symbol);
-                        }
-
-                    }
-                    else
-                    {
-                        if (scriptingDefineSymbols.Contains(moduleData.define_symbol))
-                        {
-                            scriptingDefineSymbols.Remove(moduleData.define_symbol);
-                        }
-
-                    }
-
+                    newSymbolsCombined += scriptingDefineSymbols[i] + ";";
                 }
-
-
-                string newSymbolsCombined = "";
-
-                for (int i = 0; i < scriptingDefineSymbols.Count; i++)
-                {
-                    if (i == scriptingDefineSymbols.Count - 1)
-                    {
-                        newSymbolsCombined += scriptingDefineSymbols[i];
-                    }
-                    else
-                    {
-                        newSymbolsCombined += scriptingDefineSymbols[i] + ";";
-                    }
-                }
-                PlayerSettings.SetScriptingDefineSymbolsForGroup(targetGroup, newSymbolsCombined);
-                */
             }
+
+            string pathOfAssemblyDef = Path.Combine(modulesData.rootPath, "Modules/Hybriona.Lib.asmdef");
+            AssemblyDefinitionAsset assemblyDef = AssetDatabase.LoadAssetAtPath<AssemblyDefinitionAsset>(pathOfAssemblyDef);
+            var jsonNode = JSON.Parse(assemblyDef.text);
+
+            jsonNode["versionDefines"] = new JSONArray();
+            jsonNode["versionDefines"].Add(JSON.Parse("{\n}"));
+            var enabledDefinesNode = jsonNode["versionDefines"][0];
+            enabledDefinesNode["name"] = "Unity";
+            enabledDefinesNode["expression"] = "";
+            enabledDefinesNode["define"] = newSymbolsCombined;
+
+            jsonNode["versionDefines"][0] = enabledDefinesNode;
+
+            File.WriteAllText(pathOfAssemblyDef, jsonNode.ToString());
+            AssetDatabase.Refresh();
+
+            */
+            //EditMode json
+
+            /*
+            List<string> scriptingDefineSymbols = new List<string>();
+
+            BuildTarget buildTarget = EditorUserBuildSettings.activeBuildTarget;
+            BuildTargetGroup targetGroup = BuildPipeline.GetBuildTargetGroup(buildTarget);
+
+            string activeSymbolsString = PlayerSettings.GetScriptingDefineSymbolsForGroup(targetGroup);
+            //Debug.Log(activeSymbolsString);
+            string[] existingSymbols = activeSymbolsString.Split(';');
+
+            scriptingDefineSymbols.AddRange(existingSymbols);
+
+            for (int i = 0; i < modulesData.modules.Count; i++)
+            {
+                var moduleData = modulesData.modules[i];
+
+                var isActivated = false;
+                if (ModulesUserPrefs.Instance().dic.ContainsKey(moduleData.id))
+                {
+                    isActivated = ModulesUserPrefs.Instance().dic.GetValue(moduleData.id);
+
+                }
+                else
+                {
+                    isActivated = moduleData.enabled;
+                }
+
+                if (isActivated)
+                {
+                    if (!scriptingDefineSymbols.Contains(moduleData.define_symbol))
+                    {
+                        scriptingDefineSymbols.Add(moduleData.define_symbol);
+                    }
+
+                }
+                else
+                {
+                    if (scriptingDefineSymbols.Contains(moduleData.define_symbol))
+                    {
+                        scriptingDefineSymbols.Remove(moduleData.define_symbol);
+                    }
+
+                }
+
+            }
+
+
+            string newSymbolsCombined = "";
+
+            for (int i = 0; i < scriptingDefineSymbols.Count; i++)
+            {
+                if (i == scriptingDefineSymbols.Count - 1)
+                {
+                    newSymbolsCombined += scriptingDefineSymbols[i];
+                }
+                else
+                {
+                    newSymbolsCombined += scriptingDefineSymbols[i] + ";";
+                }
+            }
+            PlayerSettings.SetScriptingDefineSymbolsForGroup(targetGroup, newSymbolsCombined);
+            */
+        }
         }
 }
