@@ -83,7 +83,7 @@ namespace Hybriona
 
 				//Patch Package.json
                 {
-					string packageJsonPath = "LibExport/Modules/package.json";
+					string packageJsonPath = "LibExport/package.json";
 					var packageJsonNode = JSON.Parse(File.ReadAllText( packageJsonPath) );
 
                     {
