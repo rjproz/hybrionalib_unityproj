@@ -160,7 +160,7 @@ namespace Hybriona
 
         }
 
-        static void ApplyChanges()
+        public static void ApplyChanges()
         {
             InitializeModulesData();
 
