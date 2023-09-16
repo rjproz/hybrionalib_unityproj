@@ -1,1 +1,0 @@
-{"name":"Hybriona.Lib","rootNamespace":"","references":["hybriona.core","hybriona.version_manager"],"includePlatforms":[],"excludePlatforms":[],"allowUnsafeCode":false,"overrideReferences":false,"precompiledReferences":[],"autoReferenced":true,"defineConstraints":[],"versionDefines":[],"noEngineReferences":false}

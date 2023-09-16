@@ -64,22 +64,7 @@ namespace Hybriona
 				}
 
 
-				//Patch assembly with no active modules
-				{
-					//create main lib assembly
-					string readPathOfMainLibAssembly = Path.Combine(modulesData.rootPath, "Modules/Hybriona.Lib.asmdef");
-					string writePathOfMainLibAssembly =  "LibExport/Modules/Hybriona.Lib.asmdef";
-					AssemblyDefinitionAsset mainLibAssembly = AssetDatabase.LoadAssetAtPath<AssemblyDefinitionAsset>(readPathOfMainLibAssembly);
-					var jsonNode = JSON.Parse(mainLibAssembly.text);
-
-					jsonNode["references"] = new JSONArray();
-					jsonNode["references"].Add("hybriona.core");
-					jsonNode["versionDefines"] = new JSONArray();
-
-
-					File.WriteAllText(writePathOfMainLibAssembly, jsonNode.ToString());
-				}
-
+				
 
 				//Patch Package.json
                 {

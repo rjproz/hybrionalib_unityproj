@@ -1,1 +1,22 @@
-{"name":"hybriona.core","references":[],"allowUnsafeCode":false,"autoReferenced":true,"defineConstraints":["HYBRIONA_LIB_ENABLE_CORE"],"versionDefines":[{"name":"Unity","define":"HYBRIONA_LIB_ENABLE_CORE"}]}
+{
+    "name": "hybriona.core",
+    "rootNamespace": "",
+    "references": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [
+        "HYBRIONA_LIB_ENABLE_CORE"
+    ],
+    "versionDefines": [
+        {
+            "name": "Unity",
+            "expression": "",
+            "define": "HYBRIONA_LIB_ENABLE_CORE"
+        }
+    ],
+    "noEngineReferences": false
+}

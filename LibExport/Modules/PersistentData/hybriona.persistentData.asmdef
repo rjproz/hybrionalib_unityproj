@@ -1,1 +1,1 @@
-{"name":"hybriona.persistentData","references":["hybriona.version_manager","hybriona.simple_zip","hybriona.core"],"allowUnsafeCode":false,"autoReferenced":true,"defineConstraints":["HYBRIONA_LIB_ENABLE_PERSISTENT_DATA"],"versionDefines":[{"name":"Unity"}]}
+{"name":"hybriona.persistentData","references":["hybriona.version_manager","hybriona.simple_zip","hybriona.core"],"allowUnsafeCode":false,"autoReferenced":false,"defineConstraints":["HYBRIONA_LIB_ENABLE_PERSISTENT_DATA"],"versionDefines":[{"name":"Unity"}]}

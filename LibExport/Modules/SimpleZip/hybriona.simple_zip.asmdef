@@ -1,1 +1,1 @@
-{"name":"hybriona.simple_zip","references":[],"allowUnsafeCode":false,"autoReferenced":true,"defineConstraints":["HYBRIONA_LIB_ENABLE_SIMPLEZIP"],"versionDefines":[{"name":"Unity"}]}
+{"name":"hybriona.simple_zip","references":[],"allowUnsafeCode":false,"autoReferenced":false,"defineConstraints":["HYBRIONA_LIB_ENABLE_SIMPLEZIP"],"versionDefines":[{"name":"Unity"}]}

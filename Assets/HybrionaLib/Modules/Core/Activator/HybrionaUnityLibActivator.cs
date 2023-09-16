@@ -284,7 +284,7 @@ namespace Hybriona
             }
 
            
-
+            /*
             {
                 //create main lib assembly
                 string pathOfMainLibAssembly = Path.Combine(modulesData.rootPath, "Modules/Hybriona.Lib.asmdef");
@@ -341,6 +341,7 @@ namespace Hybriona
                 File.WriteAllText(pathOfMainLibAssembly, jsonNode.ToString());
                 AssetDatabase.Refresh();
             }
+            */
 
 
                 /*
