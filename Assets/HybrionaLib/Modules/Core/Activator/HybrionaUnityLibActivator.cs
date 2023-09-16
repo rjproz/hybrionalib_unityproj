@@ -23,10 +23,15 @@ namespace Hybriona
         //    Debug.Log("CompilationPipeline_assemblyCompilationStarted");
         //}
 
+        private static System.DateTime lastTimeCompiled;
         private static void CompilationPipeline_compilationStarted(object obj)
         {
-            Debug.Log("CompilationPipeline_compilationStarted");
-            HybrionaUnityLibActivator.ApplyChanges(doAssetDatabaseRefresh: false);
+            if (lastTimeCompiled == null || (System.DateTime.Now - lastTimeCompiled).TotalSeconds > 0.5)
+            {
+                Debug.Log("CompilationPipeline_compilationStarted");
+                lastTimeCompiled = System.DateTime.Now;
+                HybrionaUnityLibActivator.ApplyChanges(doAssetDatabaseRefresh: false);
+            }
         }
 
         //private static void AssemblyReloadEvents_beforeAssemblyReload()
