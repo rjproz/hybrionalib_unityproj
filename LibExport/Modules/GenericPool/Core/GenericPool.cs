@@ -24,7 +24,8 @@ namespace Hybriona
 
 		
 		private Queue<T> pool = new Queue<T>();
-		
+
+		public int totalCopyGenerated { get; private set; }
 
 		public int poolCount
         {
@@ -58,6 +59,7 @@ namespace Hybriona
 			for (int i = 0; i < preCacheCount; i++)
 			{
 				var copy = createCopyFunction();
+				totalCopyGenerated++;
 				pool.Enqueue(copy);
 
 			}
@@ -75,8 +77,9 @@ namespace Hybriona
             }
 			else
             {
-				var obj = createCopyFunction();
 				
+				var obj = createCopyFunction();
+				totalCopyGenerated++;
 				return obj;
             }
 

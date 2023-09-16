@@ -20,6 +20,17 @@
             "dependencies": [ "hybriona.core", "hybriona.event_trigger" ]
         },
         {
+            "id": "hybriona.tween_animation",
+            "displayname": "Tween Animation",
+            "description": "Tween Animation Library to animate values. Animate floats, Vectors, Transforms etc using this single module.",
+            "define_symbol": "HYBRIONA_LIB_ENABLE_TWEEN_ANIMATION",
+
+            "root": "Modules/TweenAnimation",
+            "sample": "Samples/TweenAnimation",
+            "dependencies": [ "hybriona.core", "hybriona.generic_pool" ]
+           
+        },
+        {
             "id": "hybriona.event_trigger",
             "displayname": "Event Triggers",
             "define_symbol": "HYBRIONA_LIB_ENABLE_EVENT_TRIGGER",
