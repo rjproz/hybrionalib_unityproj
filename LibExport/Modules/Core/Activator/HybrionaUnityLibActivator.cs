@@ -311,13 +311,16 @@ namespace Hybriona
                                     
                                 }
                             }
-                            if (GUILayout.Button("Disable Module", GUILayout.Width(150)))
+                            if (!selectedModule.alwaysEnabled)
                             {
-                                if (EditorUtility.DisplayDialog("Confirm Disable?", "Are you sure you want to disable module \""+ selectedModule.id+ "\"", "Yes, Disable", "Cancel"))
+                                if (GUILayout.Button("Disable Module", GUILayout.Width(150)))
                                 {
-                                    ModulesUserPrefs.Instance().dic.Add(selectedModule.id, false);
-                                    ModulesUserPrefs.Instance().Save();
-                                    ApplyChanges();
+                                    if (EditorUtility.DisplayDialog("Confirm Disable?", "Are you sure you want to disable module \"" + selectedModule.id + "\"", "Yes, Disable", "Cancel"))
+                                    {
+                                        ModulesUserPrefs.Instance().dic.Add(selectedModule.id, false);
+                                        ModulesUserPrefs.Instance().Save();
+                                        ApplyChanges();
+                                    }
                                 }
                             }
                         }
