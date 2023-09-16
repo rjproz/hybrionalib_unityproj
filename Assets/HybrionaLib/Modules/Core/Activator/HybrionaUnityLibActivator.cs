@@ -11,8 +11,10 @@ namespace Hybriona
     [InitializeOnLoad]
     static class HybrionaUnityLibInit
     {
+        static bool scriptCompiledCalled;
         static HybrionaUnityLibInit()
         {
+            scriptCompiledCalled = false;
             UnityEditor.Compilation.CompilationPipeline.compilationStarted += CompilationPipeline_compilationStarted;
             //UnityEditor.Compilation.CompilationPipeline.assemblyCompilationStarted += CompilationPipeline_assemblyCompilationStarted;
             //AssemblyReloadEvents.beforeAssemblyReload += AssemblyReloadEvents_beforeAssemblyReload;
@@ -26,11 +28,13 @@ namespace Hybriona
         private static System.DateTime lastTimeCompiled;
         private static void CompilationPipeline_compilationStarted(object obj)
         {
-            if (lastTimeCompiled == null || (System.DateTime.Now - lastTimeCompiled).TotalSeconds > 0.5)
+            //if (lastTimeCompiled == null || (System.DateTime.Now - lastTimeCompiled).TotalSeconds > 0.5)
+            if(!scriptCompiledCalled)
             {
                 Debug.Log("CompilationPipeline_compilationStarted");
                 lastTimeCompiled = System.DateTime.Now;
                 HybrionaUnityLibActivator.ApplyChanges(doAssetDatabaseRefresh: false);
+                scriptCompiledCalled = true;
             }
         }
 
