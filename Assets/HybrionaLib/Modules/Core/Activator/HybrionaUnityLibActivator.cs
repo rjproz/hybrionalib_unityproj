@@ -38,27 +38,49 @@ namespace Hybriona
 
     public class HybrionaUnityLibActivatorUIStyle
     {
+        public GUIStyle detailedViewHeaderBGStyle { get; private set; }
         public GUIStyle detailedViewTitleStyle { get; private set; }
         public GUIStyle detailedViewIdStyle { get; private set; }
         public GUIStyle moduleInstalledIconStyle { get; private set; }
 
+
+
+        public GUIStyle moduleSelectBtnStyle { get; private set; }
+        public GUIStyle moduleSelectedBtnStyle { get; private set; }
+
         public HybrionaUnityLibActivatorUIStyle()
         {
+            detailedViewHeaderBGStyle = new GUIStyle(GUI.skin.textArea);
             detailedViewTitleStyle = new GUIStyle(GUI.skin.label);
             detailedViewIdStyle = new GUIStyle(GUI.skin.label);
             moduleInstalledIconStyle = new GUIStyle(GUI.skin.label);
+            moduleSelectBtnStyle = new GUIStyle(EditorStyles.helpBox);
+            moduleSelectedBtnStyle = new GUIStyle(GUI.skin.button);
 
+
+            detailedViewHeaderBGStyle.padding = new RectOffset(5, 5, 10, 10);
+            detailedViewHeaderBGStyle.margin = new RectOffset(0, 0, 5, 5); 
 
             detailedViewTitleStyle.fontSize = 20;
             detailedViewTitleStyle.alignment = TextAnchor.MiddleLeft;
-            
+            //detailedViewTitleStyle.margin = new RectOffset(0, 0, 5, 5);
             detailedViewTitleStyle.fontStyle = FontStyle.Bold;
-           
+
+
+            
+
 
             detailedViewIdStyle.fontStyle = FontStyle.Italic;
             detailedViewIdStyle.alignment = TextAnchor.MiddleLeft;
 
             moduleInstalledIconStyle.alignment = TextAnchor.MiddleRight;
+
+            moduleSelectBtnStyle.alignment = TextAnchor.MiddleLeft;
+
+            moduleSelectedBtnStyle.alignment = TextAnchor.MiddleLeft;
+            
+            //moduleSelectedBtnStyle.normal.background = (Texture2D) EditorGUIUtility.IconContent("AvatarController.LayerSelected").image;
+            moduleSelectedBtnStyle.normal = moduleSelectedBtnStyle.focused = moduleSelectedBtnStyle.hover = moduleSelectedBtnStyle.active;
         }
     }
 
@@ -70,7 +92,8 @@ namespace Hybriona
         [MenuItem("Hybriona/Hybriona Lib Manager")]
         public static void ShowWindow()
         {
-            EditorWindow.GetWindow(typeof(HybrionaUnityLibActivator));
+            var titleContent = GetWindow(typeof(HybrionaUnityLibActivator)).titleContent;
+            titleContent.text = "HybLib Activator";
         }
 
        
@@ -166,7 +189,7 @@ namespace Hybriona
 
                 EditorGUILayout.Separator();
                 EditorGUILayout.BeginHorizontal();
-                moduleListScrollPos = EditorGUILayout.BeginScrollView(moduleListScrollPos,GUI.skin.box, GUILayout.Width(200));
+                moduleListScrollPos = EditorGUILayout.BeginScrollView(moduleListScrollPos, false, false, GUI.skin.verticalScrollbar, GUI.skin.verticalScrollbar,GUI.skin.box, GUILayout.Width(200)) ;
                 GUILayout.Label("Modules Settings", uiStyle.detailedViewTitleStyle);
                 GUILayout.Space(5);
 
@@ -186,14 +209,23 @@ namespace Hybriona
                                 isActivated = ModulesUserPrefs.Instance().dic.GetValue(moduleData.id);
                             }
                         }
-                       
-                        
-                        EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+
+                        GUIStyle selectedStyle = null;
+
+                        if(ModulesUserPrefs.Instance().selectedModuleId == moduleData.id)
+                        {
+                            selectedStyle = uiStyle.moduleSelectedBtnStyle;
+                        }
+                        else
+                        {
+                            selectedStyle = uiStyle.moduleSelectBtnStyle;
+                        }
+                        EditorGUILayout.BeginVertical(selectedStyle);
 
 
                         //GUI.skin.button.alignment = TextAnchor.MiddleLeft;
                         EditorGUILayout.BeginHorizontal();
-                        if (GUILayout.Button(moduleData.displayname,GUI.skin.label))
+                        if (GUILayout.Button(moduleData.displayname, GUI.skin.label))
                         {
                             
                             
@@ -202,25 +234,19 @@ namespace Hybriona
                         }
                         if (isActivated)
                         {
-                            GUILayout.Label(EditorGUIUtility.IconContent("Installed"), uiStyle.moduleInstalledIconStyle, GUILayout.Width(25),GUILayout.Height(25));
+                            GUILayout.Label(EditorGUIUtility.IconContent("Installed"), uiStyle.moduleInstalledIconStyle, GUILayout.Width(20),GUILayout.Height(20));
                         }
                         else
                         {
-                            GUILayout.Label(EditorGUIUtility.IconContent("Add-Available"), uiStyle.moduleInstalledIconStyle, GUILayout.Width(25), GUILayout.Height(25));
+                            GUILayout.Label(EditorGUIUtility.IconContent("Add-Available"), uiStyle.moduleInstalledIconStyle, GUILayout.Width(20), GUILayout.Height(20));
                            
                         }
                         EditorGUILayout.EndHorizontal();
 
-                        //var newValueIfChanged = EditorGUILayout.BeginToggleGroup(moduleData.displayname, oldValue);
-                      
-
-                      
-                        //EditorGUILayout.EndToggleGroup();
-                       
-                        //ModulesUserPrefs.Instance().dic.Add(moduleData.id, newValueIfChanged);
+                     
 
                         EditorGUILayout.EndVertical();
-                        EditorGUILayout.Space(1);
+                        EditorGUILayout.Space(.3f);
                     }
 
                 }
@@ -257,20 +283,22 @@ namespace Hybriona
                             }
                         }
 
-                        EditorGUILayout.BeginVertical(GUI.skin.textArea);
+                        EditorGUILayout.BeginVertical(uiStyle.detailedViewHeaderBGStyle);
                         {
-                            EditorGUILayout.LabelField(selectedModule.displayname, uiStyle.detailedViewTitleStyle);
+                            EditorGUILayout.LabelField(selectedModule.displayname, uiStyle.detailedViewTitleStyle,GUILayout.Height(30));
                             EditorGUILayout.LabelField(selectedModule.id, uiStyle.detailedViewIdStyle);
                         }
                         EditorGUILayout.EndVertical();
                         GUILayout.Space(3);
-                    
+                        EditorGUILayout.LabelField(selectedModule.description, EditorStyles.wordWrappedLabel, GUILayout.Height(100));
+                        GUILayout.Box("", GUI.skin.button, GUILayout.Height(2));
                         EditorGUILayout.BeginHorizontal(GUI.skin.box);
                         if (!isModuleActive)
                         {
-                            if (GUILayout.Button("Install Module", GUILayout.Width(150)))
+                            if (GUILayout.Button("Enable Module", GUILayout.Width(150)))
                             {
                                 ModulesUserPrefs.Instance().dic.Add(selectedModule.id, true);
+                                ModulesUserPrefs.Instance().Save();
                                 ApplyChanges();
                             }
                         }
@@ -283,17 +311,21 @@ namespace Hybriona
                                     
                                 }
                             }
-                            if (GUILayout.Button("Remove Module", GUILayout.Width(150)))
+                            if (GUILayout.Button("Disable Module", GUILayout.Width(150)))
                             {
-                                ModulesUserPrefs.Instance().dic.Add(selectedModule.id, false);
-                                ApplyChanges();
+                                if (EditorUtility.DisplayDialog("Confirm Disable?", "Are you sure you want to disable module \""+ selectedModule.id+ "\"", "Yes, Disable", "Cancel"))
+                                {
+                                    ModulesUserPrefs.Instance().dic.Add(selectedModule.id, false);
+                                    ModulesUserPrefs.Instance().Save();
+                                    ApplyChanges();
+                                }
                             }
                         }
                         EditorGUILayout.EndHorizontal();
 
-                        GUILayout.Space(3);
+                       
 
-                        EditorGUILayout.LabelField(selectedModule.description, EditorStyles.wordWrappedLabel, GUILayout.Height(100));
+                        
                         
                     }
                 }
