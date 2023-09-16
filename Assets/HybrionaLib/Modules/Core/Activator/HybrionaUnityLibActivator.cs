@@ -41,6 +41,9 @@ namespace Hybriona
         public GUIStyle detailedViewHeaderBGStyle { get; private set; }
         public GUIStyle detailedViewTitleStyle { get; private set; }
         public GUIStyle detailedViewIdStyle { get; private set; }
+
+        public GUIStyle detailedViewInfoLblStyle { get; private set; }
+
         public GUIStyle moduleInstalledIconStyle { get; private set; }
 
 
@@ -53,6 +56,8 @@ namespace Hybriona
             detailedViewHeaderBGStyle = new GUIStyle(GUI.skin.textArea);
             detailedViewTitleStyle = new GUIStyle(GUI.skin.label);
             detailedViewIdStyle = new GUIStyle(GUI.skin.label);
+            detailedViewInfoLblStyle = new GUIStyle(GUI.skin.label);
+
             moduleInstalledIconStyle = new GUIStyle(GUI.skin.label);
             moduleSelectBtnStyle = new GUIStyle(EditorStyles.helpBox);
             moduleSelectedBtnStyle = new GUIStyle(GUI.skin.button);
@@ -72,6 +77,11 @@ namespace Hybriona
 
             detailedViewIdStyle.fontStyle = FontStyle.Italic;
             detailedViewIdStyle.alignment = TextAnchor.MiddleLeft;
+
+            detailedViewInfoLblStyle.fontStyle = FontStyle.Italic;
+            detailedViewInfoLblStyle.alignment = TextAnchor.MiddleLeft;
+            //detailedViewInfoLblStyle.fontSize = 12;
+            detailedViewInfoLblStyle.normal.textColor = Color.gray;
 
             moduleInstalledIconStyle.alignment = TextAnchor.MiddleRight;
 
@@ -190,7 +200,9 @@ namespace Hybriona
                 EditorGUILayout.Separator();
                 EditorGUILayout.BeginHorizontal();
                 moduleListScrollPos = EditorGUILayout.BeginScrollView(moduleListScrollPos, false, false, GUI.skin.verticalScrollbar, GUI.skin.verticalScrollbar,GUI.skin.box, GUILayout.Width(200)) ;
-                GUILayout.Label("Modules Settings", uiStyle.detailedViewTitleStyle);
+                EditorGUILayout.BeginVertical(uiStyle.detailedViewHeaderBGStyle);
+                GUILayout.Label("Modules", uiStyle.detailedViewTitleStyle);
+                EditorGUILayout.EndVertical();
                 GUILayout.Space(5);
 
                 
@@ -322,6 +334,10 @@ namespace Hybriona
                                         ApplyChanges();
                                     }
                                 }
+                            }
+                            else
+                            {
+                                GUILayout.Label("This module cannot be disabled.", uiStyle.detailedViewInfoLblStyle);
                             }
                         }
                         EditorGUILayout.EndHorizontal();
