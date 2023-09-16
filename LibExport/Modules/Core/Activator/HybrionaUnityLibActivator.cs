@@ -321,6 +321,8 @@ namespace Hybriona
                 File.WriteAllText(createPath, assemblyDataNode.ToString());
             }
 
+            AssetDatabase.Refresh();
+
             /*
             {
                 //create main lib assembly
