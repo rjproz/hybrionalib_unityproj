@@ -120,7 +120,7 @@ namespace Hybriona
                         }
                         else
                         {
-                            oldValue = moduleData.enabled;
+                            oldValue = false;
                         }
 
                         var newValueIfChanged = EditorGUILayout.Toggle(moduleData.id, oldValue);
@@ -246,15 +246,15 @@ namespace Hybriona
               
                 //Other stuff
 
-                var isActivated = false;
-                if (ModulesUserPrefs.Instance().dic.ContainsKey(moduleData.id))
+                var isActivated = moduleData.alwaysEnabled;
+                if (!isActivated)
                 {
-                    isActivated = ModulesUserPrefs.Instance().dic.GetValue(moduleData.id);
+                    if (ModulesUserPrefs.Instance().dic.ContainsKey(moduleData.id))
+                    {
+                        isActivated = ModulesUserPrefs.Instance().dic.GetValue(moduleData.id);
 
-                }
-                else
-                {
-                    isActivated = moduleData.enabled;
+                    }
+                   
                 }
 
                 if(isActivated)

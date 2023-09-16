@@ -3,7 +3,6 @@
     "modules": [
         {
             "id": "hybriona.core",
-            "enabled": true,
             "define_symbol": "HYBRIONA_LIB_ENABLE_CORE",
             "alwaysEnabled": true,
             "root": "Modules/Core"
@@ -12,33 +11,31 @@
         {
             "id": "hybriona.generic_pool",
             "define_symbol": "HYBRIONA_LIB_ENABLE_GENERIC_POOL",
-            "enabled": false,
+           
             "root": "Modules/GenericPool",
             "dependencies": [ "hybriona.core", "hybriona.event_trigger" ]
         },
         {
             "id": "hybriona.event_trigger",
             "define_symbol": "HYBRIONA_LIB_ENABLE_EVENT_TRIGGER",
-            "enabled": true,
+           
             "root": "Modules/Events"
         },
         {
             "id": "hybriona.version_manager",
             "define_symbol": "HYBRIONA_LIB_ENABLE_VERSION_MANAGER",
-            "enabled": true,
+           
             "root": "Modules/VersionManager"
         },
         {
             "id": "hybriona.httpclient",
             "define_symbol": "HYBRIONA_LIB_ENABLE_HTTP_CLIENT",
-            "enabled": false,
             "root": "Modules/HttpRest",
             "dependencies": [ "hybriona.core" ]
         },
         {
             "id": "hybriona.persistentData",
             "define_symbol": "HYBRIONA_LIB_ENABLE_PERSISTENT_DATA",
-            "enabled": false,
             "root": "Modules/PersistentData",
             "dependencies": [
                 "hybriona.version_manager",
@@ -49,20 +46,17 @@
         {
             "id": "hybriona.simple_zip",
             "define_symbol": "HYBRIONA_LIB_ENABLE_SIMPLEZIP",
-            "enabled": false,
             "root": "Modules/SimpleZip"
 
         },
         {
             "id": "hybriona.cache",
             "define_symbol": "HYBRIONA_LIB_ENABLE_CACHE",
-            "enabled": false,
             "root": "Modules/Cache"
         },
         {
             "id": "hybriona.adsmanager",
             "define_symbol": "HYBRIONA_LIB_ENABLE_ADSMANAGER",
-            "enabled": false,
             "root": "Modules/AdsManager",
             "dependencies": [
                 "hybriona.event_trigger"
