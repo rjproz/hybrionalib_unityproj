@@ -1,5 +1,4 @@
-﻿#if HYBRIONA_LIB_ENABLE_CACHE
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -158,4 +157,3 @@ public class HowtoUseHybCache : MonoBehaviour {
 		HybCache.DeleteCache("http://hybriona.com/services/api/extraservices/images/banner/alienracer.png");
 	}
 }
-#endif

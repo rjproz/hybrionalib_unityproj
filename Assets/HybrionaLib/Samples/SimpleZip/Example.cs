@@ -1,5 +1,4 @@
-﻿#if HYBRIONA_LIB_ENABLE_SIMPLEZIP
-using System;
+﻿using System;
 using Assets.SimpleZip;
 using UnityEngine;
 
@@ -28,4 +27,3 @@ namespace Hybriona
         }
     }
 }
-#endif

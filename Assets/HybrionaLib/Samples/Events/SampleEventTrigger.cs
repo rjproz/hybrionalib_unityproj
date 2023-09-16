@@ -1,4 +1,3 @@
-#if HYBRIONA_LIB_ENABLE_EVENT_TRIGGER
 using UnityEngine;
 using Hybriona;
 public class SampleEventTrigger : MonoBehaviour
@@ -55,4 +54,3 @@ public class SampleEventTrigger : MonoBehaviour
 
    
 }
-#endif

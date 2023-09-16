@@ -1,5 +1,5 @@
 {
-    "name": "NoCompileTemp",
+    "name": "DonotCompileSamples",
     "rootNamespace": "",
     "references": [],
     "includePlatforms": [],

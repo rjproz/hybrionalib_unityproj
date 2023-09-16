@@ -7,7 +7,6 @@
  *  Date         :  15-09-2023 12:49:22
 
 *************************************************************************/
-#if HYBRIONA_LIB_ENABLE_GENERIC_POOL
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -152,4 +151,4 @@ namespace Hybriona
 
     }
 }
-#endif
+
