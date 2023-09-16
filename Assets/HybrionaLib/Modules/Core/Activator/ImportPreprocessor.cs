@@ -17,7 +17,7 @@ namespace Hybriona
 	{
 		void OnPreprocessAsset()
 		{
-			//Debug.Log("OnPreprocessAsset " + assetPath);
+			Debug.Log("OnPreprocessAsset " + assetPath);
 			if(assetPath.Contains("hybriona.") && assetPath.Contains("asmdef"))
             {
 				Debug.Log("hybriona lib patching " + assetPath);
