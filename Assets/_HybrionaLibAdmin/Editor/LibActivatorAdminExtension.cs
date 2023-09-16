@@ -64,6 +64,31 @@ namespace Hybriona
 				}
 
 
+                {
+					//path assemblies
+					for(int i=0;i<modulesData.modules.Count;i++)
+                    {
+						var moduleData = modulesData.modules[i];
+						string assemblyPath = Path.Combine("LibExport", moduleData.root);
+						assemblyPath = Path.Combine(assemblyPath, moduleData.id + ".asmdef");
+						if (File.Exists(assemblyPath))
+						{
+							var assemblyJsonData = JSON.Parse(File.ReadAllText(assemblyPath));
+							assemblyJsonData["versionDefines"] = new JSONArray();
+							if (moduleData.alwaysEnabled)
+							{
+								assemblyJsonData["versionDefines"].Add(JSON.Parse("{\n}"));
+								assemblyJsonData["versionDefines"][0]["name"] = "Unity";
+
+								assemblyJsonData["versionDefines"][0]["define"] = moduleData.define_symbol;
+
+							}
+							
+
+							File.WriteAllText(assemblyPath, assemblyJsonData.ToString());
+						}
+                    }
+                }
 				
 
 				//Patch Package.json
@@ -78,7 +103,11 @@ namespace Hybriona
 					}					
 
 					File.WriteAllText(packageJsonPath, packageJsonNode.ToString());
+					
+					EditorUtility.DisplayDialog("Alert!", "Package exported with version " + packageJsonNode["version"].Value, "Ok");
 				}
+
+				
 			}
 		}
 
