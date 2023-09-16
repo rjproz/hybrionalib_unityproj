@@ -17,10 +17,15 @@ using SimpleJSON;
 
 namespace Hybriona
 {
-	[ExecuteInEditMode()]
-	public class LibActivatorAdminExtension : MonoBehaviour
+	[InitializeOnLoad]
+	public static class LibActivatorAdminExtension 
 	{
-        private void Update()
+		static LibActivatorAdminExtension()
+        {
+			EditorApplication.update += Update;
+		}
+
+        static void Update()
         {
 			HybrionaUnityLibActivator.adminUIExtension = ExtendedUI;
 
@@ -73,6 +78,21 @@ namespace Hybriona
 
 
 					File.WriteAllText(writePathOfMainLibAssembly, jsonNode.ToString());
+				}
+
+
+				//Patch Package.json
+                {
+					string packageJsonPath = "LibExport/Modules/package.json";
+					var packageJsonNode = JSON.Parse(File.ReadAllText( packageJsonPath) );
+
+                    {
+						packageJsonNode["version"] = VersionManager.Version().ToString();
+
+
+					}					
+
+					File.WriteAllText(packageJsonPath, packageJsonNode.ToString());
 				}
 			}
 		}

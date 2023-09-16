@@ -30,7 +30,8 @@ namespace Hybriona
 
         public void Reset()
         {
-            instance = new ModulesUserPrefs();
+            EditorPrefs.DeleteKey(SaveKey);
+            dic = new PersistentDictionary<bool>();
             Save();
         }
        
