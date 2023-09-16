@@ -65,7 +65,7 @@ namespace Hybriona
 
 
                 {
-					//path assemblies
+					//patch assemblies
 					for(int i=0;i<modulesData.modules.Count;i++)
                     {
 						var moduleData = modulesData.modules[i];
@@ -85,7 +85,7 @@ namespace Hybriona
 							}
 							
 
-							File.WriteAllText(assemblyPath, assemblyJsonData.ToString());
+							//File.WriteAllText(assemblyPath, assemblyJsonData.ToString());
 						}
                     }
                 }
