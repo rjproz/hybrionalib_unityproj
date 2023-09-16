@@ -13,14 +13,27 @@ namespace Hybriona
     {
         static HybrionaUnityLibInit()
         {
-            AssemblyReloadEvents.beforeAssemblyReload += AssemblyReloadEvents_beforeAssemblyReload;
+            UnityEditor.Compilation.CompilationPipeline.compilationStarted += CompilationPipeline_compilationStarted;
+            //UnityEditor.Compilation.CompilationPipeline.assemblyCompilationStarted += CompilationPipeline_assemblyCompilationStarted;
+            //AssemblyReloadEvents.beforeAssemblyReload += AssemblyReloadEvents_beforeAssemblyReload;
         }
 
-        private static void AssemblyReloadEvents_beforeAssemblyReload()
+        //private static void CompilationPipeline_assemblyCompilationStarted(string obj)
+        //{
+        //    Debug.Log("CompilationPipeline_assemblyCompilationStarted");
+        //}
+
+        private static void CompilationPipeline_compilationStarted(object obj)
         {
-            Debug.Log("AssemblyReloadEvents_beforeAssemblyReload");
+            Debug.Log("CompilationPipeline_compilationStarted");
             HybrionaUnityLibActivator.ApplyChanges(doAssetDatabaseRefresh: false);
         }
+
+        //private static void AssemblyReloadEvents_beforeAssemblyReload()
+        //{
+        //    Debug.Log("AssemblyReloadEvents_beforeAssemblyReload");
+        //    HybrionaUnityLibActivator.ApplyChanges(doAssetDatabaseRefresh: false);
+        //}
     }
 
    
