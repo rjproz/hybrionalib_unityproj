@@ -18,7 +18,8 @@ namespace Hybriona
 	{
 		static string[] deleteFileFolders = new string[]
 		{
-			"LibExport/Modules/HybrionaLibAdmin"
+			"LibExport/Modules/HybrionaLibAdmin",
+			"LibExport/Modules/HybrionaLibAdmin.meta"
 		};
 
 		public static void ExtendedUI(ModulesData modulesData)
@@ -41,7 +42,11 @@ namespace Hybriona
                     {
 						File.Delete(deleteFileFolders[i]);
                     }
-                }
+					if (Directory.Exists(deleteFileFolders[i]))
+					{
+						Directory.Delete(deleteFileFolders[i],true);
+					}
+				}
 			}
 		}
 
