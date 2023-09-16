@@ -1,0 +1,16 @@
+{
+    "name": "com.hybrionalib",
+    "displayName": "Hybriona Lib",
+    "version": "0.0.4",
+    "unity": "2021.1",
+    "description": "Unity Library developed by RJproz (Hybriona)",
+
+
+    "author": {
+        "name": "Rajkumar Pramanik - RJproz",
+        "email": "rjproz@gmail.com",
+        "url": "https://www.hybriona.com/"
+    }
+
+   
+}
