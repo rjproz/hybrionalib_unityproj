@@ -25,8 +25,20 @@ namespace Hybriona
 
         private void OnEnable()
         {
+            AssemblyReloadEvents.beforeAssemblyReload += AssemblyReloadEvents_beforeAssemblyReload;
             ApplyChanges();
             //Debug.Log("HybrionaUnityLibActivator patched ScriptingDefineSymbols.");
+        }
+
+        private void OnDisable()
+        {
+            AssemblyReloadEvents.beforeAssemblyReload -= AssemblyReloadEvents_beforeAssemblyReload;
+        }
+
+        private void AssemblyReloadEvents_beforeAssemblyReload()
+        {
+            Debug.Log("AssemblyReloadEvents_beforeAssemblyReload");
+            ApplyChanges(doAssetDatabaseRefresh: true);
         }
 
         private static ModulesData modulesData;
@@ -160,7 +172,7 @@ namespace Hybriona
 
         }
 
-        public static void ApplyChanges()
+        public static void ApplyChanges(bool doAssetDatabaseRefresh = true)
         {
             InitializeModulesData();
 
@@ -233,7 +245,6 @@ namespace Hybriona
 
             return;
             */
-
 
 
             List<Module> activateModuleList = new List<Module>();
@@ -321,7 +332,10 @@ namespace Hybriona
                 File.WriteAllText(createPath, assemblyDataNode.ToString());
             }
 
-            AssetDatabase.Refresh();
+            if (doAssetDatabaseRefresh)
+            {
+                AssetDatabase.Refresh();
+            }
 
             /*
             {
