@@ -5,83 +5,65 @@
             "id": "hybriona.core",
             "enabled": true,
             "define_symbol": "HYBRIONA_LIB_ENABLE_CORE",
-            "alwaysEnabled": true
+            "alwaysEnabled": true,
+            "root": "Modules/Core"
 
         },
         {
             "id": "hybriona.generic_pool",
             "define_symbol": "HYBRIONA_LIB_ENABLE_GENERIC_POOL",
             "enabled": false,
-            "folders": [
-                "Runtime/GenericPool",
-                "Samples/GenericPool"
-            ]
+            "root": "Modules/GenericPool",
+            "dependencies": [ "hybriona.core", "hybriona.event_trigger" ]
         },
         {
             "id": "hybriona.event_trigger",
             "define_symbol": "HYBRIONA_LIB_ENABLE_EVENT_TRIGGER",
             "enabled": true,
-            "folders": [
-                "Runtime/Events",
-                "Samples/Events"
-            ]
+            "root": "Modules/Events"
         },
         {
             "id": "hybriona.version_manager",
             "define_symbol": "HYBRIONA_LIB_ENABLE_VERSION_MANAGER",
             "enabled": true,
-            "folders": [
-                "Runtime/VersionManager"
-            ]
+            "root": "Modules/VersionManager"
         },
         {
             "id": "hybriona.httpclient",
             "define_symbol": "HYBRIONA_LIB_ENABLE_HTTP_CLIENT",
             "enabled": false,
-            "folders": [
-                "Runtime/HttpRest"
-            ]
+            "root": "Modules/HttpRest",
+            "dependencies": [ "hybriona.core" ]
         },
         {
             "id": "hybriona.persistentData",
             "define_symbol": "HYBRIONA_LIB_ENABLE_PERSISTENT_DATA",
             "enabled": false,
-            "folders": [
-                "Runtime/PersistentData",
-                "Samples/PersistentData"
-            ],
+            "root": "Modules/PersistentData",
             "dependencies": [
-                "hybriona.hybriona.version_manager",
-                "hybriona.hybriona.simple_zip"
+                "hybriona.version_manager",
+                "hybriona.simple_zip",
+                "hybriona.core"
             ]
         },
         {
             "id": "hybriona.simple_zip",
             "define_symbol": "HYBRIONA_LIB_ENABLE_SIMPLEZIP",
             "enabled": false,
-            "folders": [
-                "Runtime/SimpleZip",
-                "Samples/SimpleZip"
-            ]
+            "root": "Modules/SimpleZip"
 
         },
         {
             "id": "hybriona.cache",
             "define_symbol": "HYBRIONA_LIB_ENABLE_CACHE",
             "enabled": false,
-            "folders": [
-                "Runtime/Cache",
-                "Samples/Cache"
-
-            ]
+            "root": "Modules/Cache"
         },
         {
             "id": "hybriona.adsmanager",
             "define_symbol": "HYBRIONA_LIB_ENABLE_ADSMANAGER",
             "enabled": false,
-            "folders": [
-                "Runtime/AdsManager"
-            ],
+            "root": "Modules/AdsManager",
             "dependencies": [
                 "hybriona.event_trigger"
             ]

@@ -1,0 +1,1 @@
+{"name":"hybriona.version_manager","references":[],"allowUnsafeCode":false,"autoReferenced":true,"defineConstraints":["HYBRIONA_LIB_ENABLE_VERSION_MANAGER"],"versionDefines":[{"name":"Unity","define":"HYBRIONA_LIB_ENABLE_VERSION_MANAGER"}]}

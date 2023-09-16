@@ -18,7 +18,8 @@ namespace Hybriona
         public bool alwaysEnabled;
         public string define_symbol;
         public List<string> dependencies;
-        public List<string> folders;
+        public string root;
+        public string samples;
 
     }
 
