@@ -31,7 +31,7 @@ namespace Hybriona
             //if (lastTimeCompiled == null || (System.DateTime.Now - lastTimeCompiled).TotalSeconds > 0.5)
             if(!scriptCompiledCalled)
             {
-                Debug.Log("CompilationPipeline_compilationStarted");
+                //Debug.Log("CompilationPipeline_compilationStarted");
                 lastTimeCompiled = System.DateTime.Now;
                 HybrionaUnityLibActivator.ApplyChanges(doAssetDatabaseRefresh: false);
                 scriptCompiledCalled = true;
