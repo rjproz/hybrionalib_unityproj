@@ -10,7 +10,14 @@
         "name": "Rajkumar Pramanik - RJproz",
         "email": "rjproz@gmail.com",
         "url": "https://www.hybriona.com/"
-    }
+    },
 
-   
+    "samples": [
+        {
+            "displayName": "hybriona.event_trigger",
+            "description": "hybriona.event_trigger samples",
+            "path": "Samples/Events"
+        }
+    ]
+
 }
