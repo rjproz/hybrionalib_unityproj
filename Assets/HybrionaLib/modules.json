@@ -32,9 +32,10 @@
         {
             "id": "hybriona.event_trigger",
             "displayname": "Event Triggers",
-          
 
-            "root": "Modules/Events"
+
+            "root": "Modules/Events",
+            "sample": "Samples/Events"
         },
         {
             "id": "hybriona.version_manager",
@@ -53,8 +54,9 @@
         {
             "id": "hybriona.persistentData",
             "displayname": "Persistent Data Manager",
-           
+
             "root": "Modules/PersistentData",
+            "sample": "Samples/PersistentData",
             "dependencies": [
                 "hybriona.version_manager",
                 "hybriona.simple_zip",
@@ -64,15 +66,17 @@
         {
             "id": "hybriona.simple_zip",
             "displayname": "Simple Zip",
-            
-            "root": "Modules/SimpleZip"
+
+            "root": "Modules/SimpleZip",
+            "sample": "Samples/SimpleZip"
 
         },
         {
             "id": "hybriona.cache",
             "displayname": "Cache",
-           
-            "root": "Modules/Cache"
+
+            "root": "Modules/Cache",
+            "sample": "Samples/Cache"
         },
         {
             "id": "hybriona.adsmanager",
