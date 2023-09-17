@@ -17,7 +17,7 @@ namespace Hybriona
 {
 	public class TweenAnimTransform : MonoBehaviour 
 	{
-		public AnimationCurve curve;
+		
 		public bool loop;
 
 		[Range(0, 4)]
@@ -30,10 +30,16 @@ namespace Hybriona
 		
 		public void StartAnimation() 
 		{
-			handler =  TweenAnimation.Animate(transform.position, transform.position + Vector3.up * 2, 2, (pos) =>
+            handler = TweenAnimation.Animate(transform.position, transform.position + Vector3.up * 2, 2, (pos) =>
+           {
+               transform.position = pos;
+           }, loop, TweenCurve.EaseOutElastic);
+
+
+            TweenAnimation.Animate(Vector3.one, Vector3.one * 1.2f , 1, (scale) =>
 			{
-				transform.position = pos;
-			}, loop, curve);
+				transform.localScale = scale;
+			}, false, TweenCurve.EaseOutBounce);
 		}
 
 

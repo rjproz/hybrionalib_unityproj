@@ -18,7 +18,7 @@ namespace Hybriona
 	{
 		public float timeLength;
 		public bool loop;
-		public AnimationCurve curve;
+		public System.Func<float,float> easingCurveFunc;
 		public float speed = 1;
 		public bool timeScaleIndependent;
 		public bool animationStopped { get; private set; }
@@ -85,7 +85,7 @@ namespace Hybriona
 					timeTracker = timeTracker % timeLength;
 				}
 			}
-			UpdateValue(tn);
+			UpdateValue(easingCurveFunc(tn));
 
 			return animCompleted;
 

@@ -85,6 +85,7 @@ namespace Hybriona
             }
             else if(type == AdType.Rewarded)
             {
+                m_IsAdTryingToLoad = true;
 
                 if (rewardedAd != null)
                 {
@@ -95,7 +96,7 @@ namespace Hybriona
                 Debug.Log("Loading the rewarded ad.");
 
 
-                m_IsAdTryingToLoad = true;
+                
 
                 // create our request used to load the ad.
                 var adRequest = new AdRequest();

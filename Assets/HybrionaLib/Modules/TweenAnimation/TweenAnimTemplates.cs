@@ -20,15 +20,11 @@ namespace Hybriona
        
 
         public System.Action<float> onValueUpdated;
-        
        
 
         public override void UpdateValue(float timeNormalized)
         {
-
-
-            float x = curve.Evaluate(timeNormalized);
-            float y = Mathf.Lerp(fromValue, targetValue, x);
+            float y = Mathf.LerpUnclamped(fromValue, targetValue, timeNormalized);
             onValueUpdated(y);
 
         }
@@ -39,17 +35,11 @@ namespace Hybriona
         public Vector3 fromValue;
         public Vector3 targetValue;
         
-
         public System.Action<Vector3> onValueUpdated;
-
-
-        
 
         public override void UpdateValue(float timeNormalized)
         {
-            float time = curve.Evaluate(timeNormalized);
-
-            Vector3 value = Vector3.Lerp(fromValue, targetValue, time);
+            Vector3 value = Vector3.LerpUnclamped(fromValue, targetValue, timeNormalized);
             onValueUpdated(value);
 
         }
@@ -65,8 +55,23 @@ namespace Hybriona
 
         public override void UpdateValue(float timeNormalized)
         {
-            float time = curve.Evaluate(timeNormalized);
-            Vector4 value = Vector4.Lerp(fromValue,targetValue,time);
+            Vector4 value = Vector4.LerpUnclamped(fromValue,targetValue, timeNormalized);
+            onValueUpdated(value);
+
+        }
+    }
+
+    public class TweenAnimQuaternionData : TweenAnimData
+    {
+        public Quaternion fromValue;
+        public Quaternion targetValue;
+
+
+        public System.Action<Quaternion> onValueUpdated;
+
+        public override void UpdateValue(float timeNormalized)
+        {
+            Quaternion value = Quaternion.LerpUnclamped(fromValue, targetValue, timeNormalized);
             onValueUpdated(value);
 
         }
@@ -82,8 +87,7 @@ namespace Hybriona
 
         public override void UpdateValue(float timeNormalized)
         {
-            float time = curve.Evaluate(timeNormalized);
-            var value = Color.Lerp(fromValue, targetValue, time);
+            var value = Color.LerpUnclamped(fromValue, targetValue, timeNormalized);
             onValueUpdated(value);
 
         }

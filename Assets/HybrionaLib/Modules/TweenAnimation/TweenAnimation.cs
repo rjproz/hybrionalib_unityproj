@@ -18,44 +18,32 @@ namespace Hybriona
         private ulong animationIdCounter = 1;
         private List<TweenAnimData> activeAnimations = new List<TweenAnimData>();
 		
-		public static TweenAnimHandler Animate(float from, float to, float timeLength, System.Action<float> onValueUpdated,bool loop = false,AnimationCurve curve = null,bool timeScaleIndependent = false )
+		public static TweenAnimHandler Animate(float from, float to, float timeLength, System.Action<float> onValueUpdated,bool loop = false, System.Func<float,float> easingCurveFunc = null, bool timeScaleIndependent = false )
 		{
-            if(curve == null)
-            {
-                curve = AnimationCurve.Linear(0, 0, 1, 1);
-            }
-
             TweenAnimFloatData animData = Instance.floatAnimPool.FetchFromPool();
             animData.fromValue = from;
             animData.targetValue = to;
             animData.onValueUpdated = onValueUpdated;
 
-            return AssignCommonValues(animData, timeLength, loop, curve, timeScaleIndependent);
+            return AssignCommonValues(animData, timeLength, loop, easingCurveFunc, timeScaleIndependent);
         }
 
-        public static TweenAnimHandler Animate(Vector3 from, Vector3 to, float timeLength, System.Action<Vector3> onValueUpdated, bool loop = false, AnimationCurve curve = null, bool timeScaleIndependent = false)
+        public static TweenAnimHandler Animate(Vector3 from, Vector3 to, float timeLength, System.Action<Vector3> onValueUpdated, bool loop = false, System.Func<float, float> easingCurveFunc = null, bool timeScaleIndependent = false)
         {
-            if (curve == null)
-            {
-                curve = AnimationCurve.Linear(0, 0, 1, 1);
-            }
-
+           
             TweenAnimVector3Data animData = Instance.vec3AnimPool.FetchFromPool();
             
             animData.fromValue = from;
             animData.targetValue = to;
             animData.onValueUpdated = onValueUpdated;
 
-            return AssignCommonValues(animData, timeLength, loop, curve, timeScaleIndependent);
+            return AssignCommonValues(animData, timeLength, loop, easingCurveFunc, timeScaleIndependent);
 
         }
 
-        public static TweenAnimHandler Animate(Vector4 from, Vector4 to, float timeLength, System.Action<Vector4> onValueUpdated, bool loop = false, AnimationCurve curve = null, bool timeScaleIndependent = false)
+        public static TweenAnimHandler Animate(Vector4 from, Vector4 to, float timeLength, System.Action<Vector4> onValueUpdated, bool loop = false, System.Func<float, float> easingCurveFunc = null, bool timeScaleIndependent = false)
         {
-            if (curve == null)
-            {
-                curve = AnimationCurve.Linear(0, 0, 1, 1);
-            }
+           
 
             TweenAnimVector4Data animData = Instance.vec4AnimPool.FetchFromPool();
 
@@ -63,16 +51,13 @@ namespace Hybriona
             animData.targetValue = to;
             animData.onValueUpdated = onValueUpdated;
 
-            return AssignCommonValues(animData, timeLength, loop, curve, timeScaleIndependent);
+            return AssignCommonValues(animData, timeLength, loop, easingCurveFunc, timeScaleIndependent);
 
         }
 
-        public static TweenAnimHandler Animate(Color from, Color to, float timeLength, System.Action<Color> onValueUpdated, bool loop = false, AnimationCurve curve = null, bool timeScaleIndependent = false)
+        public static TweenAnimHandler Animate(Color from, Color to, float timeLength, System.Action<Color> onValueUpdated, bool loop = false, System.Func<float, float> easingCurveFunc = null, bool timeScaleIndependent = false)
         {
-            if (curve == null)
-            {
-                curve = AnimationCurve.Linear(0, 0, 1, 1);
-            }
+           
 
             var animData = Instance.colorAnimPool.FetchFromPool();
 
@@ -80,18 +65,36 @@ namespace Hybriona
             animData.targetValue = to;
             animData.onValueUpdated = onValueUpdated;
 
-            return AssignCommonValues(animData, timeLength, loop, curve, timeScaleIndependent);
+            return AssignCommonValues(animData, timeLength, loop, easingCurveFunc, timeScaleIndependent);
+
+        }
+
+        public static TweenAnimHandler Animate(Quaternion from, Quaternion to, float timeLength, System.Action<Quaternion> onValueUpdated, bool loop = false, System.Func<float, float> easingCurveFunc = null, bool timeScaleIndependent = false)
+        {
+
+
+            var animData = Instance.quaternionAnimPool.FetchFromPool();
+
+            animData.fromValue = from;
+            animData.targetValue = to;
+            animData.onValueUpdated = onValueUpdated;
+
+            return AssignCommonValues(animData, timeLength, loop, easingCurveFunc, timeScaleIndependent);
 
         }
 
 
 
-        static TweenAnimHandler AssignCommonValues(TweenAnimData animData,float timeLength,bool loop,AnimationCurve curve, bool timeScaleIndependent )
+        static TweenAnimHandler AssignCommonValues(TweenAnimData animData,float timeLength,bool loop, System.Func<float, float> easingCurveFunc = null, bool timeScaleIndependent = false )
         {
+            if(easingCurveFunc == null)
+            {
+                easingCurveFunc = TweenCurve.Linear;
+            }
             animData.id = ++Instance.animationIdCounter;
             animData.timeLength = timeLength;
             animData.loop = loop;
-            animData.curve = curve;
+            animData.easingCurveFunc = easingCurveFunc;
             animData.timeScaleIndependent = timeScaleIndependent;
             animData.Reset();
             var handler = new TweenAnimHandler(animData.id);
@@ -112,6 +115,7 @@ namespace Hybriona
         private GenericPool<TweenAnimFloatData> floatAnimPool;
         private GenericPool<TweenAnimVector3Data> vec3AnimPool;
         private GenericPool<TweenAnimVector4Data> vec4AnimPool;
+        private GenericPool<TweenAnimQuaternionData> quaternionAnimPool;
         private GenericPool<TweenAnimColorData> colorAnimPool;
 
         private IEnumerator Loop()
@@ -150,6 +154,18 @@ namespace Hybriona
                 }, onReturnedToPoolCallback: null);
 
                 
+            }
+
+            {
+                quaternionAnimPool = new GenericPool<TweenAnimQuaternionData>(createCopyFunction: () =>
+                {
+
+                    var animData = new TweenAnimQuaternionData();
+                    animData.returnToPoolCallback = () => { quaternionAnimPool.ReturnToPool(animData); };
+                    return animData;
+                }, onReturnedToPoolCallback: null);
+
+
             }
 
             {
