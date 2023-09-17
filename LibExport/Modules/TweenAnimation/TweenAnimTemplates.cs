@@ -17,7 +17,7 @@ namespace Hybriona
 	{
         public float fromValue;
         public float targetValue;
-        public AnimationCurve curve;
+       
 
         public System.Action<float> onValueUpdated;
         
@@ -38,9 +38,7 @@ namespace Hybriona
     {
         public Vector3 fromValue;
         public Vector3 targetValue;
-        public AnimationCurve curveX;
-        public AnimationCurve curveY;
-        public AnimationCurve curveZ;
+        
 
         public System.Action<Vector3> onValueUpdated;
 
@@ -49,13 +47,43 @@ namespace Hybriona
 
         public override void UpdateValue(float timeNormalized)
         {
-            float timeX = curveX.Evaluate(timeNormalized);
-            float timeY = curveY.Evaluate(timeNormalized);
-            float timeZ = curveZ.Evaluate(timeNormalized);
+            float time = curve.Evaluate(timeNormalized);
 
-            Vector3 value = new Vector3(Mathf.Lerp(fromValue.x, targetValue.x, timeX),
-                Mathf.Lerp(fromValue.y, targetValue.y, timeY),
-                Mathf.Lerp(fromValue.z, targetValue.z, timeZ));
+            Vector3 value = Vector3.Lerp(fromValue, targetValue, time);
+            onValueUpdated(value);
+
+        }
+    }
+
+    public class TweenAnimVector4Data : TweenAnimData
+    {
+        public Vector4 fromValue;
+        public Vector4 targetValue;
+
+
+        public System.Action<Vector4> onValueUpdated;
+
+        public override void UpdateValue(float timeNormalized)
+        {
+            float time = curve.Evaluate(timeNormalized);
+            Vector4 value = Vector4.Lerp(fromValue,targetValue,time);
+            onValueUpdated(value);
+
+        }
+    }
+
+    public class TweenAnimColorData : TweenAnimData
+    {
+        public Color fromValue;
+        public Color targetValue;
+
+
+        public System.Action<Color> onValueUpdated;
+
+        public override void UpdateValue(float timeNormalized)
+        {
+            float time = curve.Evaluate(timeNormalized);
+            var value = Color.Lerp(fromValue, targetValue, time);
             onValueUpdated(value);
 
         }
