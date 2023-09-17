@@ -33,8 +33,7 @@ namespace Hybriona
 
         static string[] deleteFileFolders = new string[]
 		{
-			"LibExport/AdminData","LibExport/AdminData.meta",
-			//"LibExport/Modules/HybrionaLibAdmin.meta"
+			"LibExport/Samples.meta"
 		};
 
 		public static void ExtendedUI(ModulesData modulesData)
@@ -51,11 +50,7 @@ namespace Hybriona
 
 				HybrionaUnityLibActivator.CopyFilesRecursively("Assets/HybrionaLib", "LibExport");
 
-				{
-					//move
-					File.Move("LibExport/AdminData/DonotCompileSamples.asmdef", "LibExport/Samples/DonotCompileSamples.asmdef");
-					File.Move("LibExport/AdminData/DonotCompileSamples.asmdef.meta", "LibExport/Samples/DonotCompileSamples.asmdef.meta");
-				}
+				
 
 
 				for (int i = 0; i < deleteFileFolders.Length; i++)
@@ -70,9 +65,9 @@ namespace Hybriona
 					}
 				}
 
-				
 
 
+				Directory.Move("LibExport/Samples", "LibExport/Samples~");
 
 
 				{

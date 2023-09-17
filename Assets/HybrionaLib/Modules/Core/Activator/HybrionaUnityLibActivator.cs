@@ -308,7 +308,7 @@ namespace Hybriona
                                 string targetPath = Path.Combine("Assets/Samples/HybrionaLib/", selectedModule.sample);
                                 bool samplesAlreadyImported = Directory.Exists(targetPath);
 
-                                if (GUILayout.Button(samplesAlreadyImported ? "Reimport Samples":"Import Samples", GUILayout.Width(110)))
+                                if (GUILayout.Button(samplesAlreadyImported ? "Reimport Samples":"Import Samples", GUILayout.Width(120)))
                                 {
                                     bool import = !samplesAlreadyImported ||
                                         EditorUtility.DisplayDialog("Confirm Overwrite?","It looks like the samples of \""+selectedModule.id+"\" are already imported. Do you still want to overwrite it? Any changes made by you will get lost.","Yes, Overwrite","Cancel");
@@ -382,28 +382,7 @@ namespace Hybriona
         {
             InitializeModulesData();
 
-#if !HYBRIONA_LIB_ADMIN
-            
-            {
-                string samplesFolderPath = Path.Combine(modulesData.rootPath, "Samples");
-                string newSamplesFolderPath = Path.Combine(modulesData.rootPath, "Samples~");
 
-                if(Directory.Exists(samplesFolderPath))
-                {
-                    if(Directory.Exists(newSamplesFolderPath))
-                    {
-                        Directory.Delete(newSamplesFolderPath, true);
-                    }
-                    Directory.Move(samplesFolderPath, newSamplesFolderPath);
-
-                    string sourceMetaFile = samplesFolderPath + ".meta";
-                    if(File.Exists(sourceMetaFile))
-                    {
-                        File.Delete(sourceMetaFile);
-                    }
-                }
-            }
-#endif
 
             List<Module> activateModuleList = new List<Module>();
            
