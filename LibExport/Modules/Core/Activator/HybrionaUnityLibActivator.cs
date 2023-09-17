@@ -318,8 +318,33 @@ namespace Hybriona
                         {
                             if (!string.IsNullOrEmpty(selectedModule.sample))
                             {
-                                if (GUILayout.Button("Import Samples", GUILayout.Width(110)))
+                                string targetPath = Path.Combine("Assets/Samples/HybrionaLib/", selectedModule.sample);
+                                bool samplesAlreadyImported = Directory.Exists(targetPath);
+
+                                if (GUILayout.Button(samplesAlreadyImported ? "Reimport Samples":"Import Samples", GUILayout.Width(110)))
                                 {
+                                    bool import = !samplesAlreadyImported ||
+                                        EditorUtility.DisplayDialog("Confirm Overwrite?","It looks like the samples of \""+selectedModule.id+"\" are already imported. Do you still want to overwrite it? Any changes made by you will get lost.","Yes, Overwrite","Cancel");
+
+                                    if (import)
+                                    {
+                                        try
+                                        {
+                                            string fromPath = Path.Combine(modulesData.rootPath, selectedModule.sample);
+
+
+                                            if (!Directory.Exists(targetPath))
+                                            {
+                                                Directory.CreateDirectory(targetPath);
+                                            }
+                                            CopyFilesRecursively(fromPath, targetPath);
+                                            AssetDatabase.Refresh();
+                                        }
+                                        catch (System.Exception ex)
+                                        {
+                                            Debug.LogError("error " + ex.Message + " - " + ex.StackTrace);
+                                        }
+                                    }
                                     
                                 }
                             }
@@ -694,5 +719,20 @@ namespace Hybriona
             PlayerSettings.SetScriptingDefineSymbolsForGroup(targetGroup, newSymbolsCombined);
             */
         }
+
+        public static void CopyFilesRecursively(string sourcePath, string targetPath)
+        {
+            //Now Create all of the directories
+            foreach (string dirPath in Directory.GetDirectories(sourcePath, "*", SearchOption.AllDirectories))
+            {
+                Directory.CreateDirectory(dirPath.Replace(sourcePath, targetPath));
+            }
+
+            //Copy all the files & Replaces any files with the same name
+            foreach (string newPath in Directory.GetFiles(sourcePath, "*.*", SearchOption.AllDirectories))
+            {
+                File.Copy(newPath, newPath.Replace(sourcePath, targetPath), true);
+            }
         }
+    }
 }
