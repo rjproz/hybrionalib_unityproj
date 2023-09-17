@@ -258,7 +258,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 983975555}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 4.91, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -277,95 +277,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a4de452de15a4e5c86e29b800ccc3e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  curve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 2
-      outSlope: 2
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 0.23052074
-      value: 1.093194
-      inSlope: 2.4753134
-      outSlope: 2.4753134
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 0.36135274
-      value: 0.27764165
-      inSlope: 0.12928754
-      outSlope: 0.12928754
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.109452605
-    - serializedVersion: 3
-      time: 0.45328474
-      value: 0.7033916
-      inSlope: 0.29728845
-      outSlope: 0.29728845
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 0.5607567
-      value: 0.3546637
-      inSlope: -0.57322186
-      outSlope: -0.57322186
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 0.6771993
-      value: 0.5748811
-      inSlope: -0.27329522
-      outSlope: -0.27329522
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 0.75137675
-      value: 0.28573123
-      inSlope: -1.6816332
-      outSlope: -1.6816332
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 0.86033356
-      value: 0.4097847
-      inSlope: -0.68549603
-      outSlope: -0.68549603
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: -2.4067435
-      outSlope: -2.4067435
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.06467676
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  timeScaleIndependent: 0
-  timeScale: 0
+  loop: 0
+  animSpeed: 1
 --- !u!1 &1026939009
 GameObject:
   m_ObjectHideFlags: 0
