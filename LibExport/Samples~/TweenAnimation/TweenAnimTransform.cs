@@ -30,21 +30,21 @@ namespace Hybriona
 		
 		public void StartAnimation() 
 		{
-            handler = TweenAnimation.Animate(transform.position, transform.position + Vector3.up * 2, 2, (pos) =>
+            handler = TweenAnimation.Animate(new Vector3(0,5,0), new Vector3(0, .5f, 0), 2, (pos) =>
             {
                 transform.position = pos;
-            }, loop, TweenCurve.EaseOutElastic);
+            }, loop, TweenCurve.EaseOutBounce);
 
 
-            TweenAnimation.Animate(Vector3.one, Vector3.one * 1.2f, 1, (scale) =>
-			{
-				transform.localScale = scale;
-			}, false, TweenCurve.EaseOutBounce);
+   //         TweenAnimation.Animate(Vector3.one, Vector3.one * 1.2f, 1, (scale) =>
+			//{
+			//	transform.localScale = scale;
+			//}, false, TweenCurve.EaseOutBounce);
 
             TweenAnimation.Animate(transform.rotation,Quaternion.Euler(0,45,0), 2, (rot) =>
             {
                 transform.rotation = rot;
-            }, false, TweenCurve.EaseOutBounce);
+            }, false, TweenCurve.EaseOutElastic);
         }
 
 
