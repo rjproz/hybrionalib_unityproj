@@ -1,5 +1,4 @@
-﻿#if HYBRIONA_LIB_ENABLE_VERSION_MANAGER
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 namespace Hybriona
@@ -26,4 +25,4 @@ namespace Hybriona
 		}
 	}
 }
-#endif
+

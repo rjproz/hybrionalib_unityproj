@@ -4,7 +4,6 @@
         {
             "id": "hybriona.core",
             "displayname": "Core",
-            "define_symbol": "HYBRIONA_LIB_ENABLE_CORE",
             "alwaysEnabled": true,
             "root": "Modules/Core"
 
@@ -12,8 +11,8 @@
         {
             "id": "hybriona.generic_pool",
             "displayname": "Generic Pool",
-            "description": "Use Unity Timeline to create cinematic content, game-play sequences, audio sequences, and complex particle effects.",
-            "define_symbol": "HYBRIONA_LIB_ENABLE_GENERIC_POOL",
+            "description": "Generic Pool manager to create object pools of any type.\n\nIt can be used to cache Monobehaviours, Components, Gameobjects, Dictionary<T> and even custom classes.",
+            
 
             "root": "Modules/GenericPool",
             "sample": "Samples/GenericPool",
@@ -23,7 +22,7 @@
             "id": "hybriona.tween_animation",
             "displayname": "Tween Animation",
             "description": "Tween Animation Library to animate values. Animate floats, Vectors, Transforms etc using this single module.",
-            "define_symbol": "HYBRIONA_LIB_ENABLE_TWEEN_ANIMATION",
+           
 
             "root": "Modules/TweenAnimation",
             "sample": "Samples/TweenAnimation",
@@ -33,28 +32,28 @@
         {
             "id": "hybriona.event_trigger",
             "displayname": "Event Triggers",
-            "define_symbol": "HYBRIONA_LIB_ENABLE_EVENT_TRIGGER",
+          
 
             "root": "Modules/Events"
         },
         {
             "id": "hybriona.version_manager",
             "displayname": "Version Manager",
-            "define_symbol": "HYBRIONA_LIB_ENABLE_VERSION_MANAGER",
+          
 
             "root": "Modules/VersionManager"
         },
         {
             "id": "hybriona.httpclient",
             "displayname": "Http Client",
-            "define_symbol": "HYBRIONA_LIB_ENABLE_HTTP_CLIENT",
+           
             "root": "Modules/HttpRest",
             "dependencies": [ "hybriona.core" ]
         },
         {
             "id": "hybriona.persistentData",
             "displayname": "Persistent Data Manager",
-            "define_symbol": "HYBRIONA_LIB_ENABLE_PERSISTENT_DATA",
+           
             "root": "Modules/PersistentData",
             "dependencies": [
                 "hybriona.version_manager",
@@ -65,20 +64,20 @@
         {
             "id": "hybriona.simple_zip",
             "displayname": "Simple Zip",
-            "define_symbol": "HYBRIONA_LIB_ENABLE_SIMPLEZIP",
+            
             "root": "Modules/SimpleZip"
 
         },
         {
             "id": "hybriona.cache",
             "displayname": "Cache",
-            "define_symbol": "HYBRIONA_LIB_ENABLE_CACHE",
+           
             "root": "Modules/Cache"
         },
         {
             "id": "hybriona.adsmanager",
             "displayname": "Ads Manager",
-            "define_symbol": "HYBRIONA_LIB_ENABLE_ADSMANAGER",
+            
             "root": "Modules/AdsManager",
             "dependencies": [
                 "hybriona.event_trigger"

@@ -8,7 +8,6 @@
 
 *************************************************************************/
 
-#if HYBRIONA_LIB_ENABLE_GENERIC_POOL
 using System.Collections.Generic;
 
 namespace Hybriona
@@ -115,4 +114,3 @@ namespace Hybriona
 	}
 }
 
-#endif

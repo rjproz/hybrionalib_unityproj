@@ -33,7 +33,7 @@ namespace Hybriona
 
         static string[] deleteFileFolders = new string[]
 		{
-			//"LibExport/Modules/HybrionaLibAdmin",
+			"LibExport/AdminData",
 			//"LibExport/Modules/HybrionaLibAdmin.meta"
 		};
 
@@ -51,6 +51,13 @@ namespace Hybriona
 
 				CopyFilesRecursively("Assets/HybrionaLib", "LibExport");
 
+				{
+					//move
+					File.Move("LibExport/AdminData/DonotCompileSamples.asmdef", "LibExport/Samples/DonotCompileSamples.asmdef");
+					File.Move("LibExport/AdminData/DonotCompileSamples.asmdef.meta", "LibExport/Samples/DonotCompileSamples.asmdef.meta");
+				}
+
+
 				for (int i = 0; i < deleteFileFolders.Length; i++)
 				{
 					if (File.Exists(deleteFileFolders[i]))
@@ -63,11 +70,14 @@ namespace Hybriona
 					}
 				}
 
+				
 
 
-                {
+
+
+				{
 					//patch assemblies
-					for(int i=0;i<modulesData.modules.Count;i++)
+					for (int i=0;i<modulesData.modules.Count;i++)
                     {
 						var moduleData = modulesData.modules[i];
 						string assemblyPath = Path.Combine("LibExport", moduleData.root);
@@ -81,7 +91,7 @@ namespace Hybriona
 								assemblyJsonData["versionDefines"].Add(JSON.Parse("{\n}"));
 								assemblyJsonData["versionDefines"][0]["name"] = "Unity";
 
-								assemblyJsonData["versionDefines"][0]["define"] = moduleData.define_symbol;
+								assemblyJsonData["versionDefines"][0]["define"] = "ENABLE_LIB";
 
 							}
 							
@@ -90,8 +100,8 @@ namespace Hybriona
 						}
                     }
                 }
-				
 
+              
 				//Patch Package.json
                 {
 					string packageJsonPath = "LibExport/package.json";

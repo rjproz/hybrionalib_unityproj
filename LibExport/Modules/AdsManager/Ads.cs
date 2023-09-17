@@ -1,4 +1,3 @@
-#if HYBRIONA_LIB_ENABLE_ADSMANAGER
 using GoogleMobileAds.Api;
 using UnityEngine;
 
@@ -276,4 +275,4 @@ namespace Hybriona
        
     }
 }
-#endif
+

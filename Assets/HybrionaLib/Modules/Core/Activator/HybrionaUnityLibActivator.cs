@@ -307,7 +307,7 @@ namespace Hybriona
                         EditorGUILayout.BeginHorizontal(GUI.skin.box);
                         if (!isModuleActive)
                         {
-                            if (GUILayout.Button("Enable Module", GUILayout.Width(150)))
+                            if (GUILayout.Button("Enable Module", GUILayout.Width(110)))
                             {
                                 ModulesUserPrefs.Instance().dic.Add(selectedModule.id, true);
                                 ModulesUserPrefs.Instance().Save();
@@ -318,16 +318,22 @@ namespace Hybriona
                         {
                             if (!string.IsNullOrEmpty(selectedModule.sample))
                             {
-                                if (GUILayout.Button("Import Samples", GUILayout.Width(150)))
+                                if (GUILayout.Button("Import Samples", GUILayout.Width(110)))
                                 {
                                     
                                 }
                             }
                             if (!selectedModule.alwaysEnabled)
                             {
-                                if (GUILayout.Button("Disable Module", GUILayout.Width(150)))
+                                if (GUILayout.Button("Disable Module", GUILayout.Width(110)))
                                 {
-                                    if (EditorUtility.DisplayDialog("Confirm Disable?", "Are you sure you want to disable module \"" + selectedModule.id + "\"", "Yes, Disable", "Cancel"))
+
+                                    if(modulesData.IsModuleUsedInActiveModules(selectedModule))
+                                    {
+                                        EditorUtility.DisplayDialog("Error!", "Module \"" + selectedModule.id + "\" cannot be disabled as one or more active module is using it.", "Ok") ;
+                                    }
+
+                                    else if (EditorUtility.DisplayDialog("Confirm Disable?", "Are you sure you want to disable module \"" + selectedModule.id + "\"", "Yes, Disable", "Cancel"))
                                     {
                                         ModulesUserPrefs.Instance().dic.Add(selectedModule.id, false);
                                         ModulesUserPrefs.Instance().Save();
@@ -510,7 +516,7 @@ namespace Hybriona
                 assemblyDataNode["allowUnsafeCode"] = false;
                 assemblyDataNode["autoReferenced"] = true;
                 assemblyDataNode["defineConstraints"] = new JSONArray();
-                assemblyDataNode["defineConstraints"].Add(moduleData.define_symbol);
+                assemblyDataNode["defineConstraints"].Add("ENABLE_LIB");
 
                 assemblyDataNode["versionDefines"] = new JSONArray();
                 assemblyDataNode["versionDefines"].Add(JSON.Parse("{\n}"));
@@ -518,8 +524,9 @@ namespace Hybriona
 
                 if (toActivate)
                 {
-                    assemblyDataNode["versionDefines"][0]["define"] = moduleData.define_symbol;
-                    
+                    assemblyDataNode["versionDefines"][0]["define"] = "ENABLE_LIB";//moduleData.define_symbol;
+
+
                 }
 
                 File.WriteAllText(createPath, assemblyDataNode.ToString());

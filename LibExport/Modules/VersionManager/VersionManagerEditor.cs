@@ -1,5 +1,5 @@
 ﻿
-#if UNITY_EDITOR && HYBRIONA_LIB_ENABLE_VERSION_MANAGER
+#if UNITY_EDITOR 
 using UnityEngine;
 using UnityEditor;
 namespace Hybriona

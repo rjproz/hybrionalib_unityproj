@@ -7,7 +7,6 @@
  *  Date         :  15-09-2023 13:05:26
 
 *************************************************************************/
-#if HYBRIONA_LIB_ENABLE_GENERIC_POOL
 
 using UnityEngine;
 
@@ -71,4 +70,3 @@ namespace Hybriona
 		
 	}
 }
-#endif

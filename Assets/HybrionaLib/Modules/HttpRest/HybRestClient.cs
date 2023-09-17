@@ -1,5 +1,4 @@
-﻿#if HYBRIONA_LIB_ENABLE_HTTP_CLIENT
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -173,4 +172,3 @@ namespace Hybriona
 		}
 	}
 }
-#endif

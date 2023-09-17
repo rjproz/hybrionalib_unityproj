@@ -18,9 +18,6 @@ namespace Hybriona
         private ulong animationIdCounter = 1;
         private List<TweenAnimData> activeAnimations = new List<TweenAnimData>();
 		
-
-
-
 		public static TweenAnimHandler Animate(float from, float to, float timeLength, System.Action<float> onValueUpdated,bool loop = false,AnimationCurve curve = null,bool timeScaleIndependent = false )
 		{
             if(curve == null)
