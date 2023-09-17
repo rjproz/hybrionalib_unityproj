@@ -262,20 +262,7 @@ namespace Hybriona
                     }
 
                 }
-               
-
-                //if (GUILayout.Button("Apply Changes"))
-                //{
-                //    ModulesUserPrefs.Instance().Save();
-                //    ApplyChanges();
-                //}
-
-                //if (GUILayout.Button("Reset"))
-                //{
-                //    ModulesUserPrefs.Instance().Reset();
-                //    ApplyChanges();
-                    
-                //}
+            
 
 
                 EditorGUILayout.EndScrollView();
@@ -383,12 +370,7 @@ namespace Hybriona
                 EditorGUILayout.EndHorizontal();
             }
             GUILayout.EndArea();
-            if (GUI.changed)
-            {
-                //Debug.Log("Saving at " + System.DateTime.Now.ToShortDateString());
-
-                //ApplyChanges();
-            }
+            
 
 
            
@@ -400,76 +382,28 @@ namespace Hybriona
         {
             InitializeModulesData();
 
-
-            /*
-            for (int i = 0; i < modulesData.modules.Count; i++)
+#if !HYBRIONA_LIB_ADMIN
+            
             {
-                var moduleData = modulesData.modules[i];
+                string samplesFolderPath = Path.Combine(modulesData.rootPath, "Samples");
+                string newSamplesFolderPath = Path.Combine(modulesData.rootPath, "Samples~");
 
-                var isActivated = false;
-                if (ModulesUserPrefs.Instance().dic.ContainsKey(moduleData.id))
+                if(Directory.Exists(samplesFolderPath))
                 {
-                    isActivated = ModulesUserPrefs.Instance().dic.GetValue(moduleData.id);
-
-                }
-                else
-                {
-                    isActivated = moduleData.enabled;
-                }
-
-
-                for (int folderCounter = 0; folderCounter < moduleData.folders.Count; folderCounter++)
-                {
-                    string fullFolderPath = System.IO.Path.Combine(modulesData.rootPath, moduleData.folders[folderCounter]);
-
-                    if (isActivated)
+                    if(Directory.Exists(newSamplesFolderPath))
                     {
-
-                        string fromPath = fullFolderPath + "~";
-                        string toPath = fullFolderPath;
-
-                        if(Directory.Exists(fromPath))
-                        {
-                            Directory.Move(fromPath, toPath);
-                        }
-
-                        fromPath = fullFolderPath + ".meta~";
-                        toPath = fullFolderPath + ".meta";
-
-                        if(File.Exists(fromPath))
-                        {
-                            File.Move(fromPath, toPath);
-                        }
+                        Directory.Delete(newSamplesFolderPath, true);
                     }
-                    else
+                    Directory.Move(samplesFolderPath, newSamplesFolderPath);
+
+                    string sourceMetaFile = samplesFolderPath + ".meta";
+                    if(File.Exists(sourceMetaFile))
                     {
-
-                        string fromPath = fullFolderPath;
-                        string toPath = fullFolderPath + "~";
-
-                        if (Directory.Exists(fromPath))
-                        {
-                            Directory.Move(fromPath, toPath);
-                        }
-
-                        fromPath = fullFolderPath + ".meta";
-                        toPath = fullFolderPath + ".meta~";
-
-                        if (File.Exists(fromPath))
-                        {
-                            File.Move(fromPath, toPath);
-                        }
+                        File.Delete(sourceMetaFile);
                     }
                 }
-
-                
-
             }
-            AssetDatabase.Refresh();
-
-            return;
-            */
-
+#endif
 
             List<Module> activateModuleList = new List<Module>();
            
@@ -510,11 +444,6 @@ namespace Hybriona
                         }
                     }
                 }
-
-
-               
-
-
 
             }
 
