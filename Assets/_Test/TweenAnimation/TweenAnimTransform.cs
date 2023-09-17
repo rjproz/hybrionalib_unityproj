@@ -16,6 +16,11 @@ namespace Hybriona
 	public class TweenAnimTransform : MonoBehaviour 
 	{
 		public AnimationCurve curve;
+		public bool timeScaleIndependent;
+
+		[Range(0, 1)]
+		public float timeScale;
+
 
 		[ContextMenu("StartAnim")]
 		void StartAnim() 
@@ -23,9 +28,14 @@ namespace Hybriona
 			TweenAnimation.Animate(transform.position, transform.position + Vector3.up * 2, 2, (pos) =>
 			{
 				transform.position = pos;
-			}, false, curve);
+			}, true, curve, timeScaleIndependent);
 		}
 
 
-	}
+        private void Update()
+        {
+			Time.timeScale = timeScale;
+
+		}
+    }
 }

@@ -20,7 +20,7 @@ namespace Hybriona
 		
 		
 
-		public static void Animate(float from, float to, float timeLength, System.Action<float> onValueUpdated,bool loop = false,AnimationCurve curve = null )
+		public static void Animate(float from, float to, float timeLength, System.Action<float> onValueUpdated,bool loop = false,AnimationCurve curve = null,bool timeScaleIndependent = false )
 		{
             if(curve == null)
             {
@@ -33,13 +33,14 @@ namespace Hybriona
             animData.timeLength = timeLength;
             animData.loop = loop;
             animData.curve = curve;
+            animData.timeScaleIndependent = timeScaleIndependent;
             animData.onValueUpdated = onValueUpdated;
 
             animData.Reset();
             Instance.activeAnimations.Add((TweenAnimData)animData);
         }
 
-        public static void Animate(Vector3 from, Vector3 to, float timeLength, System.Action<Vector3> onValueUpdated, bool loop = false, AnimationCurve curve = null)
+        public static void Animate(Vector3 from, Vector3 to, float timeLength, System.Action<Vector3> onValueUpdated, bool loop = false, AnimationCurve curve = null, bool timeScaleIndependent = false)
         {
             if (curve == null)
             {
@@ -55,6 +56,7 @@ namespace Hybriona
             animData.curveX = curve;
             animData.curveY = curve;
             animData.curveZ = curve;
+            animData.timeScaleIndependent = timeScaleIndependent;
             animData.onValueUpdated = onValueUpdated;
 
             animData.Reset();

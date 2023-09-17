@@ -17,18 +17,35 @@ namespace Hybriona
 	{
 		public float timeLength;
 		public bool loop;
+		public bool timeScaleIndependent;
 		internal System.Action returnToPoolCallback;
 		private float timeTracker = 0;
-		
-		public virtual void Reset()
+		private bool paused;
+		public void Reset()
         {
 			timeTracker = 0;
 		}
 
+		public void Pause()
+        {
+			paused = true;
+
+		}
+
+		public void Resume()
+        {
+			paused = false;
+        }
+
 		public bool Update()
 		{
+			if(paused)
+            {
+				return false;
+            }
+
 			bool animCompleted = false;
-			timeTracker += Time.deltaTime;
+			timeTracker += Time.unscaledDeltaTime * (timeScaleIndependent ? 1 : Time.timeScale);
 			float tn = timeTracker / timeLength;
 			if(tn >= 1)
             {

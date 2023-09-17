@@ -21,8 +21,7 @@ namespace Hybriona
 
         public System.Action<float> onValueUpdated;
         
-        
-        
+       
 
         public override void UpdateValue(float timeNormalized)
         {
