@@ -317,7 +317,7 @@ namespace Hybriona
                                     {
                                         try
                                         {
-                                            string fromPath = Path.Combine(modulesData.rootPath, selectedModule.sample);
+                                            string fromPath = Path.Combine(modulesData.rootPath, selectedModule.sample.Replace("Samples","Samples~"));
 
 
                                             if (!Directory.Exists(targetPath))
