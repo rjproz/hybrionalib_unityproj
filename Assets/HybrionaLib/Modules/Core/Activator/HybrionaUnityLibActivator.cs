@@ -319,7 +319,7 @@ namespace Hybriona
                                         {
                                             string fromPath = Path.Combine(modulesData.rootPath, selectedModule.sample.Replace("Samples","Samples~"));
 
-
+                                            Debug.Log("frompath: " + fromPath);
                                             if (!Directory.Exists(targetPath))
                                             {
                                                 Directory.CreateDirectory(targetPath);
