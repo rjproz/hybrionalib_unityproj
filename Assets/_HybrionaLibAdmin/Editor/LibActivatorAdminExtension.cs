@@ -33,7 +33,7 @@ namespace Hybriona
 
         static string[] deleteFileFolders = new string[]
 		{
-			"LibExport/AdminData",
+			"LibExport/AdminData","LibExport/AdminDat.meta",
 			//"LibExport/Modules/HybrionaLibAdmin.meta"
 		};
 
