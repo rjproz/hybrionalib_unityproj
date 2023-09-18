@@ -241,10 +241,12 @@ namespace Hybriona
                                 {
 
                                 }
+
                                 if(addpkgProcess.Error != null)
                                 {
                                     Debug.LogError("Failed to add package "+addpkgProcess.Error.message);
                                 }
+                                UnityEditor.PackageManager.Client.Resolve();
                                 AssetDatabase.Refresh();
                             }
                             else
