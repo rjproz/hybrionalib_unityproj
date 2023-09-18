@@ -41,7 +41,7 @@ namespace Hybriona
 			GUILayout.Label("Admin Tools", EditorStyles.boldLabel);
 			if (GUILayout.Button("Export Library"))
 			{
-				VersionManagerEditor.IncrementBuildNumberOnly();
+				VersionManagerEditor.IncrementPatchVersion();
 				string exportVersionVal = VersionManager.Version().ToString();
 
 				if (Directory.Exists("LibExport"))
@@ -97,24 +97,47 @@ namespace Hybriona
                     }
                 }
 
-              
 				//Patch Package.json
-                {
-					string packageJsonPath = "LibExport/package.json";
-					var packageJsonNode = JSON.Parse(File.ReadAllText( packageJsonPath) );
-
-                    {
-						packageJsonNode["version"] = VersionManager.Version().ToString();
-					}
+				string packageJsonPath = "LibExport/package.json";
+				var packageJsonNode = JSON.Parse(File.ReadAllText(packageJsonPath));
+				packageJsonNode["version"] = VersionManager.Version().ToString();
+				File.WriteAllText(packageJsonPath, packageJsonNode.ToString());
 
 
-					
-					File.WriteAllText(packageJsonPath, packageJsonNode.ToString());
-					
-					EditorUtility.DisplayDialog("Alert!", "Package exported with version " + packageJsonNode["version"].Value, "Ok");
+				//Export meta data for download
+
+				string packageTarballFolder = "PackageDownload";
+				if (Directory.Exists(packageTarballFolder))
+				{
+					Directory.Delete(packageTarballFolder,true);
 				}
+				Directory.CreateDirectory(packageTarballFolder);
+
+				string packageMetaPath = Path.Combine(packageTarballFolder, "package.json");
+				System.IO.File.WriteAllText(packageMetaPath, packageJsonNode.ToString());
+
 
 				
+				var packRequest = UnityEditor.PackageManager.Client.Pack("LibExport", packageTarballFolder);
+				while(!packRequest.IsCompleted)
+				{
+
+				}
+
+				if(packRequest.Status != UnityEditor.PackageManager.StatusCode.Success)
+                {
+					EditorUtility.DisplayDialog("Export Error", "Package failed to export "+packRequest.Error.message, "Ok");
+					return;
+
+				}
+				Directory.Delete("LibExport", true);
+
+				File.Move(packRequest.Result.tarballPath,Path.Combine(packageTarballFolder, packageJsonNode["name"].Value+ ".tgz"));
+
+
+				EditorUtility.DisplayDialog("Alert!", "Package exported with version " + exportVersionVal, "Ok");
+
+
 			}
 		}
 
