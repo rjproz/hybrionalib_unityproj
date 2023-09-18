@@ -218,7 +218,7 @@ namespace Hybriona
                         
                         if (pkg.packageId.Contains("hybriona.unitylib"))
                         {
-                            Debug.Log(pkg.packageId);
+                            //Debug.Log(pkg.packageId);
                             //Debug.Log("Trying to update hybrionalib");
                             //UnityEditor.PackageManager.Client.Add(pkg.packageId);
 
