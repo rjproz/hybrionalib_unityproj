@@ -231,13 +231,18 @@ namespace Hybriona
                             }
                             if(downloadRequest.result == UnityWebRequest.Result.Success)
                             {
+
                                 string downloadPkgPath = "Packages/hybriona.unitylib.archive";
                                 downloadPkgPath = Path.GetFullPath(downloadPkgPath);
                                 Debug.Log("saving package to " + downloadPkgPath);
                                 File.WriteAllBytes(downloadPkgPath, downloadRequest.downloadHandler.data);
 
                                 Debug.Log("hybriona.unitylib downloaded @ " + downloadPkgPath);
-                               
+
+
+                                var removePkgProcess = UnityEditor.PackageManager.Client.Remove(pkg.packageId);
+                                while (!removePkgProcess.IsCompleted) { }
+
                                 var addpkgProcess = UnityEditor.PackageManager.Client.Add("hybriona.unitylib@file:hybriona.unitylib.archive");
                                 while(!addpkgProcess.IsCompleted)
                                 {
