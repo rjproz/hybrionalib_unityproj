@@ -14,17 +14,19 @@ using UnityEngine;
 
 namespace Hybriona
 {
+	[System.Serializable]
 	public class TweenAnimData  
 	{
+		[HideInInspector]
 		public float timeLength;
 		public TweenAnimationLoopMode loopMode;
 		public System.Func<float,float> easingCurveFunc;
-		public float speed = 1;
+		public float speed { get; set; } = 1;
 		public bool timeScaleIndependent;
 		public bool animationStopped { get; private set; }
 
 		internal System.Action returnToPoolCallback;
-		private float timeTracker = 0;
+		[SerializeField]private float timeTracker = 0;
 		private float timeLengthDoubled;
 		private bool paused;
         internal ulong id;
@@ -72,15 +74,15 @@ namespace Hybriona
 				return false;
             }
 
-			bool animCompleted = false;
+			//bool animCompleted = false;
 
 			float timeTrackerModified = timeTracker;
 			if(timeTracker > timeLength)
             {
 				if (loopMode == TweenAnimationLoopMode.Clamped)
 				{
-					
-					animCompleted = true;
+
+					return true;
 					
 				}
 				else if(loopMode == TweenAnimationLoopMode.Loop)
@@ -97,7 +99,7 @@ namespace Hybriona
                     {
 						if(loopMode == TweenAnimationLoopMode.PingpongOnce)
                         {
-							animCompleted = true;
+							return true;
 						}
 						else
                         {
@@ -112,14 +114,22 @@ namespace Hybriona
 
 			float tn = timeTrackerModified / timeLength;
 
-			if (animCompleted)
-            {
-				return true;
-            }
+			
 
 			UpdateValue(easingCurveFunc(tn));
 
+#if UNITY_EDITOR
+			if(!Application.isPlaying)
+            {
+				timeTracker += 0.02f;
+            }
+			else
+            {
+				timeTracker += Time.unscaledDeltaTime * speed * (timeScaleIndependent ? 1 : Time.timeScale);
+			}
+#else
 			timeTracker += Time.unscaledDeltaTime * speed * (timeScaleIndependent ? 1 : Time.timeScale);
+#endif
 			return false;
 
 		}

@@ -13,7 +13,8 @@ using UnityEngine;
 
 namespace Hybriona
 {
-	public class TweenAnimFloatData  : TweenAnimData
+    [System.Serializable]
+    public class TweenAnimFloatData  : TweenAnimData
 	{
         public float fromValue;
         public float targetValue;
@@ -30,8 +31,10 @@ namespace Hybriona
         }
     }
 
+    [System.Serializable]
     public class TweenAnimVector3Data : TweenAnimData
     {
+        
         public Vector3 fromValue;
         public Vector3 targetValue;
         
@@ -45,6 +48,7 @@ namespace Hybriona
         }
     }
 
+    [System.Serializable]
     public class TweenAnimVector4Data : TweenAnimData
     {
         public Vector4 fromValue;
@@ -61,6 +65,7 @@ namespace Hybriona
         }
     }
 
+    [System.Serializable]
     public class TweenAnimQuaternionData : TweenAnimData
     {
         public Quaternion fromValue;
@@ -77,6 +82,7 @@ namespace Hybriona
         }
     }
 
+    [System.Serializable]
     public class TweenAnimColorData : TweenAnimData
     {
         public Color fromValue;
