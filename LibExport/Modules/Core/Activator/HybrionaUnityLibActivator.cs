@@ -202,6 +202,21 @@ namespace Hybriona
                 moduleListScrollPos = EditorGUILayout.BeginScrollView(moduleListScrollPos, false, false, GUI.skin.verticalScrollbar, GUI.skin.verticalScrollbar,GUI.skin.box, GUILayout.Width(200)) ;
                 EditorGUILayout.BeginVertical(uiStyle.detailedViewHeaderBGStyle);
                 GUILayout.Label("Modules", uiStyle.detailedViewTitleStyle);
+                if (GUILayout.Button("Update Library"))
+                {
+                    var request = UnityEditor.PackageManager.Client.List();
+                    while(!request.IsCompleted)
+                    {
+
+                    }
+                    var collection = request.Result;
+                    foreach(var pkg in collection)
+                    {
+                        Debug.Log(pkg.packageId);
+                    }
+
+
+                }
                 EditorGUILayout.EndVertical();
                 GUILayout.Space(5);
 
