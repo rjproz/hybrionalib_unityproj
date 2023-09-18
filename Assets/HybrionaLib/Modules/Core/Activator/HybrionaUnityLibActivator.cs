@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using UnityEngine;
 using UnityEditor;
 using SimpleJSON;
@@ -709,3 +710,4 @@ namespace Hybriona
         }
     }
 }
+#endif
