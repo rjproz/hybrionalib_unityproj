@@ -1,10 +1,10 @@
 ﻿/*************************************************************************
  *------------------------------------------------------------------------
- *  File         :  GOPoolObject.cs
+ *  File         :  ParticleSystemPoolObject.cs
  *  Description  :  Null.
  *------------------------------------------------------------------------
  *  Author       :  rjproz
- *  Date         :  15-09-2023 18:42:43
+ *  Date         :  18-09-2023 23:19:27
 
 *************************************************************************/
 using System.Collections;
@@ -13,21 +13,18 @@ using UnityEngine;
 
 namespace Hybriona
 {
-	public class GOPoolObject : MonobehaviorPoolObject 
+	public class ParticleSystemPoolObject : GOPoolObject 
 	{
-		public bool autoDestroy;
-		public float lifeIfAutoDestroy;
-		//public string poolId { get; set; }
-
+		public ParticleSystem particleSystem;
 
         public override void Activate()
         {
+            autoDestroy = true;
+            lifeIfAutoDestroy = particleSystem.main.duration;
+            particleSystem.Clear(true);
             base.Activate();
-            if(autoDestroy)
-            {
-                EventTriggerManager.AddTriggerEvent(lifeIfAutoDestroy, ReturnToPool);
-            }
         }
+
 
     }
 }
