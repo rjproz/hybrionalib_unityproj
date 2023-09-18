@@ -217,6 +217,7 @@ namespace Hybriona
                         {
                             Debug.Log("Trying to update hybrionalib");
                             UnityEditor.PackageManager.Client.Add(pkg.packageId);
+                            AssetDatabase.Refresh();
                         }
                     }
 
