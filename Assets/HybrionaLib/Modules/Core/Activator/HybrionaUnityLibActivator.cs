@@ -231,9 +231,10 @@ namespace Hybriona
                             }
                             if(downloadRequest.result == UnityWebRequest.Result.Success)
                             {
-                                string downloadPkgPath = pkg.packageId + ".temp";
+                                string downloadPkgPath = Path.Combine("Packages", "hybriona.unitylib.tgz");
                                 File.WriteAllBytes(downloadPkgPath, downloadRequest.downloadHandler.data);
-                                //UnityEditor.PackageManager.Client.ad;
+
+                                UnityEditor.PackageManager.Client.Add("hybriona.unitylib@file:"+ downloadPkgPath);
                                 AssetDatabase.Refresh();
                             }
                             else
