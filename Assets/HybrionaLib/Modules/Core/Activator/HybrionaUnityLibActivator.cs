@@ -222,7 +222,7 @@ namespace Hybriona
                             Debug.Log("Trying to update hybrionalib");
                             //UnityEditor.PackageManager.Client.Add(pkg.packageId);
 
-                            var downloadRequest = UnityWebRequest.Get(PackageDownloadPath+ "/hybriona.unitylib.tgz");
+                            var downloadRequest = UnityWebRequest.Get(PackageDownloadPath+ "/hybriona.unitylib.tgz?"+System.DateTime.Now.ToFileTimeUtc());
                             var downloadOperation = downloadRequest.SendWebRequest();
 
                             while(!downloadOperation.isDone)
