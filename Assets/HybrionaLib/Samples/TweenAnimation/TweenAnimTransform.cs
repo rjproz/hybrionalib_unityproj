@@ -18,7 +18,7 @@ namespace Hybriona
 	public class TweenAnimTransform : MonoBehaviour 
 	{
 		
-		public bool loop;
+		public TweenAnimationLoopMode loopMode;
 
 		[Range(0, 4)]
 		public float animSpeed = 1;
@@ -30,10 +30,12 @@ namespace Hybriona
 		
 		public void StartAnimation() 
 		{
+			
+
             handler = TweenAnimation.Animate(new Vector3(0,5,0), new Vector3(0, .5f, 0), 2, (pos) =>
             {
                 transform.position = pos;
-            }, loop, TweenCurve.EaseOutBounce);
+            }, TweenCurve.EaseOutBounce, loopMode);
 
 
    //         TweenAnimation.Animate(Vector3.one, Vector3.one * 1.2f, 1, (scale) =>
@@ -44,11 +46,14 @@ namespace Hybriona
             TweenAnimation.Animate(transform.rotation,Quaternion.Euler(0,45,0), 2, (rot) =>
             {
                 transform.rotation = rot;
-            }, false, TweenCurve.EaseOutElastic);
+            }, TweenCurve.EaseOutElastic);
         }
 
-
-		private void Update()
+        private void Start()
+        {
+			StartAnimation();
+        }
+        private void Update()
         {
 			if (!handler.IsNull())
 			{
@@ -94,20 +99,35 @@ namespace Hybriona
             }
 			else
             {
-				if (GUILayout.Button("Start Anim without Loop"))
+				if (GUILayout.Button("Start Anim with "+TweenAnimationLoopMode.Clamped))
 				{
-					script.loop = false;
+					script.loopMode = TweenAnimationLoopMode.Clamped;
 					script.StartAnimation();
 
 				}
-				if (GUILayout.Button("Start Anim with Loop"))
+				if (GUILayout.Button("Start Anim with " + TweenAnimationLoopMode.Loop))
 				{
-					script.loop = true;
+					script.loopMode = TweenAnimationLoopMode.Loop;
 					script.StartAnimation();
 
 				}
+
+				if (GUILayout.Button("Start Anim with " + TweenAnimationLoopMode.PingpongForever))
+				{
+					script.loopMode = TweenAnimationLoopMode.PingpongForever;
+					script.StartAnimation();
+
+				}
+
+				if (GUILayout.Button("Start Anim with " + TweenAnimationLoopMode.PingpongOnce))
+				{
+					script.loopMode = TweenAnimationLoopMode.PingpongOnce;
+					script.StartAnimation();
+
+				}
+
 			}
 
-        }
+		}
     }
 }

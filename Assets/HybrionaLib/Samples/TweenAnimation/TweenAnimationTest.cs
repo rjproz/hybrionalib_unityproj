@@ -21,9 +21,9 @@ namespace Hybriona
 			TweenAnimation.Animate(0, 5, 5, (val) =>
 			{
 				progress = val;
-			},true);
+			});
 
-
+			return;
 
 			//check speed of direct function invoke
 			var timeStarted = System.DateTime.Now;

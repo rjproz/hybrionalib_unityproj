@@ -1,11 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class HybSingleton<T> : MonoBehaviour where T : MonoBehaviour
+public class HybSingleton<T> : HybMonoBehaviourForSingleton where T : HybMonoBehaviourForSingleton
 {
 
 
-	private static T m_instance;
+	protected static T m_instance;
 	public static T Instance
 	{
 		get
@@ -18,15 +18,25 @@ public class HybSingleton<T> : MonoBehaviour where T : MonoBehaviour
 					Debug.Log("Creating new instance of "+typeof(T).ToString());
 					GameObject o = new GameObject(typeof(T).ToString());
 					m_instance = o.AddComponent<T>();
+					m_instance.OnInstantiated();
 				}
 			}
 			return m_instance;
 		}
 	}
 
+	
+
 	public void SetDontDestroyOnLoad()
 	{
 		DontDestroyOnLoad (Instance.gameObject);
 	}
 
+}
+public class HybMonoBehaviourForSingleton : MonoBehaviour
+{
+	public virtual void OnInstantiated()
+	{
+
+	}
 }

@@ -17,22 +17,26 @@ namespace Hybriona
 	public class TweenAnimData  
 	{
 		public float timeLength;
-		public bool loop;
+		public TweenAnimationLoopMode loopMode;
 		public System.Func<float,float> easingCurveFunc;
 		public float speed = 1;
 		public bool timeScaleIndependent;
 		public bool animationStopped { get; private set; }
+
 		internal System.Action returnToPoolCallback;
 		private float timeTracker = 0;
+		private float timeLengthDoubled;
 		private bool paused;
         internal ulong id;
 		internal TweenAnimHandler assignedHandler;
 
 		public void Reset()
         {
+			timeLengthDoubled = timeLength * 2;
 			paused = false;
 			animationStopped = false;
 			timeTracker = 0;
+			
 		}
 
 
@@ -69,25 +73,54 @@ namespace Hybriona
             }
 
 			bool animCompleted = false;
-			timeTracker += Time.unscaledDeltaTime * speed * (timeScaleIndependent ? 1 : Time.timeScale);
-			float tn = timeTracker / timeLength;
-			if(tn >= 1)
+
+			float timeTrackerModified = timeTracker;
+			if(timeTracker > timeLength)
             {
-				if (!loop)
+				if (loopMode == TweenAnimationLoopMode.Clamped)
 				{
-					//completed
+					
 					animCompleted = true;
-					tn = 1;
+					
 				}
-				else
+				else if(loopMode == TweenAnimationLoopMode.Loop)
                 {
 					//patch timeTracker
 					timeTracker = timeTracker % timeLength;
+					
+				}
+				else
+				{
+
+					timeTrackerModified = Mathf.PingPong(timeTracker, timeLength);
+					if (timeTracker > timeLengthDoubled)
+                    {
+						if(loopMode == TweenAnimationLoopMode.PingpongOnce)
+                        {
+							animCompleted = true;
+						}
+						else
+                        {
+							timeTracker = timeTracker % timeLength;
+						}
+						
+						
+					}
+					
 				}
 			}
+
+			float tn = timeTrackerModified / timeLength;
+
+			if (animCompleted)
+            {
+				return true;
+            }
+
 			UpdateValue(easingCurveFunc(tn));
 
-			return animCompleted;
+			timeTracker += Time.unscaledDeltaTime * speed * (timeScaleIndependent ? 1 : Time.timeScale);
+			return false;
 
 		}
 

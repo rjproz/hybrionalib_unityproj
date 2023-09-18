@@ -13,22 +13,23 @@ using UnityEngine;
 
 namespace Hybriona
 {
+    public enum TweenAnimationLoopMode { Clamped = 0, Loop = 1 , PingpongOnce = 2, PingpongForever = 3 };
 	public class TweenAnimation : HybSingleton<TweenAnimation>
 	{
         private ulong animationIdCounter = 1;
         private List<TweenAnimData> activeAnimations = new List<TweenAnimData>();
 		
-		public static TweenAnimHandler Animate(float from, float to, float timeLength, System.Action<float> onValueUpdated,bool loop = false, System.Func<float,float> easingCurveFunc = null, bool timeScaleIndependent = false )
+		public static TweenAnimHandler Animate(float from, float to, float timeLength, System.Action<float> onValueUpdated,System.Func<float,float> easingCurveFunc = null, TweenAnimationLoopMode loopMode = TweenAnimationLoopMode.Clamped, bool timeScaleIndependent = false )
 		{
             TweenAnimFloatData animData = Instance.floatAnimPool.FetchFromPool();
             animData.fromValue = from;
             animData.targetValue = to;
             animData.onValueUpdated = onValueUpdated;
-
-            return AssignCommonValues(animData, timeLength, loop, easingCurveFunc, timeScaleIndependent);
+            
+            return AssignCommonValues(animData, timeLength, loopMode, easingCurveFunc, timeScaleIndependent);
         }
 
-        public static TweenAnimHandler Animate(Vector3 from, Vector3 to, float timeLength, System.Action<Vector3> onValueUpdated, bool loop = false, System.Func<float, float> easingCurveFunc = null, bool timeScaleIndependent = false)
+        public static TweenAnimHandler Animate(Vector3 from, Vector3 to, float timeLength, System.Action<Vector3> onValueUpdated, System.Func<float, float> easingCurveFunc = null, TweenAnimationLoopMode loopMode = TweenAnimationLoopMode.Clamped, bool timeScaleIndependent = false)
         {
            
             TweenAnimVector3Data animData = Instance.vec3AnimPool.FetchFromPool();
@@ -37,11 +38,11 @@ namespace Hybriona
             animData.targetValue = to;
             animData.onValueUpdated = onValueUpdated;
 
-            return AssignCommonValues(animData, timeLength, loop, easingCurveFunc, timeScaleIndependent);
+            return AssignCommonValues(animData, timeLength, loopMode, easingCurveFunc, timeScaleIndependent);
 
         }
 
-        public static TweenAnimHandler Animate(Vector4 from, Vector4 to, float timeLength, System.Action<Vector4> onValueUpdated, bool loop = false, System.Func<float, float> easingCurveFunc = null, bool timeScaleIndependent = false)
+        public static TweenAnimHandler Animate(Vector4 from, Vector4 to, float timeLength, System.Action<Vector4> onValueUpdated, System.Func<float, float> easingCurveFunc = null, TweenAnimationLoopMode loopMode = TweenAnimationLoopMode.Clamped,bool timeScaleIndependent = false)
         {
            
 
@@ -51,11 +52,11 @@ namespace Hybriona
             animData.targetValue = to;
             animData.onValueUpdated = onValueUpdated;
 
-            return AssignCommonValues(animData, timeLength, loop, easingCurveFunc, timeScaleIndependent);
+            return AssignCommonValues(animData, timeLength, loopMode, easingCurveFunc, timeScaleIndependent);
 
         }
 
-        public static TweenAnimHandler Animate(Color from, Color to, float timeLength, System.Action<Color> onValueUpdated, bool loop = false, System.Func<float, float> easingCurveFunc = null, bool timeScaleIndependent = false)
+        public static TweenAnimHandler Animate(Color from, Color to, float timeLength, System.Action<Color> onValueUpdated, System.Func<float, float> easingCurveFunc = null,TweenAnimationLoopMode loopMode = TweenAnimationLoopMode.Clamped, bool timeScaleIndependent = false)
         {
            
 
@@ -65,11 +66,11 @@ namespace Hybriona
             animData.targetValue = to;
             animData.onValueUpdated = onValueUpdated;
 
-            return AssignCommonValues(animData, timeLength, loop, easingCurveFunc, timeScaleIndependent);
+            return AssignCommonValues(animData, timeLength, loopMode, easingCurveFunc, timeScaleIndependent);
 
         }
 
-        public static TweenAnimHandler Animate(Quaternion from, Quaternion to, float timeLength, System.Action<Quaternion> onValueUpdated, bool loop = false, System.Func<float, float> easingCurveFunc = null, bool timeScaleIndependent = false)
+        public static TweenAnimHandler Animate(Quaternion from, Quaternion to, float timeLength, System.Action<Quaternion> onValueUpdated, System.Func<float, float> easingCurveFunc = null, TweenAnimationLoopMode loopMode = TweenAnimationLoopMode.Clamped,bool timeScaleIndependent = false)
         {
 
 
@@ -79,13 +80,13 @@ namespace Hybriona
             animData.targetValue = to;
             animData.onValueUpdated = onValueUpdated;
 
-            return AssignCommonValues(animData, timeLength, loop, easingCurveFunc, timeScaleIndependent);
+            return AssignCommonValues(animData, timeLength, loopMode, easingCurveFunc, timeScaleIndependent);
 
         }
 
 
 
-        static TweenAnimHandler AssignCommonValues(TweenAnimData animData,float timeLength,bool loop, System.Func<float, float> easingCurveFunc = null, bool timeScaleIndependent = false )
+        static TweenAnimHandler AssignCommonValues(TweenAnimData animData,float timeLength, TweenAnimationLoopMode loopMode, System.Func<float, float> easingCurveFunc = null, bool timeScaleIndependent = false )
         {
             if(easingCurveFunc == null)
             {
@@ -93,7 +94,7 @@ namespace Hybriona
             }
             animData.id = ++Instance.animationIdCounter;
             animData.timeLength = timeLength;
-            animData.loop = loop;
+            animData.loopMode = loopMode;
             animData.easingCurveFunc = easingCurveFunc;
             animData.timeScaleIndependent = timeScaleIndependent;
             animData.Reset();
@@ -118,8 +119,32 @@ namespace Hybriona
         private GenericPool<TweenAnimQuaternionData> quaternionAnimPool;
         private GenericPool<TweenAnimColorData> colorAnimPool;
 
+
+        
+
         private IEnumerator Loop()
         {
+
+            yield return null;
+            while (true)
+            {
+                for(int i= activeAnimations.Count-1;i >= 0;i--)
+                {
+                    var activeAnim = activeAnimations[i];
+                    if(activeAnim.Update())
+                    {
+                        activeAnimations.RemoveAt(i);
+                        activeAnim.assignedHandler.Release();
+                        activeAnim.ReturnToPool();
+                    }
+                }
+                yield return null;
+            }
+        }
+
+        public override void OnInstantiated()
+        {
+            Debug.Log("OnInstantiated");
             {
                 floatAnimPool = new GenericPool<TweenAnimFloatData>(createCopyFunction: () =>
                 {
@@ -129,7 +154,7 @@ namespace Hybriona
                     return animData;
                 }, onReturnedToPoolCallback: null);
 
-               
+
             }
 
             {
@@ -141,7 +166,7 @@ namespace Hybriona
                     return animData;
                 }, onReturnedToPoolCallback: null);
 
-                
+
             }
 
             {
@@ -153,7 +178,7 @@ namespace Hybriona
                     return animData;
                 }, onReturnedToPoolCallback: null);
 
-                
+
             }
 
             {
@@ -177,24 +202,11 @@ namespace Hybriona
                     return animData;
                 }, onReturnedToPoolCallback: null);
 
-                
+
             }
 
 
-            while (true)
-            {
-                for(int i= activeAnimations.Count-1;i >= 0;i--)
-                {
-                    var activeAnim = activeAnimations[i];
-                    if(activeAnim.Update())
-                    {
-                        activeAnimations.RemoveAt(i);
-                        activeAnim.assignedHandler.Release();
-                        activeAnim.ReturnToPool();
-                    }
-                }
-                yield return null;
-            }
+            
         }
 
         private void OnEnable()
