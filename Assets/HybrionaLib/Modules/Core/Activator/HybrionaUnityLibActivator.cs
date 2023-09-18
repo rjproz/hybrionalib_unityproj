@@ -223,7 +223,7 @@ namespace Hybriona
                             //UnityEditor.PackageManager.Client.Add(pkg.packageId);
 
 
-                            var downloadRequest = UnityWebRequest.Get(PackageDownloadPath+"/"+pkg.packageId + ".tgz");
+                            var downloadRequest = UnityWebRequest.Get(PackageDownloadPath+ "/hybriona.unitylib.tgz");
                             var downloadOperation = downloadRequest.SendWebRequest();
                             while(!downloadOperation.isDone)
                             {
@@ -238,7 +238,7 @@ namespace Hybriona
                             }
                             else
                             {
-                                Debug.LogError("Failed to update " + pkg.packageId + " from url "+ downloadRequest.url+ " due to " + downloadRequest.error);
+                                Debug.LogError("Failed to update hybriona.unitylib from url " + downloadRequest.url+ " due to " + downloadRequest.error);
                             }
 
                             
