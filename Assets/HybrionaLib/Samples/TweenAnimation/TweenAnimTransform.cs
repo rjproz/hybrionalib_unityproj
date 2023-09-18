@@ -62,7 +62,7 @@ namespace Hybriona
 
 		}
     }
-
+#if UNITY_EDITOR
 
 	[CustomEditor(typeof(TweenAnimTransform))]
 	public class TweenAnimTransformEditor : Editor
@@ -130,4 +130,5 @@ namespace Hybriona
 
 		}
     }
+#endif
 }
