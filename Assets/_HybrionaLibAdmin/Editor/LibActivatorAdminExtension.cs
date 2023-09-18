@@ -41,6 +41,7 @@ namespace Hybriona
 			GUILayout.Label("Admin Tools", EditorStyles.boldLabel);
 			if (GUILayout.Button("Export Library"))
 			{
+				VersionManagerEditor.IncrementBuildNumberOnly();
 				string exportVersionVal = VersionManager.Version().ToString();
 
 				if (Directory.Exists("LibExport"))
