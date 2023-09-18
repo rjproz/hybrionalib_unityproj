@@ -233,8 +233,9 @@ namespace Hybriona
                             if(downloadRequest.result == UnityWebRequest.Result.Success)
                             {
                                 string downloadPkgPath = "Packages/hybriona.unitylib.tgz";
+                               
                                 File.WriteAllBytes(downloadPkgPath, downloadRequest.downloadHandler.data);
-
+                                downloadPkgPath = Path.GetFullPath(downloadPkgPath);
                                 var addpkgProcess = UnityEditor.PackageManager.Client.Add("hybriona.unitylib@file:"+ downloadPkgPath);
                                 while(!addpkgProcess.IsCompleted)
                                 {
