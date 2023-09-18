@@ -144,7 +144,7 @@ namespace Hybriona
 
         public override void OnInstantiated()
         {
-            Debug.Log("OnInstantiated");
+
             {
                 floatAnimPool = new GenericPool<TweenAnimFloatData>(createCopyFunction: () =>
                 {
