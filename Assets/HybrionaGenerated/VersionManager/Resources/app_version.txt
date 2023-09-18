@@ -1,1 +1,1 @@
-{"major":0,"minor":3,"patch":41,"build_number":88,"description":""}
+{"major":0,"minor":3,"patch":42,"build_number":89,"description":""}

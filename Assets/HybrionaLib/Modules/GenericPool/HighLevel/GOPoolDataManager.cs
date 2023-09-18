@@ -44,6 +44,7 @@ namespace Hybriona
 
 	}
 
+	[System.Serializable]
 	public class GOPoolDataSource
     {
 		public string poolId;
