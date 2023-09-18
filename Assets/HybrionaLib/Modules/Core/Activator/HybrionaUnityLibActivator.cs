@@ -212,8 +212,8 @@ namespace Hybriona
                     var collection = request.Result;
                     foreach(var pkg in collection)
                     {
-                        Debug.Log(pkg.packageId);
-                        if (pkg.packageId.Contains("com.hybrionalib"))
+                        //Debug.Log(pkg.packageId);
+                        if (pkg.packageId.Contains("hybriona.unitylib"))
                         {
                             Debug.Log("Trying to update hybrionalib");
                             UnityEditor.PackageManager.Client.Add(pkg.packageId);
