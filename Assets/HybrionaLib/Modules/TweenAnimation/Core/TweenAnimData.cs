@@ -74,16 +74,17 @@ namespace Hybriona
 				return false;
             }
 
-			//bool animCompleted = false;
+			bool animCompleted = false;
 
 			float timeTrackerModified = timeTracker;
 			if(timeTracker > timeLength)
             {
 				if (loopMode == TweenAnimationLoopMode.Clamped)
 				{
-
-					return true;
 					
+					timeTrackerModified = timeLength;
+					animCompleted = true;
+
 				}
 				else if(loopMode == TweenAnimationLoopMode.Loop)
                 {
@@ -99,11 +100,13 @@ namespace Hybriona
                     {
 						if(loopMode == TweenAnimationLoopMode.PingpongOnce)
                         {
-							return true;
+							timeTrackerModified = 0;
+							animCompleted =  true;
 						}
 						else
                         {
 							timeTracker = timeTracker % timeLength;
+							
 						}
 						
 						
@@ -130,7 +133,7 @@ namespace Hybriona
 #else
 			timeTracker += Time.unscaledDeltaTime * speed * (timeScaleIndependent ? 1 : Time.timeScale);
 #endif
-			return false;
+			return animCompleted;
 
 		}
 
