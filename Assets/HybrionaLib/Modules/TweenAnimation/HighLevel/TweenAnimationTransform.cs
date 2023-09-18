@@ -8,8 +8,9 @@
 
 *************************************************************************/
 using System.Collections;
-using System.Collections.Generic;
+#if UNITY_EDITOR
 using Unity.EditorCoroutines.Editor;
+#endif
 using UnityEngine;
 
 namespace Hybriona
@@ -37,10 +38,10 @@ namespace Hybriona
 			position.Reset();
 			isPlayingInEditor = true;
 
-			
+#if UNITY_EDITOR
 			EditorCoroutineUtility.StartCoroutine(RunAnimationInEditor(),this);
 
-
+#endif
 		}
 
       
