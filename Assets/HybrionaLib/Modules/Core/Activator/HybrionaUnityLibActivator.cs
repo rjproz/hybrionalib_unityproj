@@ -4,6 +4,7 @@ using SimpleJSON;
 using System.IO;
 using UnityEditorInternal;
 using System.Collections.Generic;
+using UnityEngine.Networking;
 
 namespace Hybriona
 {
@@ -97,6 +98,8 @@ namespace Hybriona
 
     public class HybrionaUnityLibActivator : EditorWindow
     {
+        public const string PackageDownloadPath = "https://media.githubusercontent.com/media/rjproz/hybrionalib_unityproj/master/PackageDownload";
+
 
         public static System.Action<ModulesData> adminUIExtension;
         [MenuItem("Hybriona/Hybriona Lib Manager")]
@@ -212,12 +215,33 @@ namespace Hybriona
                     var collection = request.Result;
                     foreach(var pkg in collection)
                     {
-                        //Debug.Log(pkg.packageId);
+                        
                         if (pkg.packageId.Contains("hybriona.unitylib"))
                         {
+                            Debug.Log(pkg.packageId);
                             Debug.Log("Trying to update hybrionalib");
-                            UnityEditor.PackageManager.Client.Add(pkg.packageId);
-                            AssetDatabase.Refresh();
+                            //UnityEditor.PackageManager.Client.Add(pkg.packageId);
+
+
+                            var downloadRequest = UnityWebRequest.Get(PackageDownloadPath+"/"+pkg.packageId + ".tgz");
+                            var downloadOperation = downloadRequest.SendWebRequest();
+                            while(!downloadOperation.isDone)
+                            {
+
+                            }
+                            if(downloadRequest.result == UnityWebRequest.Result.Success)
+                            {
+                                string downloadPkgPath = pkg.packageId + ".temp";
+                                File.WriteAllBytes(downloadPkgPath, downloadRequest.downloadHandler.data);
+                                //UnityEditor.PackageManager.Client.ad;
+                                AssetDatabase.Refresh();
+                            }
+                            else
+                            {
+                                Debug.LogError("Failed to update " + pkg.packageId + " due to " + downloadRequest.error);
+                            }
+
+                            
                         }
                     }
 
