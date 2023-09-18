@@ -238,7 +238,7 @@ namespace Hybriona
                             }
                             else
                             {
-                                Debug.LogError("Failed to update " + pkg.packageId + " due to " + downloadRequest.error);
+                                Debug.LogError("Failed to update " + pkg.packageId + " from url "+ downloadRequest.url+ " due to " + downloadRequest.error);
                             }
 
                             
