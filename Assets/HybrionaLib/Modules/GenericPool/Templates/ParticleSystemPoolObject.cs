@@ -15,12 +15,15 @@ namespace Hybriona
 {
 	public class ParticleSystemPoolObject : GOPoolObject 
 	{
-		public ParticleSystem particleSystem;
+		public new ParticleSystem particleSystem;
 
         public override void Activate()
         {
-            autoDestroy = true;
-            lifeIfAutoDestroy = particleSystem.main.duration;
+            if (!autoDestroy)
+            {
+                autoDestroy = true;
+                lifeIfAutoDestroy = particleSystem.main.duration + 1;
+            }
             particleSystem.Clear(true);
             base.Activate();
         }
