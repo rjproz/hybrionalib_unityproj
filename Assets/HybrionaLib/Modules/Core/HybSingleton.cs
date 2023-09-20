@@ -25,7 +25,10 @@ public class HybSingleton<T> : HybMonoBehaviourForSingleton where T : HybMonoBeh
 		}
 	}
 
-	
+	public static bool HasInstance()
+    {
+		return m_instance != null;
+    }
 
 	public void SetDontDestroyOnLoad()
 	{
