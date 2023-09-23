@@ -29,5 +29,11 @@ namespace Hybriona
             }
         }
 
+        public override void OnReturnToPool()
+        {
+            transform.SetParent(null);
+            base.OnReturnToPool();
+        }
+
     }
 }
