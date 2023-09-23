@@ -29,21 +29,6 @@ namespace Hybriona
             }
         }
 
-        public override void OnReturnToPool()
-        {
-            isInPool = true;
-            transform.SetParent(null);
-            base.OnReturnToPool();
-        }
-
-
-        public virtual void OnDisable()
-        {
-            if (!isInPool)
-            {
-                OnReturnToPool();
-            }
-        }
-
+      
     }
 }
