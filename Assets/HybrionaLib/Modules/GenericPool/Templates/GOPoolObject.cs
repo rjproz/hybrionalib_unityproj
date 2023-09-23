@@ -17,9 +17,9 @@ namespace Hybriona
 	{
 		public bool autoDestroy;
 		public float lifeIfAutoDestroy;
-		//public string poolId { get; set; }
+        //public string poolId { get; set; }
 
-
+        private bool isInPool;
         public override void Activate()
         {
             base.Activate();
@@ -31,8 +31,18 @@ namespace Hybriona
 
         public override void OnReturnToPool()
         {
+            isInPool = true;
             transform.SetParent(null);
             base.OnReturnToPool();
+        }
+
+
+        public virtual void OnDisable()
+        {
+            if (!isInPool)
+            {
+                OnReturnToPool();
+            }
         }
 
     }
