@@ -77,6 +77,7 @@ namespace Hybriona
                 else
                 {
                     evenTriggerData = Instance.evenTriggerDataPool.Dequeue();
+                    evenTriggerData.Clean();
                 }
 
 
@@ -105,8 +106,13 @@ namespace Hybriona
                     var triggerData = activeEventTriggers[i];
                     if(triggerData.HasCompleted())
                     {
-                        System.Action actionCached = triggerData.completionAction;
-                        triggerData.Clean();
+                        
+                        if (triggerData.completionAction != null)
+                        {
+                            triggerData.completionAction();
+                        }
+
+                       
                         lock (readLock)
                         {
                             evenTriggerDataPool.Enqueue(triggerData);
@@ -117,10 +123,7 @@ namespace Hybriona
                         Instance.poolCount = Instance.evenTriggerDataPool.Count;
                         Instance.activeCount = Instance.activeEventTriggers.Count;
 #endif
-                        if (actionCached != null)
-                        {
-                            actionCached();
-                        }
+                        
                        
                     }
                 }
