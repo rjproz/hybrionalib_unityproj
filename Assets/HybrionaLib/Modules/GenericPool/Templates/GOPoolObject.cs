@@ -25,10 +25,17 @@ namespace Hybriona
             base.Activate();
             if(autoDestroy)
             {
-                EventTriggerManager.AddTriggerEvent(lifeIfAutoDestroy, ReturnToPool);
+                EventTriggerManager.AddTriggerEvent(lifeIfAutoDestroy, AutoDestroyCode);
             }
         }
 
-      
+
+        void AutoDestroyCode()
+        {
+            if(this != null && gameObject != null)
+            {
+                ReturnToPool();
+            }
+        }
     }
 }
