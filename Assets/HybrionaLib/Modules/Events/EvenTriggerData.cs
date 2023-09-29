@@ -8,8 +8,11 @@ namespace Hybriona
         public bool isTimeScaleIndependent { get; set; }
         public System.Func<bool> conditionTrigger { get; set; }
         public System.Action completionAction { get; set; }
+        internal ulong Id { get; set; }
+        internal bool isStopped = false;
 
         private float timeTrackingStarted;
+        
         internal void StartTracking()
         {
             if (isTimeScaleIndependent)

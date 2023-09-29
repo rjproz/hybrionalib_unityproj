@@ -18,6 +18,7 @@ namespace Hybriona
         
         private static EventTriggerManager instance;
         private static object readLock = new object();
+        private static ulong idCounter;
         protected static EventTriggerManager Instance
         {
             get
@@ -43,28 +44,28 @@ namespace Hybriona
         }
 
 
-        public static void AddTriggerEvent(float triggerTimeElasped, System.Action completion)
+        public static ulong AddTriggerEvent(float triggerTimeElasped, System.Action completion)
         {
-            AddTriggerEvent(triggerTimeElasped, false, null, completion);
+            return AddTriggerEvent(triggerTimeElasped, false, null, completion);
         }
 
-        public static void AddTriggerEvent(System.Func<bool> conditionTrigger, System.Action completion)
+        public static ulong AddTriggerEvent(System.Func<bool> conditionTrigger, System.Action completion)
         {
-            AddTriggerEvent(-1, false, conditionTrigger, completion);
+            return AddTriggerEvent(-1, false, conditionTrigger, completion);
         }
 
 
-        public static void AddTriggerEvent(float triggerTimeElasped, bool timeScaleIndependent, System.Action completion)
+        public static ulong AddTriggerEvent(float triggerTimeElasped, bool timeScaleIndependent, System.Action completion)
         {
-            AddTriggerEvent(triggerTimeElasped, timeScaleIndependent, null, completion);
+            return AddTriggerEvent(triggerTimeElasped, timeScaleIndependent, null, completion);
         }
 
-        public static void AddTriggerEvent(float triggerTimeElasped, System.Func<bool> conditionTrigger,  System.Action completion)
+        public static ulong AddTriggerEvent(float triggerTimeElasped, System.Func<bool> conditionTrigger,  System.Action completion)
         {
-            AddTriggerEvent(triggerTimeElasped, conditionTrigger, completion);
+            return AddTriggerEvent(triggerTimeElasped, conditionTrigger, completion);
         }
 
-        public static void AddTriggerEvent(float triggerTimeElasped, bool timeScaleIndependent, System.Func<bool> conditionTrigger, System.Action completion)
+        public static ulong AddTriggerEvent(float triggerTimeElasped, bool timeScaleIndependent, System.Func<bool> conditionTrigger, System.Action completion)
         {
             EventTriggerData evenTriggerData = null;
 
@@ -80,7 +81,7 @@ namespace Hybriona
                     evenTriggerData.Clean();
                 }
 
-
+                evenTriggerData.Id = ++idCounter;
                 evenTriggerData.triggerTimeElasped = triggerTimeElasped;
                 evenTriggerData.isTimeScaleIndependent = timeScaleIndependent;
                 evenTriggerData.conditionTrigger = conditionTrigger;
@@ -93,9 +94,18 @@ namespace Hybriona
                 Instance.activeCount = Instance.activeEventTriggers.Count;
 #endif
             }
+            return evenTriggerData.Id;
 
         }
 
+        public static void AbortEvent(ulong eventTriggerId)
+        {
+            var eventTriggerData = Instance.activeEventTriggers.FindLast(o => o.Id == eventTriggerId);
+            if(eventTriggerData != null)
+            {
+                eventTriggerData.isStopped = true;
+            }
+        }
 
         private IEnumerator LoopProcess()
         {
@@ -104,7 +114,7 @@ namespace Hybriona
                 for(int i = activeEventTriggers.Count - 1; i >=0; i--)
                 {
                     var triggerData = activeEventTriggers[i];
-                    if(triggerData.HasCompleted())
+                    if(triggerData.isStopped || triggerData.HasCompleted())
                     {
                         
                         if (triggerData.completionAction != null)

@@ -20,15 +20,22 @@ namespace Hybriona
         //public string poolId { get; set; }
 
         private bool isInPool;
+
+        protected ulong eventTriggerId;
         public override void Activate()
         {
             base.Activate();
             if(autoDestroy)
             {
-                EventTriggerManager.AddTriggerEvent(lifeIfAutoDestroy, AutoDestroyCode);
+                eventTriggerId = EventTriggerManager.AddTriggerEvent(lifeIfAutoDestroy, AutoDestroyCode);
             }
         }
 
+        public override void OnReturnToPool()
+        {
+            EventTriggerManager.AbortEvent(eventTriggerId);
+            gameObject.SetActive(false);
+        }
 
         void AutoDestroyCode()
         {
