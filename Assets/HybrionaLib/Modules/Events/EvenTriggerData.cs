@@ -15,6 +15,7 @@ namespace Hybriona
         
         internal void StartTracking()
         {
+            isStopped = false;
             if (isTimeScaleIndependent)
             {
                 timeTrackingStarted = Time.realtimeSinceStartup;
