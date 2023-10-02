@@ -9,7 +9,7 @@ namespace Hybriona
         public string rootPath;
         public List<Module> modules = new List<Module>();
 
-
+#if UNITY_EDITOR
         public bool IsModuleUsedInActiveModules(Module module)
         {
             var oneDependentModule = modules.FindLast(o => o.dependencies.Contains(module.id) && ModulesUserPrefs.Instance().dic.GetValue(o.id));
@@ -19,6 +19,7 @@ namespace Hybriona
             }
             return oneDependentModule != null;
         }
+#endif
     }
 
     [System.Serializable]
