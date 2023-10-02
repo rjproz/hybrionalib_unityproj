@@ -12,7 +12,7 @@ namespace Hybriona
 
         public bool IsModuleUsedInActiveModules(Module module)
         {
-            var oneDependentModule = modules.FindLast(o => o.dependencies.Contains(module.id));
+            var oneDependentModule = modules.FindLast(o => o.dependencies.Contains(module.id) && ModulesUserPrefs.Instance().dic.GetValue(o.id));
             if (oneDependentModule != null)
             {
                 UnityEngine.Debug.Log(oneDependentModule.id + " is dependent on " + module.id);
