@@ -134,7 +134,7 @@ PlayerSettings:
     16:10: 1
     16:9: 1
     Others: 1
-  bundleVersion: 0.3.56
+  bundleVersion: 0.3.58
   preloadedAssets: []
   metroInputSource: 0
   wsaTransparentSwapchain: 0
@@ -159,12 +159,12 @@ PlayerSettings:
     Standalone: com.DefaultCompany.HybrionaLibUnityProj
     iPhone: com.DefaultCompany.HybrionaLibUnityProj
   buildNumber:
-    Standalone: 103
+    Standalone: 105
     VisionOS: 0
-    iPhone: 103
+    iPhone: 105
     tvOS: 0
   overrideDefaultApplicationIdentifier: 0
-  AndroidBundleVersionCode: 103
+  AndroidBundleVersionCode: 105
   AndroidMinSdkVersion: 22
   AndroidTargetSdkVersion: 0
   AndroidPreferredInstallLocation: 1
