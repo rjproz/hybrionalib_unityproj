@@ -15,7 +15,7 @@ namespace Hybriona
             var oneDependentModule = modules.FindLast(o => o.dependencies.Contains(module.id));
             if (oneDependentModule != null)
             {
-                UnityEngine.Debug.LogError(oneDependentModule.id + " is dependent on " + module.id);
+                UnityEngine.Debug.Log(oneDependentModule.id + " is dependent on " + module.id);
             }
             return oneDependentModule != null;
         }
