@@ -12,7 +12,7 @@
             "id": "hybriona.generic_pool",
             "displayname": "Generic Pool",
             "description": "Generic Pool manager to create object pools of any type.\n\nIt can be used to cache Monobehaviours, Components, Gameobjects, Dictionary<T> and even custom classes.",
-            
+
 
             "root": "Modules/GenericPool",
             "sample": "Samples/GenericPool",
@@ -40,14 +40,14 @@
         {
             "id": "hybriona.version_manager",
             "displayname": "Version Manager",
-          
+
 
             "root": "Modules/VersionManager"
         },
         {
             "id": "hybriona.httpclient",
             "displayname": "Http Client",
-           
+
             "root": "Modules/HttpRest",
             "dependencies": [ "hybriona.core" ]
         },
@@ -81,11 +81,20 @@
         {
             "id": "hybriona.adsmanager",
             "displayname": "Ads Manager",
-            
+
             "root": "Modules/AdsManager",
             "dependencies": [
                 "hybriona.event_trigger"
             ]
+        },
+        {
+            "id": "hybriona.hybanalytics",
+            "displayname": "Custom Analytics",
+
+            "root": "Modules/CustomAnalytics",
+            "sample": "Samples/CustomAnalytics",
+            "dependencies": [ "hybriona.core" ]
         }
+        
     ]
 }
