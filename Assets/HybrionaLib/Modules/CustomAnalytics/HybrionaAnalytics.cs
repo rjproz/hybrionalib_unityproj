@@ -101,7 +101,11 @@ namespace Hybriona
                 timer = 0;
                 while (pendingEvents.Count > 0)
                 {
-                    var eventDataString = pendingEvents.Dequeue();
+                    string eventDataString = null;
+                    lock (accessLock)
+                    {
+                        eventDataString = pendingEvents.Dequeue();
+                    }
                     using (var request = new UnityWebRequest(REPORT_URL, UnityWebRequest.kHttpVerbPOST))
                     {
                         var bytes = System.Text.Encoding.UTF8.GetBytes(eventData.ToJSON());
@@ -116,13 +120,18 @@ namespace Hybriona
                         if (request.responseCode < 400)
                         {
                             //success
+#if UNITY_EDITOR
+                            Debug.LogFormat("Analytics Reported {0} ",eventDataString);
+#endif
                         }
                         else
                         {
                             //retry again
+                            Debug.LogErrorFormat("Analytics Failed {0} ", eventDataString);
                             lock (accessLock)
                             {
                                 pendingEvents.Enqueue(eventDataString);
+
                             }
                         }
                     }
