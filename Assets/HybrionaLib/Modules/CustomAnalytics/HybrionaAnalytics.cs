@@ -86,7 +86,11 @@ namespace Hybriona
             StartCoroutine(AutoFlushEvents());
         }
 
-
+        public void Reset()
+        {
+            PlayerPrefs.DeleteKey(HybAnalyticsUser.HybrionaAnalyticsUserDataKey);
+            PlayerPrefs.Save();
+        }
 
         IEnumerator AutoFlushEvents()
         {
