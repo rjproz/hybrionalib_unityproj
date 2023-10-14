@@ -45,19 +45,14 @@ namespace Hybriona
 			
 			if(pendingEvents.eventsRaw.Count > 1000)
             {
-
-#if LOG_HYBRIONA_ANALYTICS
-				Debug.Log("Clearing Events");
-#endif
-				pendingEvents.eventsRaw.Clear();
-				
+				pendingEvents.eventsRaw.Clear();	
 			}
 			PlayerPrefs.SetString(HybrionaAnalyticsUserDataKey, JsonUtility.ToJson(this));
 			PlayerPrefs.Save();
 
-#if LOG_HYBRIONA_ANALYTICS
-			Debug.LogFormat("Saving {0} but got {1} ", JsonUtility.ToJson(this), PlayerPrefs.GetString(HybrionaAnalyticsUserDataKey));
-#endif
+//#if LOG_HYBRIONA_ANALYTICS
+//			Debug.LogFormat("Saving {0} with count {2} but got {1} ", JsonUtility.ToJson(this), PlayerPrefs.GetString(HybrionaAnalyticsUserDataKey), pendingEvents.eventsRaw.Count);
+//#endif
 
 		}
 

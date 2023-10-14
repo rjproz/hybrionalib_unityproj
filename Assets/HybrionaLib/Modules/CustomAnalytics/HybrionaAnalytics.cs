@@ -105,8 +105,9 @@ namespace Hybriona
             {
                 forcedFlush = false;
                 timer = 0;
-                if (hybAnalyticsUser.pendingEvents.eventsRaw.Count > 0)
+                if (hybAnalyticsUser.pendingEvents.eventsRaw.Count > 0 && Application.internetReachability != NetworkReachability.NotReachable)
                 {
+                    
                     string alleventDataString = null;
                     lock (accessLock)
                     {
@@ -142,15 +143,16 @@ namespace Hybriona
                             lock (accessLock)
                             {
                                 JsonUtility.FromJsonOverwrite(alleventDataString, tempPendingEvents);
-                              
-                                tempPendingEvents.eventsRaw.Clear();
+     
                                 hybAnalyticsUser.pendingEvents.eventsRaw.AddRange(tempPendingEvents.eventsRaw);
-                               
+                                
+                                tempPendingEvents.eventsRaw.Clear();
 
                             }
                         }
-                        hybAnalyticsUser.Save();
+                        
                     }
+                    hybAnalyticsUser.Save();
                 }
 
                 while (timer < 30 && !forcedFlush)
@@ -185,6 +187,10 @@ namespace Hybriona
                 eventData.event_data = jsonData;
                 string eventDataString = eventData.ToJSON();
                 hybAnalyticsUser.pendingEvents.eventsRaw.Add(eventDataString);
+                if(Application.internetReachability == NetworkReachability.NotReachable)
+                {
+                    hybAnalyticsUser.Save();
+                }
             }
         }
 
