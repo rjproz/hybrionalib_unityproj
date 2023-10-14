@@ -24,8 +24,8 @@ namespace Hybriona
         public string userId { get; private set; }
         public string sessionId { get; private set; }
 
-        private string projectId;
-        private string storeName;
+        public string projectId { get; private set; }
+        public string storeName { get; private set; }
 
         private HybAnalyticsUser hybAnalyticsUser;
         private HybAnalyticsEventData eventData = null;
@@ -71,7 +71,7 @@ namespace Hybriona
             eventData.user_id = userId = hybAnalyticsUser.userId;
             eventData.session_id = hybAnalyticsUser.GetNextSessionId() ;
 
-            if (string.IsNullOrEmpty(storeName))
+            if (string.IsNullOrEmpty(this.storeName))
             {
 #if UNITY_IOS
                 storeName = "Appstore";
