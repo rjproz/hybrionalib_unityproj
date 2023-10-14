@@ -44,12 +44,17 @@ namespace Hybriona
 
 		public void Save()
         {
-			PlayerPrefs.SetString(HybrionaAnalyticsUserDataKey, JsonUtility.ToJson(this));
-			if(pendingEvents.eventsRaw.Count > 500)
+			
+			if(pendingEvents.eventsRaw.Count > 1000)
             {
 				pendingEvents.eventsRaw.Clear();
 				
 			}
+			PlayerPrefs.SetString(HybrionaAnalyticsUserDataKey, JsonUtility.ToJson(this));
+
+#if LOG_HYBRIONA_ANALYTICS
+			Debug.Log("Saving " + PlayerPrefs.GetString(HybrionaAnalyticsUserDataKey));
+#endif
 			PlayerPrefs.Save();
 		}
 
