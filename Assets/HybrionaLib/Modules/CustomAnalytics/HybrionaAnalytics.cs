@@ -10,7 +10,7 @@
 using UnityEngine;
 using UnityEngine.Networking;
 using System.Collections;
-using System.Collections.Generic;
+
 
 namespace Hybriona
 {
@@ -33,7 +33,7 @@ namespace Hybriona
 
   
 
-        private HybAnalyticsAllPendingEvents pendingEvents = new HybAnalyticsAllPendingEvents();
+       
         private HybAnalyticsAllPendingEvents tempPendingEvents = new HybAnalyticsAllPendingEvents();
 
 
@@ -105,13 +105,13 @@ namespace Hybriona
             {
                 forcedFlush = false;
                 timer = 0;
-                if (pendingEvents.eventsRaw.Count > 0)
+                if (hybAnalyticsUser.pendingEvents.eventsRaw.Count > 0)
                 {
                     string alleventDataString = null;
                     lock (accessLock)
                     {
-                        alleventDataString = pendingEvents.ToJSON();
-                        pendingEvents.eventsRaw.Clear();
+                        alleventDataString = hybAnalyticsUser.pendingEvents.ToJSON();
+                        hybAnalyticsUser.pendingEvents.eventsRaw.Clear();
                     }
                     using (var request = new UnityWebRequest(REPORT_URL, UnityWebRequest.kHttpVerbPOST))
                     {
@@ -129,22 +129,27 @@ namespace Hybriona
                         if (request.responseCode == 201)
                         {
                             //success
-#if UNITY_EDITOR
+#if UNITY_EDITOR && LOG_HYBRIONA_ANALYTICS
                             Debug.LogFormat("Analytics Reported {0} ",alleventDataString);
 #endif
                         }
                         else
                         {
                             //retry again
+#if UNITY_EDITOR && LOG_HYBRIONA_ANALYTICS
                             Debug.LogErrorFormat("Analytics Failed {0} ", alleventDataString);
+#endif
                             lock (accessLock)
                             {
                                 JsonUtility.FromJsonOverwrite(alleventDataString, tempPendingEvents);
-                                pendingEvents.eventsRaw.AddRange(tempPendingEvents.eventsRaw);
+                              
                                 tempPendingEvents.eventsRaw.Clear();
+                                hybAnalyticsUser.pendingEvents.eventsRaw.AddRange(tempPendingEvents.eventsRaw);
+                               
 
                             }
                         }
+                        hybAnalyticsUser.Save();
                     }
                 }
 
@@ -179,7 +184,7 @@ namespace Hybriona
                 eventData.event_name = eventName;
                 eventData.event_data = jsonData;
                 string eventDataString = eventData.ToJSON();
-                pendingEvents.eventsRaw.Add(eventDataString);
+                hybAnalyticsUser.pendingEvents.eventsRaw.Add(eventDataString);
             }
         }
 

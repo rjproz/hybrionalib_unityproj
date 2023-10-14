@@ -20,7 +20,7 @@ namespace Hybriona
 
 		public string userId;
 		public int sessionId;
-
+		public HybAnalyticsAllPendingEvents pendingEvents = new HybAnalyticsAllPendingEvents();
 		public const string HybrionaAnalyticsUserDataKey = "HybrionaAnalyticsUserData";
 
 		public void Load()
@@ -38,9 +38,20 @@ namespace Hybriona
 		public int GetNextSessionId()
         {
 			sessionId = sessionId + 1;
-			PlayerPrefs.SetString(HybrionaAnalyticsUserDataKey, JsonUtility.ToJson(this));
+			Save();
 			return sessionId;
         }
+
+		public void Save()
+        {
+			PlayerPrefs.SetString(HybrionaAnalyticsUserDataKey, JsonUtility.ToJson(this));
+			if(pendingEvents.eventsRaw.Count > 500)
+            {
+				pendingEvents.eventsRaw.Clear();
+				
+			}
+			PlayerPrefs.Save();
+		}
 
 	}
 }
