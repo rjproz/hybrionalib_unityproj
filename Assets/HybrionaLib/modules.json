@@ -92,8 +92,7 @@
             "displayname": "Custom Analytics",
 
             "root": "Modules/CustomAnalytics",
-            "sample": "Samples/CustomAnalytics",
-            "dependencies": [ "hybriona.simple_zip" ]
+            "sample": "Samples/CustomAnalytics"
         }
         
     ]
