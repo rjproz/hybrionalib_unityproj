@@ -51,11 +51,12 @@ namespace Hybriona
 				
 			}
 			PlayerPrefs.SetString(HybrionaAnalyticsUserDataKey, JsonUtility.ToJson(this));
+			PlayerPrefs.Save();
 
 #if LOG_HYBRIONA_ANALYTICS
 			Debug.Log("Saving " + PlayerPrefs.GetString(HybrionaAnalyticsUserDataKey));
 #endif
-			PlayerPrefs.Save();
+
 		}
 
 	}
