@@ -93,7 +93,7 @@
 
             "root": "Modules/CustomAnalytics",
             "sample": "Samples/CustomAnalytics",
-            "dependencies": [ "hybriona.core" ]
+            "dependencies": [ "hybriona.simple_zip" ]
         }
         
     ]
