@@ -115,8 +115,8 @@ namespace Hybriona
                     }
                     using (var request = new UnityWebRequest(REPORT_URL, UnityWebRequest.kHttpVerbPOST))
                     {
-                        int byteCount = Zip.Compress(alleventDataString).Length;
-                        Debug.LogFormat("Compressed from {0} to {1}", alleventDataString.Length, byteCount);
+                        //int byteCount = Zip.Compress(alleventDataString).Length;
+                        //Debug.LogFormat("Compressed from {0} to {1}", alleventDataString.Length, byteCount);
                         var bytes = System.Text.Encoding.UTF8.GetBytes(alleventDataString);
                         request.uploadHandler = new UploadHandlerRaw(bytes);
                         request.downloadHandler = new DownloadHandlerBuffer();
