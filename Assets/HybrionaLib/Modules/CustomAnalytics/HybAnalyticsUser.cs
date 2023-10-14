@@ -56,7 +56,7 @@ namespace Hybriona
 			PlayerPrefs.Save();
 
 #if LOG_HYBRIONA_ANALYTICS
-			Debug.Log("Saving " + PlayerPrefs.GetString(HybrionaAnalyticsUserDataKey));
+			Debug.LogFormat("Saving {0} but got {1} ", JsonUtility.ToJson(this), PlayerPrefs.GetString(HybrionaAnalyticsUserDataKey));
 #endif
 
 		}
