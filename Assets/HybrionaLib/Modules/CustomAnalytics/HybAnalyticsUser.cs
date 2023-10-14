@@ -7,8 +7,6 @@
  *  Date         :  13-10-2023 22:03:42
 
 *************************************************************************/
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Hybriona
@@ -47,6 +45,10 @@ namespace Hybriona
 			
 			if(pendingEvents.eventsRaw.Count > 1000)
             {
+
+#if LOG_HYBRIONA_ANALYTICS
+				Debug.Log("Clearing Events");
+#endif
 				pendingEvents.eventsRaw.Clear();
 				
 			}
