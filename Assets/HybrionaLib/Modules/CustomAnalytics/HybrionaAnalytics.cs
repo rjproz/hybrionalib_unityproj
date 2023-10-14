@@ -115,7 +115,7 @@ namespace Hybriona
                     }
                     using (var request = new UnityWebRequest(REPORT_URL, UnityWebRequest.kHttpVerbPOST))
                     {
-                        var bytes = System.Text.Encoding.UTF8.GetBytes(eventData.ToJSON());
+                        var bytes = System.Text.Encoding.UTF8.GetBytes(alleventDataString);
                         request.uploadHandler = new UploadHandlerRaw(bytes);
                         request.downloadHandler = new DownloadHandlerBuffer();
 
