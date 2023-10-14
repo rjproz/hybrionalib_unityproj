@@ -11,7 +11,6 @@ using UnityEngine;
 using UnityEngine.Networking;
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading;
 
 namespace Hybriona
 {
@@ -31,7 +30,13 @@ namespace Hybriona
         private HybAnalyticsUser hybAnalyticsUser;
         private HybAnalyticsEventData eventData = null;
 
-        private Queue<string> pendingEvents = new Queue<string>();
+
+  
+
+        private HybAnalyticsAllPendingEvents pendingEvents = new HybAnalyticsAllPendingEvents();
+        private HybAnalyticsAllPendingEvents tempPendingEvents = new HybAnalyticsAllPendingEvents();
+
+
         private bool forcedFlush;
         static object accessLock = new object();
 
@@ -48,6 +53,9 @@ namespace Hybriona
             hybAnalyticsUser.Load();
 
             eventData = new HybAnalyticsEventData();
+           
+
+
             eventData.environment = (Application.isEditor || Debug.isDebugBuild) ? 0 : 1;
             eventData.project_id = this.projectId;
             eventData.bundle_id = Application.identifier;
@@ -81,8 +89,6 @@ namespace Hybriona
 
             ReportCustomEvent("newPlayer");
 
-           
-
             StartCoroutine(AutoFlushEvents());
         }
 
@@ -99,12 +105,13 @@ namespace Hybriona
             {
                 forcedFlush = false;
                 timer = 0;
-                while (pendingEvents.Count > 0)
+                if (pendingEvents.eventsRaw.Count > 0)
                 {
-                    string eventDataString = null;
+                    string alleventDataString = null;
                     lock (accessLock)
                     {
-                        eventDataString = pendingEvents.Dequeue();
+                        alleventDataString = pendingEvents.ToJSON();
+                        pendingEvents.eventsRaw.Clear();
                     }
                     using (var request = new UnityWebRequest(REPORT_URL, UnityWebRequest.kHttpVerbPOST))
                     {
@@ -117,20 +124,22 @@ namespace Hybriona
                         yield return request.SendWebRequest();
 
 
-                        if (request.responseCode < 400)
+                        if (request.responseCode == 200)
                         {
                             //success
 #if UNITY_EDITOR
-                            Debug.LogFormat("Analytics Reported {0} ",eventDataString);
+                            Debug.LogFormat("Analytics Reported {0} ",alleventDataString);
 #endif
                         }
                         else
                         {
                             //retry again
-                            Debug.LogErrorFormat("Analytics Failed {0} ", eventDataString);
+                            Debug.LogErrorFormat("Analytics Failed {0} ", alleventDataString);
                             lock (accessLock)
                             {
-                                pendingEvents.Enqueue(eventDataString);
+                                JsonUtility.FromJsonOverwrite(alleventDataString, tempPendingEvents);
+                                pendingEvents.eventsRaw.AddRange(tempPendingEvents.eventsRaw);
+                                tempPendingEvents.eventsRaw.Clear();
 
                             }
                         }
@@ -163,10 +172,12 @@ namespace Hybriona
           
             lock (accessLock)
             {
+                eventData.event_id = "Evt-"+System.Guid.NewGuid();
+                eventData.timestamp = System.DateTime.UtcNow.ToString("yyyy-MM-dd hh:mm:ss");
                 eventData.event_name = eventName;
                 eventData.event_data = jsonData;
                 string eventDataString = eventData.ToJSON();
-                pendingEvents.Enqueue(eventDataString);
+                pendingEvents.eventsRaw.Add(eventDataString);
             }
         }
 
