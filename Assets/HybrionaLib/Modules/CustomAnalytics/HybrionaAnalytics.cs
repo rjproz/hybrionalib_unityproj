@@ -74,13 +74,13 @@ namespace Hybriona
             if (string.IsNullOrEmpty(this.storeName))
             {
 #if UNITY_IOS
-                storeName = "Appstore";
+                this.storeName = "Appstore";
 #elif UNITY_ANDROID
-                storeName = "GooglePlay";
+                this.storeName = "GooglePlay";
 #elif UNITY_WEBGL
-                storeName = Application.absoluteURL.Replace("https://", "").Replace("http://", "").Split('/')[0];
+                this.storeName = Application.absoluteURL.Replace("https://", "").Replace("http://", "").Split('/')[0];
 #else
-                storeName = "None";
+                this.storeName = "None";
 #endif
             }
 
