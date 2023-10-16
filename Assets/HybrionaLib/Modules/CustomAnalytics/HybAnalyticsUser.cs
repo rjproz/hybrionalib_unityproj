@@ -25,12 +25,19 @@ namespace Hybriona
         {
 			string json = PlayerPrefs.GetString(HybrionaAnalyticsUserDataKey, "{ }");
 			JsonUtility.FromJsonOverwrite(json, this);
-			if(string.IsNullOrEmpty(userId))
+			if(string.IsNullOrEmpty(this.userId))
             {
+			
 				userId = System.Guid.NewGuid().ToString();
 				sessionId = 0;
 
 			}
+        }
+
+		public void SetUserId(string userId)
+        {
+			this.userId = userId;
+			Save();
         }
 
 		public int GetNextSessionId()

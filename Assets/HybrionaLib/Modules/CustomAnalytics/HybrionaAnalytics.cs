@@ -21,6 +21,7 @@ namespace Hybriona
         public const string REPORT_URL = "https://vps.hybriona.com/api/analytics/report";
 
         public bool isInitialized { get; private set; }
+        public bool isDataCollectionEnabled { get; private set; }
         public string userId { get; private set; }
         public string sessionId { get; private set; }
 
@@ -40,7 +41,16 @@ namespace Hybriona
         private bool forcedFlush;
         static object accessLock = new object();
 
-        public void Initialize(string projectId,string storeName = null)
+
+        [System.ObsoleteAttribute("Use Init(,) instead and call StartDataCollection() to start!")]
+        public void Initialize(string projectId, string storeName = null)
+        {
+            Init(projectId, storeName);
+            StartDataCollection();
+        }
+
+        
+        public void Init(string projectId,string storeName = null)
         {
             if(isInitialized)
             {
@@ -87,9 +97,23 @@ namespace Hybriona
             eventData.store_name = this.storeName;
             isInitialized = true;
 
-            ReportCustomEvent("newPlayer");
+            
+        }
 
-            StartCoroutine(AutoFlushEvents());
+        public void StartDataCollection()
+        {
+            if (!isDataCollectionEnabled)
+            {
+                isDataCollectionEnabled = true;
+                ReportCustomEvent("newPlayer");
+                StartCoroutine(AutoFlushEvents());
+            }
+
+        }
+
+        public void SetUserId(string userId)
+        {
+            hybAnalyticsUser.SetUserId(userId);
         }
 
         public void Reset()
@@ -173,6 +197,9 @@ namespace Hybriona
 
         public void ReportCustomEvent(string eventName,string jsonData)
         {
+            if (!isDataCollectionEnabled)
+                return;
+
             if (string.IsNullOrEmpty(jsonData))
             {
                 jsonData = "{ }";
