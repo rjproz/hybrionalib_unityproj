@@ -143,17 +143,14 @@ namespace Hybriona
             yield return null;
             while (true)
             {
-                if (activeAnimations.Count > 0)
+                for (int i = activeAnimations.Count - 1; i >= 0; i--)
                 {
-                    for (int i = activeAnimations.Count - 1; i >= 0; i--)
+                    var activeAnim = activeAnimations[i];
+                    if (activeAnim.Update())
                     {
-                        var activeAnim = activeAnimations[i];
-                        if (activeAnim.Update())
-                        {
-                            activeAnimations.RemoveAt(i);
-                            activeAnim.assignedHandler.Release();
-                            activeAnim.ReturnToPool();
-                        }
+                        activeAnimations.RemoveAt(i);
+                        activeAnim.assignedHandler.Release();
+                        activeAnim.ReturnToPool();
                     }
                 }
                 yield return null;
@@ -162,17 +159,14 @@ namespace Hybriona
 
         private void FixedUpdate()
         {
-            if (activeFixedUpdateAnimations.Count > 0)
+            for (int i = activeFixedUpdateAnimations.Count - 1; i >= 0; i--)
             {
-                for (int i = activeFixedUpdateAnimations.Count - 1; i >= 0; i--)
+                var activeAnim = activeFixedUpdateAnimations[i];
+                if (activeAnim.FixedUpdate())
                 {
-                    var activeAnim = activeFixedUpdateAnimations[i];
-                    if (activeAnim.FixedUpdate())
-                    {
-                        activeAnimations.RemoveAt(i);
-                        activeAnim.assignedHandler.Release();
-                        activeAnim.ReturnToPool();
-                    }
+                    activeFixedUpdateAnimations.RemoveAt(i);
+                    activeAnim.assignedHandler.Release();
+                    activeAnim.ReturnToPool();
                 }
             }
         }
