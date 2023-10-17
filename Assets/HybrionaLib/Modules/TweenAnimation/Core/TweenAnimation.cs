@@ -143,14 +143,17 @@ namespace Hybriona
             yield return null;
             while (true)
             {
-                for(int i= activeAnimations.Count-1;i >= 0;i--)
+                if (activeAnimations.Count > 0)
                 {
-                    var activeAnim = activeAnimations[i];
-                    if(activeAnim.Update())
+                    for (int i = activeAnimations.Count - 1; i >= 0; i--)
                     {
-                        activeAnimations.RemoveAt(i);
-                        activeAnim.assignedHandler.Release();
-                        activeAnim.ReturnToPool();
+                        var activeAnim = activeAnimations[i];
+                        if (activeAnim.Update())
+                        {
+                            activeAnimations.RemoveAt(i);
+                            activeAnim.assignedHandler.Release();
+                            activeAnim.ReturnToPool();
+                        }
                     }
                 }
                 yield return null;
@@ -159,14 +162,17 @@ namespace Hybriona
 
         private void FixedUpdate()
         {
-            for (int i = activeFixedUpdateAnimations.Count - 1; i >= 0; i--)
+            if (activeFixedUpdateAnimations.Count > 0)
             {
-                var activeAnim = activeFixedUpdateAnimations[i];
-                if (activeAnim.FixedUpdate())
+                for (int i = activeFixedUpdateAnimations.Count - 1; i >= 0; i--)
                 {
-                    activeAnimations.RemoveAt(i);
-                    activeAnim.assignedHandler.Release();
-                    activeAnim.ReturnToPool();
+                    var activeAnim = activeFixedUpdateAnimations[i];
+                    if (activeAnim.FixedUpdate())
+                    {
+                        activeAnimations.RemoveAt(i);
+                        activeAnim.assignedHandler.Release();
+                        activeAnim.ReturnToPool();
+                    }
                 }
             }
         }
