@@ -1,0 +1,99 @@
+{
+
+    "modules": [
+        {
+            "id": "hybriona.core",
+            "displayname": "Core",
+            "alwaysEnabled": true,
+            "root": "Modules/Core"
+
+        },
+        {
+            "id": "hybriona.generic_pool",
+            "displayname": "Generic Pool",
+            "description": "Generic Pool manager to create object pools of any type.\n\nIt can be used to cache Monobehaviours, Components, Gameobjects, Dictionary<T> and even custom classes.",
+
+
+            "root": "Modules/GenericPool",
+            "sample": "Samples/GenericPool",
+            "dependencies": [ "hybriona.core", "hybriona.event_trigger" ]
+        },
+        {
+            "id": "hybriona.tween_animation",
+            "displayname": "Tween Animation",
+            "description": "Tween Animation Library to animate values. Animate floats, Vectors, Transforms etc using this single module.\n\nRefer https://easings.net/ to understand about easing curves.",
+
+
+            "root": "Modules/TweenAnimation",
+            "sample": "Samples/TweenAnimation",
+            "dependencies": [ "hybriona.core", "hybriona.generic_pool" ]
+
+        },
+        {
+            "id": "hybriona.event_trigger",
+            "displayname": "Event Triggers",
+
+
+            "root": "Modules/Events",
+            "sample": "Samples/Events"
+        },
+        {
+            "id": "hybriona.version_manager",
+            "displayname": "Version Manager",
+
+
+            "root": "Modules/VersionManager"
+        },
+        {
+            "id": "hybriona.httpclient",
+            "displayname": "Http Client",
+
+            "root": "Modules/HttpRest",
+            "dependencies": [ "hybriona.core" ]
+        },
+        {
+            "id": "hybriona.persistentData",
+            "displayname": "Persistent Data Manager",
+
+            "root": "Modules/PersistentData",
+            "sample": "Samples/PersistentData",
+            "dependencies": [
+                "hybriona.version_manager",
+                "hybriona.simple_zip",
+                "hybriona.core"
+            ]
+        },
+        {
+            "id": "hybriona.simple_zip",
+            "displayname": "Simple Zip",
+
+            "root": "Modules/SimpleZip",
+            "sample": "Samples/SimpleZip"
+
+        },
+        {
+            "id": "hybriona.cache",
+            "displayname": "Cache",
+
+            "root": "Modules/Cache",
+            "sample": "Samples/Cache"
+        },
+        {
+            "id": "hybriona.adsmanager",
+            "displayname": "Ads Manager",
+
+            "root": "Modules/AdsManager",
+            "dependencies": [
+                "hybriona.event_trigger"
+            ]
+        },
+        {
+            "id": "hybriona.hybanalytics",
+            "displayname": "Custom Analytics",
+
+            "root": "Modules/CustomAnalytics",
+            "sample": "Samples/CustomAnalytics"
+        }
+        
+    ]
+}
