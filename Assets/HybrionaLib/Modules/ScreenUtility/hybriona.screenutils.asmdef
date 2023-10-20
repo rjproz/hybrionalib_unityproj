@@ -1,0 +1,1 @@
+{"name":"hybriona.screenutils","references":["hybriona.core"],"allowUnsafeCode":false,"autoReferenced":true,"defineConstraints":["ENABLE_LIB"],"versionDefines":[{"name":"Unity","define":"ENABLE_LIB"}]}

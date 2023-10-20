@@ -88,6 +88,16 @@
             ]
         },
         {
+            "id": "hybriona.screenutils",
+            "displayname": "Screen Utility",
+
+            "root": "Modules/ScreenUtility",
+
+            "dependencies": [
+                "hybriona.core"
+            ]
+        },
+        {
             "id": "hybriona.hybanalytics",
             "displayname": "Custom Analytics",
 
