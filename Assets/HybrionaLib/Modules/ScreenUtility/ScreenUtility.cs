@@ -34,8 +34,10 @@ namespace Hybriona
 				if(m_instance == null)
                 {
 					m_instance = new GameObject("Hybriona.ScreenUtility").AddComponent<ScreenUtility>();
+					m_instance.orientationChangeCallback = new UnityEvent<Orientation>();
 					DontDestroyOnLoad(m_instance.gameObject);
                 }
+				
 
 			}
 			return m_instance;
