@@ -114,6 +114,7 @@ namespace Hybriona
         public void SetUserId(string userId)
         {
             hybAnalyticsUser.SetUserId(userId);
+            eventData.user_id = userId = hybAnalyticsUser.userId;
         }
 
         public void Reset()
@@ -209,7 +210,7 @@ namespace Hybriona
             lock (accessLock)
             {
                 eventData.event_id = "Evt-"+System.Guid.NewGuid();
-                eventData.timestamp = System.DateTime.UtcNow.ToString("yyyy-MM-dd hh:mm:ss");
+                eventData.timestamp = System.DateTime.UtcNow.ToString("yyyy-MM-dd hh:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
                 eventData.event_name = eventName;
                 eventData.event_data = jsonData;
                 string eventDataString = eventData.ToJSON();
