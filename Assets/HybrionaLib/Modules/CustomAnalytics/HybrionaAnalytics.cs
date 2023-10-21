@@ -14,7 +14,7 @@ using System.Collections;
 
 namespace Hybriona
 {
-	public class HybrionaAnalytics : MonoBehaviour
+	public sealed partial class HybrionaAnalytics : MonoBehaviour
 	{
 
 
@@ -117,6 +117,40 @@ namespace Hybriona
             eventData.user_id = userId = hybAnalyticsUser.userId;
         }
 
+
+       
+
+        public void ReportCustomEvent(string eventName)
+        {
+            ReportCustomEvent(eventName, "{ }");
+        }
+
+        public void ReportCustomEvent(string eventName, string jsonData)
+        {
+            if (!isDataCollectionEnabled)
+                return;
+
+            if (string.IsNullOrEmpty(jsonData))
+            {
+                jsonData = "{ }";
+            }
+
+
+            lock (accessLock)
+            {
+                eventData.event_id = "Evt-" + System.Guid.NewGuid();
+                eventData.timestamp = System.DateTime.UtcNow.ToString("yyyy-MM-dd hh:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
+                eventData.event_name = eventName;
+                eventData.event_data = jsonData;
+                string eventDataString = eventData.ToJSON();
+                hybAnalyticsUser.pendingEvents.eventsRaw.Add(eventDataString);
+                if (Application.internetReachability == NetworkReachability.NotReachable)
+                {
+                    hybAnalyticsUser.Save();
+                }
+            }
+        }
+
         public void Reset()
         {
             PlayerPrefs.DeleteKey(HybAnalyticsUser.HybrionaAnalyticsUserDataKey);
@@ -191,36 +225,7 @@ namespace Hybriona
 
 
 
-        public void ReportCustomEvent(string eventName)
-        {
-            ReportCustomEvent(eventName,"{ }");
-        }
-
-        public void ReportCustomEvent(string eventName,string jsonData)
-        {
-            if (!isDataCollectionEnabled)
-                return;
-
-            if (string.IsNullOrEmpty(jsonData))
-            {
-                jsonData = "{ }";
-            }
-
-          
-            lock (accessLock)
-            {
-                eventData.event_id = "Evt-"+System.Guid.NewGuid();
-                eventData.timestamp = System.DateTime.UtcNow.ToString("yyyy-MM-dd hh:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
-                eventData.event_name = eventName;
-                eventData.event_data = jsonData;
-                string eventDataString = eventData.ToJSON();
-                hybAnalyticsUser.pendingEvents.eventsRaw.Add(eventDataString);
-                if(Application.internetReachability == NetworkReachability.NotReachable)
-                {
-                    hybAnalyticsUser.Save();
-                }
-            }
-        }
+       
 
 
         public void Flush()

@@ -3,22 +3,24 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using System.IO;
+
 namespace Hybriona
 {
     [System.Serializable]
     public class ModulesUserPrefs 
     {
-        public const string SaveKey = "Hybriona_Lib_ModulesUserPrefs";
-
+        //public const string SaveKey = "Hybriona_Lib_ModulesUserPrefs";
+        public const string SAVE_PATH = "ProjectSettings/hybrionalib.prefs";
         private static ModulesUserPrefs instance;
         public static ModulesUserPrefs Instance()
         {
             if (instance == null)
             {
                
-                if (EditorPrefs.HasKey(SaveKey))
+                if (File.Exists(SAVE_PATH))
                 {
-                    instance = JsonUtility.FromJson<ModulesUserPrefs>(EditorPrefs.GetString(SaveKey));
+                    instance = JsonUtility.FromJson<ModulesUserPrefs>(File.ReadAllText(SAVE_PATH));
                 }
                 else
                 {
@@ -30,7 +32,10 @@ namespace Hybriona
 
         public void Reset()
         {
-            EditorPrefs.DeleteKey(SaveKey);
+            if (File.Exists(SAVE_PATH))
+            {
+                File.Delete(SAVE_PATH);
+            }
             dic = new PersistentDictionary<bool>();
             Save();
         }
@@ -39,8 +44,7 @@ namespace Hybriona
         public string selectedModuleId;
         public void Save()
         {
-            EditorPrefs.SetString(SaveKey,JsonUtility.ToJson(this));
-            
+            File.WriteAllText(SAVE_PATH, JsonUtility.ToJson(this));
         }
     }
 }
