@@ -65,15 +65,15 @@ namespace Hybriona
 
 		public bool FixedUpdate()
         {
-			return GenerateUpdate(Time.fixedUnscaledDeltaTime);
+			return GenericUpdate(Time.fixedUnscaledDeltaTime);
 		}
 
 		public bool Update()
 		{
-			return GenerateUpdate(Time.unscaledDeltaTime);
+			return GenericUpdate(Time.unscaledDeltaTime);
 		}
 
-		private bool GenerateUpdate(float deltaTime)
+		private bool GenericUpdate(float deltaTime)
 		{ 
 			if(animationStopped)
             {
@@ -128,8 +128,8 @@ namespace Hybriona
 
 			float tn = timeTrackerModified / timeLength;
 
-			
-
+			float tnEased = easingCurveFunc(tn);
+			Debug.Log($"Tn is {tn} and tnEasedis {tnEased}");
 			UpdateValue(easingCurveFunc(tn));
 
 #if UNITY_EDITOR
