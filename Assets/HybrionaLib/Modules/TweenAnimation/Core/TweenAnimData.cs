@@ -127,9 +127,7 @@ namespace Hybriona
 			}
 
 			float tn = timeTrackerModified / timeLength;
-
-			float tnEased = easingCurveFunc(tn);
-			Debug.Log($"Tn is {tn} and tnEasedis {tnEased}");
+			
 			UpdateValue(easingCurveFunc(tn));
 
 #if UNITY_EDITOR
