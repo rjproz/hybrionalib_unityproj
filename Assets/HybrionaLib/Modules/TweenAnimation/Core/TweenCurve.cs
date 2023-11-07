@@ -142,9 +142,17 @@ namespace Hybriona
 
         public static float EaseOutBack(float x)
         {
-            float c3 = 1.70158f;
-            float c1 = c3 + 1;
-            return 1 + c3 * Mathf.Pow(x - 1, 3) + c1 * Mathf.Pow(x - 1, 2);
+            float start = 0;
+            float end = 1;
+            float value = x;
+            float s = 1.70158f;
+            end -= start;
+            value = (value) - 1;
+            return end * ((value) * value * ((s + 1) * value + s) + 1) + start;
+
+            //float c3 = 1.70158f;
+            //float c1 = c3 + 1;
+            //return 1 + c3 * Mathf.Pow(x - 1, 3) + c1 * Mathf.Pow(x - 1, 2);
         }
 
         public static float EaseInOutBack(float x)
