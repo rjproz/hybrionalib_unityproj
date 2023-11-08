@@ -27,11 +27,14 @@ namespace Hybriona
 
         public static float EaseOutQuad(float x)
         {
-            return 1 - (1 - x) * (1 - x);
+          
+            return 2 * x - x * x;
+          
         }
 
         public static float EaseInOutQuad(float x)
         {
+           
             return x < 0.5 ? 2 * x * x : 1 - Mathf.Pow(-2 * x + 2, 2) / 2;
         }
 
