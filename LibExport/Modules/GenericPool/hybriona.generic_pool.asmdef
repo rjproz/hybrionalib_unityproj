@@ -1,0 +1,1 @@
+{"name":"hybriona.generic_pool","references":["hybriona.core","hybriona.event_trigger"],"allowUnsafeCode":false,"autoReferenced":true,"defineConstraints":["ENABLE_LIB"],"versionDefines":[]}
