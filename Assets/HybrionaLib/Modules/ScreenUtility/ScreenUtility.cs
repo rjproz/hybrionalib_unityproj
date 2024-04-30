@@ -8,7 +8,6 @@
 
 *************************************************************************/
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -102,6 +101,31 @@ namespace Hybriona
 					GetInstance().processRoutine = null;
 				}
             }
+
+		}
+
+		public static void AddToScreenChangeEvent(UnityAction action)
+		{
+
+			GetInstance().screenSizeChangeCallback.AddListener(action);
+			if (GetInstance().processRoutine == null)
+			{
+				GetInstance().processRoutine = GetInstance().StartCoroutine(GetInstance().Loop());
+
+			}
+
+		}
+		public static void RemoveFromScreenChangeEvent(UnityAction action)
+		{
+			GetInstance().screenSizeChangeCallback.RemoveListener(action);
+			if (GetInstance().orientationChangeCallback.GetPersistentEventCount() <= 0)
+			{
+				if (GetInstance().processRoutine != null)
+				{
+					GetInstance().StopCoroutine(GetInstance().processRoutine);
+					GetInstance().processRoutine = null;
+				}
+			}
 
 		}
 
