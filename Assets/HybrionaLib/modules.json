@@ -79,6 +79,12 @@
             "sample": "Samples/Cache"
         },
         {
+            "id": "hybriona.ui",
+            "displayname": "UI Support",
+
+            "root": "Modules/UI"
+        },
+        {
             "id": "hybriona.adsmanager",
             "displayname": "Ads Manager",
 

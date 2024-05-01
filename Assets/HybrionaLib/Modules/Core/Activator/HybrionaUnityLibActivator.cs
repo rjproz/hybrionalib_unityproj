@@ -106,8 +106,11 @@ namespace Hybriona
         [MenuItem("Hybriona/Hybriona Lib Manager")]
         public static void ShowWindow()
         {
-            var titleContent = GetWindow(typeof(HybrionaUnityLibActivator)).titleContent;
+            
+            var window = GetWindow(typeof(HybrionaUnityLibActivator));
+            var titleContent = window.titleContent;
             titleContent.text = "HybLib Activator";
+            window.Show();
         }
 
        
