@@ -82,7 +82,8 @@
             "id": "hybriona.ui",
             "displayname": "UI Support",
 
-            "root": "Modules/UI"
+            "root": "Modules/UI",
+            "dependencies": [ "hybriona.core", "hybriona.generic_pool" ]
         },
         {
             "id": "hybriona.adsmanager",
