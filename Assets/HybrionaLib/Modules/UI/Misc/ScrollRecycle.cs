@@ -4,94 +4,106 @@ using System.Collections.Generic;
 using Hybriona;
 using SimpleJSON;
 using UnityEngine;
-
-public class ScrollRecycle<T> where T : ScrollElement, new()
+namespace Hybriona
 {
-    private GameObject scrollElementPrefab;
-
-    private GenericPool<ScrollElement> pool;
-    private List<ScrollElement> activeElements = new List<ScrollElement>();
-    public void Init(GameObject scrollElementPrefab)
+    public class ScrollRecycle<T> where T : ScrollElement, new()
     {
-        
-        if (pool == null)
+        //private GameObject scrollElementPrefab;
+
+        private GenericPool<ScrollElement> [] pool;
+        private List<ScrollElement> activeElements = new List<ScrollElement>();
+        public void Init(GameObject[] scrollElementsPrefab, uint precacheCount = 10)
         {
-            this.scrollElementPrefab = scrollElementPrefab;
-            this.scrollElementPrefab.SetActive(false);
-            pool = new GenericPool<ScrollElement>(() =>
+
+            if (pool == null)
             {
-                GameObject o = GameObject.Instantiate(this.scrollElementPrefab);
-                o.transform.SetParent(scrollElementPrefab.transform.parent);
-                o.transform.localScale = Vector3.one;
-                T script = new T();
-                script.poolContainer = pool;
-                script.Init(o);
-                return script;
+                
+                
+                pool = new GenericPool<ScrollElement>[scrollElementsPrefab.Length];
 
-            }, null);
+                for (int i = 0; i < pool.Length; i++)
+                {
+                    scrollElementsPrefab[i].SetActive(false);
+                    int index = i;
+                    pool[i] = new GenericPool<ScrollElement>(() =>
+                    {
+                        GameObject o = GameObject.Instantiate(scrollElementsPrefab[i]);
+                        o.transform.SetParent(scrollElementsPrefab[i].transform.parent);
+                        o.transform.localScale = Vector3.one;
+                        T script = new T();
+                        script.poolContainer = pool[index];
+                        script.Init(index, o);
+                        return script;
 
-            pool.PreCache(20);
+                    }, null);
+
+                    pool[i].PreCache(precacheCount);
+                }
+
+
+            }
+
         }
 
-    }
-
-    public void Clear()
-    {
-        for(int i=0;i<activeElements.Count;i++)
+        public void Clear()
         {
-            activeElements[i].Deactivate();
-            pool.ReturnToPool(activeElements[i]);
+            for (int i = 0; i < activeElements.Count; i++)
+            {
+                activeElements[i].Deactivate();
+                pool[activeElements[i].index].ReturnToPool(activeElements[i]);
+            }
+            activeElements.Clear();
         }
-        activeElements.Clear();
-    }
 
-    public T FillNext(System.Action<T> fillAction)
+        public T FillNext(int index,System.Action<T> fillAction)
+        {
+            var script = pool[index].FetchFromPool() as T;
+            activeElements.Add(script);
+            fillAction(script);
+            script.Activate();
+            return script;
+        }
+    }
+    public class ScrollElement
     {
-        var script = pool.FetchFromPool() as T;
-        activeElements.Add(script);
-        fillAction(script);
-        script.Activate();
-        return script;
+        public int index { get; protected set; }
+        public GameObject gameObject { get; protected set; }
+        public Transform transform { get; protected set; }
+        public GenericPool<ScrollElement> poolContainer { get; set; }
+
+        public void Init(int index, GameObject gameObject)
+        {
+            this.gameObject = gameObject;
+            this.transform = this.gameObject.transform;
+            Cache();
+        }
+
+        public void Activate()
+        {
+            gameObject.SetActive(true);
+            transform.SetAsLastSibling();
+
+            OnActivate();
+        }
+
+        public void Deactivate()
+        {
+            gameObject.SetActive(false);
+            OnDeactivate();
+        }
+
+        public void ReturnToPool()
+        {
+            Deactivate();
+            poolContainer.ReturnToPool(this);
+        }
+
+        public virtual void Cache()
+        {
+
+        }
+
+        public virtual void OnActivate() { }
+        public virtual void OnDeactivate() { }
     }
-}
-public class ScrollElement 
-{
-    public GameObject gameObject { get; protected set; }
-    public Transform transform { get; protected set; }
-    public GenericPool<ScrollElement> poolContainer { get; set; }
-
-    public void Init(GameObject gameObject)
-    {
-        this.gameObject = gameObject;
-        this.transform = this.gameObject.transform;
-        Cache();
-    }
-
-    public void Activate()
-    {
-        gameObject.SetActive(true);
-        transform.SetAsLastSibling();
-
-        OnActivate();
-    }
-
-    public void Deactivate()
-    {
-        gameObject.SetActive(false);
-        OnDeactivate();
-    }
-
-    public void ReturnToPool()
-    {
-        Deactivate();
-        poolContainer.ReturnToPool(this);
-    }
-
-    public virtual void Cache()
-    {
-
-    }
-
-    public virtual void OnActivate() { }
-    public virtual void OnDeactivate() { }
 }
