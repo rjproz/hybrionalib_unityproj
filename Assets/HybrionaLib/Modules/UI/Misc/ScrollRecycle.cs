@@ -1,8 +1,4 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using Hybriona;
-using SimpleJSON;
 using UnityEngine;
 namespace Hybriona
 {
@@ -55,14 +51,14 @@ namespace Hybriona
             for (int i = 0; i < activeElements.Count; i++)
             {
                 activeElements[i].Deactivate();
-                pool[activeElements[i].index].ReturnToPool(activeElements[i]);
+                pool[activeElements[i].poolIndex].ReturnToPool(activeElements[i]);
             }
             activeElements.Clear();
         }
 
-        public T FillNext(int index,System.Action<T> fillAction)
+        public T FillNext(int poolIndex, System.Action<T> fillAction)
         {
-            var script = pool[index].FetchFromPool() as T;
+            var script = pool[poolIndex].FetchFromPool() as T;
             activeElements.Add(script);
             fillAction(script);
             script.Activate();
@@ -71,7 +67,7 @@ namespace Hybriona
     }
     public class ScrollElement
     {
-        public int index { get; protected set; }
+        public int poolIndex { get; protected set; }
         public GameObject gameObject { get; protected set; }
         public Transform transform { get; protected set; }
         public GenericPool<ScrollElement> poolContainer { get; set; }
