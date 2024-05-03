@@ -29,8 +29,8 @@ namespace Hybriona
                     
                     pool[poolIndex] = new GenericPool<ScrollElement>(() =>
                     {
-                        GameObject o = GameObject.Instantiate(scrollElementsPrefab[i]);
-                        o.transform.SetParent(scrollElementsPrefab[i].transform.parent);
+                        GameObject o = GameObject.Instantiate(scrollElementsPrefab[poolIndex]);
+                        o.transform.SetParent(scrollElementsPrefab[poolIndex].transform.parent);
                         o.transform.localScale = Vector3.one;
                         T script = new T();
                         script.poolContainer = pool[poolIndex];
