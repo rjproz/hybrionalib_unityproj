@@ -45,10 +45,12 @@ public class ScrollRecycle<T> where T : ScrollElement, new()
         activeElements.Clear();
     }
 
-    public T GetNext()
+    public T FillNext(System.Action<T> fillAction)
     {
         var script = pool.FetchFromPool() as T;
         activeElements.Add(script);
+        fillAction(script);
+        script.Activate();
         return script;
     }
 }
@@ -84,8 +86,6 @@ public class ScrollElement
         Deactivate();
         poolContainer.ReturnToPool(this);
     }
-
-   
 
     public virtual void Cache()
     {
