@@ -73,8 +73,9 @@ namespace Hybriona
         public Transform transform { get; protected set; }
         public GenericPool<ScrollElement> poolContainer { get; set; }
 
-        public void Init(int index, GameObject gameObject)
+        public void Init(int poolIndex, GameObject gameObject)
         {
+            this.poolIndex = poolIndex;
             this.gameObject = gameObject;
             this.transform = this.gameObject.transform;
             Cache();
