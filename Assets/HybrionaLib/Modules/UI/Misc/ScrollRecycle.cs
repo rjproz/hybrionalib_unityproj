@@ -12,6 +12,11 @@ namespace Hybriona
 
         private GenericPool<ScrollElement> [] pool;
         private List<ScrollElement> activeElements = new List<ScrollElement>();
+        public void Init(GameObject scrollElementPrefab, uint precacheCount = 10)
+        {
+            Init(new GameObject[1] { scrollElementPrefab }, precacheCount);
+        }
+
         public void Init(GameObject[] scrollElementsPrefab, uint precacheCount = 10)
         {
 
