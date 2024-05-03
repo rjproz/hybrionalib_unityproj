@@ -7,7 +7,7 @@ namespace Hybriona
         //private GameObject scrollElementPrefab;
 
         private GenericPool<ScrollElement> [] pool;
-        private List<ScrollElement> activeElements = new List<ScrollElement>();
+        public List<ScrollElement> activeElements = new List<ScrollElement>();
         public void Init(GameObject scrollElementPrefab, uint precacheCount = 10)
         {
             Init(new GameObject[1] { scrollElementPrefab }, precacheCount);
@@ -47,6 +47,21 @@ namespace Hybriona
 
         }
 
+        public T GetElement(int scrollIndex)
+        {
+            if (scrollIndex < activeElements.Count)
+            {
+                return activeElements[scrollIndex] as T;
+            }
+            return null;
+        }
+
+        public int Count()
+        {
+            return activeElements.Count;
+        }
+
+        
         public void Clear()
         {
             for (int i = 0; i < activeElements.Count; i++)
@@ -69,6 +84,7 @@ namespace Hybriona
     public class ScrollElement
     {
         public int poolIndex { get; protected set; }
+       
         public GameObject gameObject { get; protected set; }
         public Transform transform { get; protected set; }
         public GenericPool<ScrollElement> poolContainer { get; set; }
