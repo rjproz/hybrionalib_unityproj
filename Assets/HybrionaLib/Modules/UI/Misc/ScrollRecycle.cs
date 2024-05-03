@@ -24,16 +24,17 @@ namespace Hybriona
 
                 for (int i = 0; i < pool.Length; i++)
                 {
-                    scrollElementsPrefab[i].SetActive(false);
-                    int index = i;
-                    pool[i] = new GenericPool<ScrollElement>(() =>
+                    int poolIndex = i;
+                    scrollElementsPrefab[poolIndex].SetActive(false);
+                    
+                    pool[poolIndex] = new GenericPool<ScrollElement>(() =>
                     {
                         GameObject o = GameObject.Instantiate(scrollElementsPrefab[i]);
                         o.transform.SetParent(scrollElementsPrefab[i].transform.parent);
                         o.transform.localScale = Vector3.one;
                         T script = new T();
-                        script.poolContainer = pool[index];
-                        script.Init(index, o);
+                        script.poolContainer = pool[poolIndex];
+                        script.Init(poolIndex, o);
                         return script;
 
                     }, null);
