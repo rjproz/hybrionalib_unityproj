@@ -75,6 +75,36 @@ namespace Hybriona
 
 		public delegate void OnCompleteRequest(HttpResponse response);
 
+		public void Process(string url, WWWForm form, Dictionary<string, string> headers = null, OnCompleteRequest onComplete = null)
+		{
+			UnityWebRequest request =  UnityWebRequest.Post(url,form);
+			foreach(var keyval in headers)
+            {
+				request.SetRequestHeader(keyval.Key, keyval.Value);
+            }
+			var operation = request.SendWebRequest();
+			if (!Application.isEditor || Application.isPlaying)
+			{
+				StartCoroutine(ProcessWebRequest(operation, onComplete));
+			}
+			else
+			{
+
+				while (!operation.isDone)
+				{
+
+				}
+				if (onComplete != null)
+				{
+					onComplete(new HttpResponse(operation.webRequest, -1));
+				}
+				operation.webRequest.Dispose();
+
+			}
+
+
+
+		}
 		public void Process(string url,string method,byte [] data,Dictionary<string,string> headers = null,OnCompleteRequest onComplete = null)
 		{
 			UnityWebRequest request = new UnityWebRequest();
@@ -143,6 +173,11 @@ namespace Hybriona
 		public void Delete(string url,Dictionary<string,string> headers = null,OnCompleteRequest onComplete = null)
 		{
 			Process(url,UnityWebRequest.kHttpVerbDELETE,null,headers,onComplete);
+		}
+
+		public void PostForm(string url, WWWForm form, Dictionary<string, string> headers = null, OnCompleteRequest onComplete = null)
+		{
+			Process(url, form, headers, onComplete);
 		}
 
 		public void Post(string url,byte [] data,Dictionary<string,string> headers = null,OnCompleteRequest onComplete = null)
