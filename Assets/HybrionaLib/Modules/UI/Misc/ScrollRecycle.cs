@@ -8,6 +8,8 @@ namespace Hybriona
 
         private GenericPool<ScrollElement> [] pool;
         public List<ScrollElement> activeElements = new List<ScrollElement>();
+
+        private int scrollIndexCounter = 0;
         public void Init(GameObject scrollElementPrefab, uint precacheCount = 10)
         {
             Init(new GameObject[1] { scrollElementPrefab }, precacheCount);
@@ -70,6 +72,7 @@ namespace Hybriona
                 pool[activeElements[i].poolIndex].ReturnToPool(activeElements[i]);
             }
             activeElements.Clear();
+            scrollIndexCounter = 0;
         }
 
         public T FillNext(int poolIndex, System.Action<T> fillAction)
@@ -77,6 +80,8 @@ namespace Hybriona
             var script = pool[poolIndex].FetchFromPool() as T;
             activeElements.Add(script);
             fillAction(script);
+            script.SetScrollIndexDuringFill(scrollIndexCounter);
+            scrollIndexCounter = scrollIndexCounter + 1;
             script.Activate();
             return script;
         }
@@ -84,7 +89,8 @@ namespace Hybriona
     public class ScrollElement
     {
         public int poolIndex { get; protected set; }
-       
+        public int scrollIndex { get; private set; }
+
         public GameObject gameObject { get; protected set; }
         public Transform transform { get; protected set; }
         public GenericPool<ScrollElement> poolContainer { get; set; }
@@ -103,6 +109,11 @@ namespace Hybriona
             transform.SetAsLastSibling();
 
             OnActivate();
+        }
+
+        public void SetScrollIndexDuringFill(int newScrollIndex)
+        {
+            scrollIndex = newScrollIndex;
         }
 
         public void Deactivate()
