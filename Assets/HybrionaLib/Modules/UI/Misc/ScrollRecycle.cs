@@ -5,7 +5,7 @@ namespace Hybriona
     public class ScrollRecycle<T> where T : ScrollElement, new()
     {
         //private GameObject scrollElementPrefab;
-
+        
         private GenericPool<ScrollElement> [] pool;
         public List<ScrollElement> activeElements = new List<ScrollElement>();
 
@@ -84,6 +84,11 @@ namespace Hybriona
             scrollIndexCounter = scrollIndexCounter + 1;
             script.Activate();
             return script;
+        }
+
+        public float GetNormalizedScrollPosition(int scrollIndex)
+        {
+            return (float)scrollIndex / (float)Count();
         }
     }
     public class ScrollElement
