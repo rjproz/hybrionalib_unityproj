@@ -61,7 +61,7 @@ namespace Hybriona
 		public string PrepareWritePath()
         {
 #if UNITY_WEBGL
-			return;
+			return null;
 #endif
 			PersistentDataConstants.saveFileDirectory = Path.Combine(Application.persistentDataPath, "files");
 			if (!Directory.Exists(PersistentDataConstants.saveFileDirectory))
