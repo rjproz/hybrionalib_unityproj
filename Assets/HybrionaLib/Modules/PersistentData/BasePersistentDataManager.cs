@@ -60,7 +60,7 @@ namespace Hybriona
 
 		public string PrepareWritePath()
         {
-#if UNITY_WEBGL
+#if UNITY_WEBGL && !UNITY_EDITOR
 			return null;
 #endif
 			PersistentDataConstants.saveFileDirectory = Path.Combine(Application.persistentDataPath, "files");
@@ -105,7 +105,7 @@ namespace Hybriona
 		public virtual void Save()
 		{
 
-#if UNITY_WEBGL
+#if UNITY_WEBGL && !UNITY_EDITOR
 			PlayerPrefs.SetString("hybriona_save", JsonUtility.ToJson(this));
 			PlayerPrefs.Save();
 #else
