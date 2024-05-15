@@ -76,8 +76,8 @@ namespace Hybriona
 		public override void LoadProfile(string profileName)
 		{
 			profilename = profileName;
-			
 
+			PrepareWritePath();
 			if (File.Exists(saveFilePath))
 			{
 				try
