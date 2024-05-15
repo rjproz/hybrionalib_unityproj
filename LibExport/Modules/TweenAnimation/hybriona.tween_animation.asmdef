@@ -1,0 +1,1 @@
+{"name":"hybriona.tween_animation","references":["hybriona.core","hybriona.generic_pool"],"allowUnsafeCode":false,"autoReferenced":true,"defineConstraints":["ENABLE_LIB"],"versionDefines":[]}
