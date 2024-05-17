@@ -79,8 +79,8 @@ namespace Hybriona
         {
             var script = pool[poolIndex].FetchFromPool() as T;
             activeElements.Add(script);
-            fillAction(script);
             script.SetScrollIndexDuringFill(scrollIndexCounter);
+            fillAction(script);
             scrollIndexCounter = scrollIndexCounter + 1;
             script.Activate();
             return script;
@@ -116,7 +116,7 @@ namespace Hybriona
             OnActivate();
         }
 
-        public void SetScrollIndexDuringFill(int newScrollIndex)
+        internal void SetScrollIndexDuringFill(int newScrollIndex)
         {
             scrollIndex = newScrollIndex;
         }
