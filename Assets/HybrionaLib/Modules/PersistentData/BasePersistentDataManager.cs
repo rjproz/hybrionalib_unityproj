@@ -78,6 +78,19 @@ namespace Hybriona
 			profilename = profileName;
 
 			PrepareWritePath();
+
+
+#if UNITY_WEBGL && !UNITY_EDITOR
+			if(PlayerPrefs.HasKey("hybriona_save"))
+            {
+				JsonUtility.FromJsonOverwrite(PlayerPrefs.GetString("hybriona_save"),this);
+
+			}
+			else
+            {
+				version = VersionManager.Version().ToString();
+			}
+#else
 			if (File.Exists(saveFilePath))
 			{
 				try
@@ -93,6 +106,7 @@ namespace Hybriona
 			{
 				version = VersionManager.Version().ToString();
 			}
+#endif
 		}
 
 		
