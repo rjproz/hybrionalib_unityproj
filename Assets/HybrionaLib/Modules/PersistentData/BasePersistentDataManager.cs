@@ -109,7 +109,10 @@ namespace Hybriona
 #endif
 		}
 
-		
+		public void OverwriteFrom(byte[] data)
+		{
+			JsonUtility.FromJsonOverwrite(Zip.Decompress(Decyrpt(data)), this);
+		}
 
 		public virtual byte [] ToBytesEncrypted()
 		{
