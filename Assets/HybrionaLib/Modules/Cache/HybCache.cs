@@ -31,6 +31,21 @@ public static class HybCache
 		metaData.Save();
 	}
 
+
+	public static void SetMaxCacheSizeKiloByte(int newmaxCacheSizeKB)
+	{
+		//maxCacheSize = newmaxCacheSize;
+		metaData.maxCacheSize = newmaxCacheSizeKB * 1000 ;
+		metaData.Save();
+	}
+
+	public static void SetMaxCacheSizeMegaByte(int newmaxCacheSizeMB)
+	{
+		//maxCacheSize = newmaxCacheSize;
+		metaData.maxCacheSize = newmaxCacheSizeMB * 1000 * 1000;
+		metaData.Save();
+	}
+
 	/// <summary>
 	/// Delete Cache
 	/// </summary>

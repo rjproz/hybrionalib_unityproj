@@ -13,7 +13,7 @@ public class HowtoUseHybCache : MonoBehaviour {
 		StartCoroutine(AnimateTextureQuad());
 
 		// Set config
-		HybCache.SetMaxCacheSize(20000000); // Setting the max cache size. 20 MB 
+		HybCache.SetMaxCacheSizeMegaByte(20); // Setting the max cache size. 20 MB 
 
 
 		// Set Expiry (Optional)
@@ -34,14 +34,14 @@ public class HowtoUseHybCache : MonoBehaviour {
 		//or you can use the below event based function
 		// LoadURLEventBased();
 
-		LoadURLEventBased("http://projectvoid.hybriona.com/website/images/WebsiteBanner.jpg");
-		LoadURLEventBased("https://img.itch.zone/aW1nLzU4MzQzMDguanBn/original/aQw9%2BA.jpg");
+		LoadURLEventBased("https://projectvoid.hybriona.com/website/images/WebsiteBanner.jpg", System.DateTime.Now.ToFileTimeUtc().ToString());
+		LoadURLEventBased("https://img.itch.zone/aW1nLzU4MzQzMDguanBn/original/aQw9%2BA.jpg","default");
 
 		
 
 		//Load URL with standard HTTP Caching (via Headers). Currently only available as event based method
 		float timeStarted = 0;
-		string url_http_cache = "http://apis.hybriona.com/hybriona/unity/hugetext";
+		string url_http_cache = "https://apis.hybriona.com/hybriona/unity/hugetext";
 		HybWWW.RequestWithHeaderCache(url_http_cache,new DownloadHandlerBuffer(),(UnityWebRequest request)=> {
 			if(!request.isHttpError && !request.isNetworkError)
 			{
@@ -79,24 +79,29 @@ public class HowtoUseHybCache : MonoBehaviour {
 
 
 	
-	void LoadURLEventBased(string url)
+	void LoadURLEventBased(string url,string version)
 	{
 		
 
 		float timeStarted = Time.fixedTime;
-		HybWWW.RequestURL(url,"7216723", new DownloadHandlerTexture(readable:false), (UnityWebRequest request) =>{
+		
 
-			if(request.result == UnityWebRequest.Result.Success)
+		CacheRequest.Get(url, version, CacheRequest.LoadMode.Default).Callback((result) =>
+		{
+			if (result.request.result == UnityWebRequest.Result.Success)
 			{
-				Debug.Log("WWW ("+url+") loaded in "+(Time.fixedTime - timeStarted)+" seconds.");
+				Debug.Log($"WWW ({url}) loaded in {(Time.fixedTime - timeStarted)} seconds. Result Mode? {result.resultMode}");
 				// Process the resource
-				Texture2D textureLoaded = DownloadHandlerTexture.GetContent(request);
-				textures.Add(textureLoaded);
+
+				Texture2D texture = new Texture2D(1, 1);
+				texture.LoadImage(result.request.downloadHandler.data);
 				
+				textures.Add(texture);
+
 			}
 			else
 			{
-				Debug.LogError(request.error);
+				Debug.LogError($"{result.request.error} ResultMode? {result.resultMode}" );
 			}
 		});
 
