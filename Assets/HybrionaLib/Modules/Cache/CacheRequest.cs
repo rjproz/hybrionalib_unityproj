@@ -22,8 +22,9 @@ public class CacheRequest
 	public enum LoadMode { Default = 0, UseCacheFirstEvenIfVersionMismatch = 1,  ForceRefresh = 2};
 	public enum ResultMode {LoadedLive,LoadedFromCache,LiveFailedLoadedFromCache,Failed };
 	
-	public static async Task<(UnityWebRequest request, ResultMode resultMode)> Get(string url,string version, LoadMode loadMode = LoadMode.Default)
+	public static async Task<(UnityWebRequest request, ResultMode resultMode)> Get(string url,string version, LoadMode loadMode = LoadMode.Default, int maxTimeout = -1)
     {
+		
 		ResultMode resultMode = ResultMode.LoadedLive;
 		bool loadingFromCache = false;
 		bool hasCache = false;
@@ -68,7 +69,10 @@ public class CacheRequest
 			}
 		}
 
-		
+		if (hasCache && maxTimeout > 0)
+		{
+			request.timeout = maxTimeout;
+		}
 		var operation = request.SendWebRequest();
 		while (!operation.isDone)
 		{
