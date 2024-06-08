@@ -41,32 +41,37 @@ public class CacheRequest
 		}
 		else
 		{
-			cache = HybCache.metaData.GetCache(url);
-			hasCache = !(cache == null || (cache != null && !System.IO.File.Exists(cache.GetPath())));
-
-			if(hasCache && cache.version != version)
-            {
-				isCacheVersionMisMatch = true;
-			}
-
-			if (cache != null)
+			if (Application.platform != RuntimePlatform.WebGLPlayer)
 			{
-				if(hasCache && (!isCacheVersionMisMatch || loadMode == LoadMode.UseCacheFirstEvenIfVersionMismatch))
+				cache = HybCache.metaData.GetCache(url);
+				hasCache = !(cache == null || (cache != null && !System.IO.File.Exists(cache.GetPath())));
+
+				if (hasCache && cache.version != version)
 				{
-					loadingFromCache = true;
-					resultMode = ResultMode.LoadedFromCache;
-					request = UnityWebRequest.Get("file://" + cache.GetPath());
+					isCacheVersionMisMatch = true;
 				}
-				else
+
+
+				if (cache != null)
 				{
-					loadingFromCache = false;
-					request = UnityWebRequest.Get(url);
+					if (hasCache && (!isCacheVersionMisMatch || loadMode == LoadMode.UseCacheFirstEvenIfVersionMismatch))
+					{
+						loadingFromCache = true;
+						resultMode = ResultMode.LoadedFromCache;
+						request = UnityWebRequest.Get("file://" + cache.GetPath());
+					}
+					else
+					{
+						loadingFromCache = false;
+					}
 				}
 			}
-			else
-            {
-				request = UnityWebRequest.Get(url);
-			}
+			
+		}
+
+		if(request == null)
+        {
+			request = UnityWebRequest.Get(url);
 		}
 
 		if (hasCache && maxTimeoutIfHasCache > 0)
@@ -79,30 +84,39 @@ public class CacheRequest
 			await Task.Yield();
 		}
 
-		if (!loadingFromCache && request.result == UnityWebRequest.Result.Success)
+		if (Application.platform != RuntimePlatform.WebGLPlayer)
 		{
-			resultMode = ResultMode.LoadedLive;
-			HybCache.metaData.AddEntry(request, version);
-		}
-
-		if(!loadingFromCache && request.result != UnityWebRequest.Result.Success)
-        {
-			if (hasCache)
+			if (!loadingFromCache && request.result == UnityWebRequest.Result.Success)
 			{
-				resultMode = ResultMode.LiveFailedLoadedFromCache;
-				loadingFromCache = true;
-				request.Dispose();
-				request = UnityWebRequest.Get("file://" + cache.GetPath());
-				
-				operation = request.SendWebRequest();
-				while (!operation.isDone)
+				resultMode = ResultMode.LoadedLive;
+				HybCache.metaData.AddEntry(request, version);
+			}
+
+			if (!loadingFromCache && request.result != UnityWebRequest.Result.Success)
+			{
+				if (hasCache)
 				{
+					resultMode = ResultMode.LiveFailedLoadedFromCache;
 					
-					await Task.Yield();
+					request.Dispose();
+					request = UnityWebRequest.Get("file://" + cache.GetPath());
+
+					operation = request.SendWebRequest();
+					while (!operation.isDone)
+					{
+
+						await Task.Yield();
+					}
+
 				}
-				
 			}
 		}
+		else
+        {
+			resultMode = ResultMode.LoadedLive;
+		}
+
+		
 		
 		return (request, resultMode);
 
