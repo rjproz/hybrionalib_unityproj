@@ -9,7 +9,7 @@ namespace Hybriona
 
 
 
-		public static async Task<UnityWebRequest> Get(string url,Dictionary<string,string> headers)
+		public static async Task<UnityWebRequest> Get(string url,Dictionary<string,string> headers = null)
         {
 			var request = UnityWebRequest.Get(url);
 		
@@ -17,35 +17,35 @@ namespace Hybriona
 			return await ProcessRequest(request);
         }
 
-		public static async Task<UnityWebRequest> Head(string url, Dictionary<string, string> headers)
+		public static async Task<UnityWebRequest> Head(string url, Dictionary<string, string> headers = null)
 		{
 			var request = UnityWebRequest.Head(url);
 			AddHeadersToRequest(headers, request);
 			return await ProcessRequest(request);
 		}
 
-		public static async Task<UnityWebRequest> Delete(string url, Dictionary<string, string> headers)
+		public static async Task<UnityWebRequest> Delete(string url, Dictionary<string, string> headers = null)
 		{
 			var request = UnityWebRequest.Delete(url);
 			AddHeadersToRequest(headers, request);
 			return await ProcessRequest(request);
 		}
 
-		public static async Task<UnityWebRequest> Put(string url,byte [] data, Dictionary<string, string> headers)
+		public static async Task<UnityWebRequest> Put(string url,byte [] data, Dictionary<string, string> headers = null)
 		{
 			var request = UnityWebRequest.Put(url,data);
 			AddHeadersToRequest(headers, request);
 			return await ProcessRequest(request);
 		}
 
-		public static async Task<UnityWebRequest> Post(string url, string data, Dictionary<string, string> headers)
+		public static async Task<UnityWebRequest> Post(string url, string data, Dictionary<string, string> headers = null)
 		{
 			var request = UnityWebRequest.PostWwwForm(url, data);
 			AddHeadersToRequest(headers, request);
 			return await ProcessRequest(request);
 		}
 
-		public static async Task<UnityWebRequest> Post(string url, WWWForm form, Dictionary<string, string> headers)
+		public static async Task<UnityWebRequest> Post(string url, WWWForm form, Dictionary<string, string> headers = null)
 		{
 			var request = UnityWebRequest.Post(url, form);
 			AddHeadersToRequest(headers, request);
