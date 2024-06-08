@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -41,7 +40,7 @@ namespace Hybriona
 
 		public static async Task<UnityWebRequest> Post(string url, string data, Dictionary<string, string> headers)
 		{
-			var request = UnityWebRequest.Post(url, data);
+			var request = UnityWebRequest.PostWwwForm(url, data);
 			AddHeadersToRequest(headers, request);
 			return await ProcessRequest(request);
 		}
