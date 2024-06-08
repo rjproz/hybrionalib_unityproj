@@ -47,7 +47,7 @@ namespace Hybriona
 		{
 			var request = new UnityWebRequest(url, "POST");
 			request.uploadHandler = new UploadHandlerRaw(data);
-			
+			request.downloadHandler = new DownloadHandlerBuffer();
 			AddHeadersToRequest(headers, request);
 			return await ProcessRequest(request);
 		}
