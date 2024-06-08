@@ -38,16 +38,16 @@ namespace Hybriona
 			return await ProcessRequest(request);
 		}
 
-		public static async Task<UnityWebRequest> Post(string url, string data, string contentType, Dictionary<string, string> headers = null)
+		public static async Task<UnityWebRequest> Post(string url, string data, Dictionary<string, string> headers = null)
 		{
-			var request = UnityWebRequest.Post(url, data, contentType);
-			AddHeadersToRequest(headers, request);
-			return await ProcessRequest(request);
+			return await Post(url,data.ToBytes(),headers);
 		}
 
-		public static async Task<UnityWebRequest> Post(string url, byte [] data,string contentType, Dictionary<string, string> headers = null)
+		public static async Task<UnityWebRequest> Post(string url, byte [] data, Dictionary<string, string> headers = null)
 		{
-			var request = UnityWebRequest.Post(url, System.Text.Encoding.UTF8.GetString(data), contentType);
+			var request = new UnityWebRequest(url, "POST");
+			request.uploadHandler = new UploadHandlerRaw(data);
+			
 			AddHeadersToRequest(headers, request);
 			return await ProcessRequest(request);
 		}
