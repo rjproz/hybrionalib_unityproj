@@ -61,17 +61,14 @@ namespace Hybriona
 
 		public static async Task<UnityWebRequest> ProcessRequest(UnityWebRequest webRequest)
 		{
-			using (webRequest)
+			webRequest.disposeDownloadHandlerOnDispose = true;
+			webRequest.disposeUploadHandlerOnDispose = true;
+			var operation = webRequest.SendWebRequest();
+			while (!operation.isDone)
 			{
-				webRequest.disposeDownloadHandlerOnDispose = true;
-				webRequest.disposeUploadHandlerOnDispose = true;
-				var operation = webRequest.SendWebRequest();
-				while (!operation.isDone)
-				{
-					await Task.Yield();
-				}
-				return webRequest;
+				await Task.Yield();
 			}
+			return webRequest;
 		}
 
 		private static void AddHeadersToRequest(Dictionary<string,string> headers,UnityWebRequest request)

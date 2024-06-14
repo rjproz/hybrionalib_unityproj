@@ -66,60 +66,54 @@ public class CacheRequest
 			
 		}
 
-		using (var request = UnityWebRequest.Get(url))
+		var request = UnityWebRequest.Get(url);
+
+		if (hasCache && maxTimeoutIfHasCache > 0)
 		{
+			request.timeout = maxTimeoutIfHasCache;
+		}
+		var operation = request.SendWebRequest();
+		while (!operation.isDone)
+		{
+			await Task.Yield();
+		}
 
-			if (hasCache && maxTimeoutIfHasCache > 0)
-			{
-				request.timeout = maxTimeoutIfHasCache;
-			}
-			var operation = request.SendWebRequest();
-			while (!operation.isDone)
-			{
-				await Task.Yield();
-			}
-
-			if (Application.platform != RuntimePlatform.WebGLPlayer)
-			{
-				if (!loadingFromCache && request.result == UnityWebRequest.Result.Success)
-				{
-					resultMode = ResultMode.LoadedLive;
-					HybCache.metaData.AddEntry(request, version);
-				}
-
-				if (!loadingFromCache && request.result != UnityWebRequest.Result.Success)
-				{
-					Debug.Log(request.error);
-					if (hasCache)
-					{
-						resultMode = ResultMode.LiveFailedLoadedFromCache;
-
-
-						using (var cacherequest = UnityWebRequest.Get("file://" + cache.GetPath()))
-						{
-
-							operation = request.SendWebRequest();
-							while (!operation.isDone)
-							{
-
-								await Task.Yield();
-							}
-
-							return (cacherequest, resultMode);
-						}
-
-					}
-				}
-			}
-			else
+		if (Application.platform != RuntimePlatform.WebGLPlayer)
+		{
+			if (!loadingFromCache && request.result == UnityWebRequest.Result.Success)
 			{
 				resultMode = ResultMode.LoadedLive;
+				HybCache.metaData.AddEntry(request, version);
 			}
 
+			if (!loadingFromCache && request.result != UnityWebRequest.Result.Success)
+			{
+				Debug.Log(request.error);
+				if (hasCache)
+				{
+					resultMode = ResultMode.LiveFailedLoadedFromCache;
+
+					request.Dispose();
+					request = UnityWebRequest.Get("file://" + cache.GetPath());
+					operation = request.SendWebRequest();
+					while (!operation.isDone)
+					{
+
+						await Task.Yield();
+					}
 
 
-			return (request, resultMode);
+				}
+			}
 		}
+		else
+		{
+			resultMode = ResultMode.LoadedLive;
+		}
+
+
+
+		return (request, resultMode);
 
 	}
 
