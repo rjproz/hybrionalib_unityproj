@@ -106,7 +106,7 @@ public static class HybCache
 	/// Deletes cache of a specific id or url. 
 	/// </summary>
 	/// <returns><c>true</c>, if cache was deleted, <c>false</c> otherwise, like if the cache doesnt exist.</returns>
-	/// <param name="url">URL.</param>
+	/// <param name="url">URL or identifier</param>
 	public static bool DeleteCache(string identifier)
 	{
 		HybCacheElement element = HybCache.metaData.GetCache(identifier);
@@ -118,6 +118,148 @@ public static class HybCache
 		}
 		return false;
 	}
+
+
+
+	#region Public methods to get/set cache directly
+
+	/// <summary>
+	/// Check if specified resource id has cache independent of version mismatch
+	/// </summary>
+	/// <param name="identifier">Id or url</param>
+	/// <param name="version">latest version of the resource/url. It can be null for default</param>
+	public static bool HasCache(string identifier)
+	{
+
+		HybCacheElement element = HybCache.metaData.GetCache(identifier);
+		if (element == null || (element != null && !System.IO.File.Exists(element.GetPath())))
+		{
+			return false;
+		}
+		return true;
+	}
+
+
+	
+
+
+	/// <summary>
+	/// Check if specified resource id has cache with version matching
+	/// </summary>
+	/// <param name="identifier">Id or url</param>
+	/// <param name="version">latest version of the resource/url. It can be null for default</param>
+	public static bool HasCacheWithMatchingVersion(string identifier, string version = "default")
+	{
+		
+		if (string.IsNullOrEmpty(version))
+		{
+			version = "default";
+		}
+
+		HybCacheElement element = HybCache.metaData.GetCache(identifier);
+		if (element == null || (element != null && version != null && element.version != version) || (element != null && !System.IO.File.Exists(element.GetPath())))
+		{
+			return false;
+		}
+		return true;
+	}
+
+
+	/// <summary>
+	/// Tries to get the version of a cache if exist
+	/// </summary>
+	/// <param name="identifier"></param>
+	/// <param name="versionOfIdentifier"></param>
+	/// <returns></returns>
+	public static bool TryGetCacheVersion(string identifier, out string versionOfIdentifier)
+	{
+		versionOfIdentifier = null;
+		if (HasCache(identifier))
+		{
+			versionOfIdentifier = HybCache.metaData.GetCache(identifier).version;
+			return true;
+
+		}
+		return false;
+	}
+
+	/// <summary>
+	/// Save specific resource to disk.
+	/// </summary>
+	/// <param name="identifier">Identifier</param>
+	/// <param name="data">Raw data</param>
+	/// <param name="version">latest version of the resource. It can be null for default</param>
+	public static void SaveToCache(string identifier, byte[] data, string version = null)
+	{
+		if (string.IsNullOrEmpty(version))
+		{
+			version = "default";
+		}
+		HybCache.metaData.AddEntry(identifier, data, version);
+
+	}
+
+	/// <summary>
+	/// Fetch Raw data from cache
+	/// </summary>
+	/// <param name="identifier">Identifier</param>
+	/// <param name="version">latest version of the resource. It can be null for default</param>
+	/// <returns></returns>
+	public static byte[] FetchFromCache(string identifier, string version = null)
+	{
+		if (string.IsNullOrEmpty(version))
+		{
+			version = "default";
+		}
+
+		if (HasCacheWithMatchingVersion(identifier, version))
+		{
+			HybCacheElement element = HybCache.metaData.GetCache(identifier);
+			return System.IO.File.ReadAllBytes(element.GetPath());
+		}
+		return null;
+	}
+
+	/// <summary>
+	/// Try to Get Cache file path.
+	/// </summary>
+	/// <param name="identifier"></param>
+	/// <param name="cacheFilePath"></param>
+	/// <returns></returns>
+	public static bool TryGetCachePath(string identifier,out string cacheFilePath)
+    {
+		cacheFilePath = null;
+		if (HasCache(identifier))
+        {
+			cacheFilePath = HybCache.metaData.GetCache(identifier).GetPath();
+			return true;
+		}
+		else
+        {
+			return false;
+        }
+    }
+
+	public static bool TryGetCachePathWithMatchingVersion(string identifier, string version,out string cacheFilePath)
+	{
+		if (string.IsNullOrEmpty(version))
+		{
+			version = "default";
+		}
+
+		cacheFilePath = null;
+		if (HasCacheWithMatchingVersion(identifier, version))
+		{
+			cacheFilePath = HybCache.metaData.GetCache(identifier).GetPath();
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	#endregion
 }
 
 [System.Serializable]

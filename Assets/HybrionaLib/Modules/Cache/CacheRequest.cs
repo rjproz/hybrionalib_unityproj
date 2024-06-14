@@ -88,7 +88,7 @@ public class CacheRequest
 
 			if (!loadingFromCache && request.result != UnityWebRequest.Result.Success)
 			{
-				Debug.Log(request.error);
+				
 				if (hasCache)
 				{
 					resultMode = ResultMode.LiveFailedLoadedFromCache;
