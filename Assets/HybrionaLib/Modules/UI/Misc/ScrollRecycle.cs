@@ -80,7 +80,10 @@ namespace Hybriona
             var script = pool[poolIndex].FetchFromPool() as T;
             activeElements.Add(script);
             script.SetScrollIndexDuringFill(scrollIndexCounter);
-            fillAction(script);
+            if (fillAction != null)
+            {
+                fillAction(script);
+            }
             scrollIndexCounter = scrollIndexCounter + 1;
             script.Activate();
             return script;
