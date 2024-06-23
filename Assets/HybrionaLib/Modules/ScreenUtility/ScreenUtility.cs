@@ -38,6 +38,7 @@ namespace Hybriona
 					m_instance = new GameObject("Hybriona.ScreenUtility").AddComponent<ScreenUtility>();
 					m_instance.orientationChangeCallback = new UnityEvent<Orientation>();
 					m_instance.screenSizeChangeCallback = new UnityEvent();
+					m_instance.cameraAspectChangeCallback = new UnityEvent<float>();
 					currentOrientation = Orientation.Landscape;
 					if (screenWidth < screenHeight)
                     {
