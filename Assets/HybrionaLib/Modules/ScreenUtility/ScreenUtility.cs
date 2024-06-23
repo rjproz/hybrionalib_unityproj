@@ -21,8 +21,9 @@ namespace Hybriona
 		private Coroutine processRoutine;
 		private UnityEvent<Orientation> orientationChangeCallback;
 		private UnityEvent screenSizeChangeCallback;
+		private UnityEvent<float> cameraAspectChangeCallback;
 
-
+		private float m_LastCameraAspectRatio = -1;
 		private int m_LastScreenWidth = -1;
 		private int m_LastScreenHeight = -1;
 
@@ -93,7 +94,7 @@ namespace Hybriona
 		public static void RemoveFromOrientationChangeEvent(UnityAction<Orientation> action)
 		{
 			GetInstance().orientationChangeCallback.RemoveListener(action);
-			if(GetInstance().orientationChangeCallback.GetPersistentEventCount() <= 0)
+			if(GetInstance().orientationChangeCallback.GetPersistentEventCount() <= 0 && GetInstance().cameraAspectChangeCallback.GetPersistentEventCount() <= 0)
             {
 				if (GetInstance().processRoutine != null)
 				{
@@ -104,6 +105,7 @@ namespace Hybriona
 
 		}
 
+		[System.Obsolete("Use AddToScreenSizeChangeEvent instead")]
 		public static void AddToScreenChangeEvent(UnityAction action)
 		{
 
@@ -115,7 +117,59 @@ namespace Hybriona
 			}
 
 		}
+
+		[System.Obsolete("Use RemoveFromScreenSizeChangeEvent instead")]
 		public static void RemoveFromScreenChangeEvent(UnityAction action)
+		{
+			GetInstance().screenSizeChangeCallback.RemoveListener(action);
+			if (GetInstance().orientationChangeCallback.GetPersistentEventCount() <= 0 && GetInstance().cameraAspectChangeCallback.GetPersistentEventCount() <= 0)
+			{
+				if (GetInstance().processRoutine != null)
+				{
+					GetInstance().StopCoroutine(GetInstance().processRoutine);
+					GetInstance().processRoutine = null;
+				}
+			}
+
+		}
+
+		public static void AddToScreenSizeChangeEvent(UnityAction action)
+		{
+
+			GetInstance().screenSizeChangeCallback.AddListener(action);
+			if (GetInstance().processRoutine == null)
+			{
+				GetInstance().processRoutine = GetInstance().StartCoroutine(GetInstance().Loop());
+
+			}
+
+		}
+		public static void RemoveFromScreenSizeChangeEvent(UnityAction action)
+		{
+			GetInstance().screenSizeChangeCallback.RemoveListener(action);
+			if (GetInstance().orientationChangeCallback.GetPersistentEventCount() <= 0 && GetInstance().cameraAspectChangeCallback.GetPersistentEventCount() <= 0)
+			{
+				if (GetInstance().processRoutine != null)
+				{
+					GetInstance().StopCoroutine(GetInstance().processRoutine);
+					GetInstance().processRoutine = null;
+				}
+			}
+
+		}
+
+		public static void AddToCameraAspectChangeEvent(UnityAction action)
+		{
+
+			GetInstance().screenSizeChangeCallback.AddListener(action);
+			if (GetInstance().processRoutine == null)
+			{
+				GetInstance().processRoutine = GetInstance().StartCoroutine(GetInstance().Loop());
+
+			}
+
+		}
+		public static void RemmoveFromCameraAspectChangeEvent( UnityAction action)
 		{
 			GetInstance().screenSizeChangeCallback.RemoveListener(action);
 			if (GetInstance().orientationChangeCallback.GetPersistentEventCount() <= 0)
@@ -161,6 +215,25 @@ namespace Hybriona
 						
 					});
 				}
+
+				if(Camera.main.aspect != m_LastCameraAspectRatio)
+                {
+					
+					m_LastCameraAspectRatio = Camera.main.aspect;
+					MethodDispatcher.Enqueue(() =>
+					{
+						cameraAspectChangeCallback?.Invoke(m_LastCameraAspectRatio);
+						Orientation newOrientation = m_LastCameraAspectRatio < 1 ? Orientation.Portrait : Orientation.Landscape;
+						if (newOrientation != currentOrientation)
+						{
+							currentOrientation = newOrientation;
+							orientationChangeCallback?.Invoke(currentOrientation);
+						}
+
+					});
+
+				}
+				
 
 				yield return null;
             }
