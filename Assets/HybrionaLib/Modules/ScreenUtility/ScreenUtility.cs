@@ -217,7 +217,7 @@ namespace Hybriona
 					});
 				}
 
-				if(cameraAspectChangeCallback.GetPersistentEventCount() > 0 && Camera.main.aspect != m_LastCameraAspectRatio)
+				if(Camera.main.aspect != m_LastCameraAspectRatio)
                 {
 					
 					m_LastCameraAspectRatio = Camera.main.aspect;
