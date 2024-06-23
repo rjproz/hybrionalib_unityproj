@@ -80,7 +80,7 @@ namespace Hybriona
 			PrepareWritePath();
 
 
-#if UNITY_WEBGL && !UNITY_EDITOR
+#if UNITY_WEBGL 
 			if(PlayerPrefs.HasKey("hybriona_save"))
             {
 				JsonUtility.FromJsonOverwrite(PlayerPrefs.GetString("hybriona_save"),this);
@@ -122,7 +122,7 @@ namespace Hybriona
 		public virtual void Save()
 		{
 
-#if UNITY_WEBGL && !UNITY_EDITOR
+#if UNITY_WEBGL 
 			PlayerPrefs.SetString("hybriona_save", JsonUtility.ToJson(this));
 			PlayerPrefs.Save();
 #else
