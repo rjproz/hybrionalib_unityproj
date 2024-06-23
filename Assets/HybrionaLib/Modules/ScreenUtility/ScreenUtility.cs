@@ -158,10 +158,10 @@ namespace Hybriona
 
 		}
 
-		public static void AddToCameraAspectChangeEvent(UnityAction action)
+		public static void AddToCameraAspectChangeEvent(UnityAction<float> action)
 		{
 
-			GetInstance().screenSizeChangeCallback.AddListener(action);
+			GetInstance().cameraAspectChangeCallback.AddListener(action);
 			if (GetInstance().processRoutine == null)
 			{
 				GetInstance().processRoutine = GetInstance().StartCoroutine(GetInstance().Loop());
@@ -169,10 +169,10 @@ namespace Hybriona
 			}
 
 		}
-		public static void RemmoveFromCameraAspectChangeEvent( UnityAction action)
+		public static void RemmoveFromCameraAspectChangeEvent( UnityAction<float> action)
 		{
-			GetInstance().screenSizeChangeCallback.RemoveListener(action);
-			if (GetInstance().orientationChangeCallback.GetPersistentEventCount() <= 0)
+			GetInstance().cameraAspectChangeCallback.RemoveListener(action);
+			if (GetInstance().orientationChangeCallback.GetPersistentEventCount() <= 0 && GetInstance().cameraAspectChangeCallback.GetPersistentEventCount() <= 0)
 			{
 				if (GetInstance().processRoutine != null)
 				{
@@ -216,7 +216,7 @@ namespace Hybriona
 					});
 				}
 
-				if(Camera.main.aspect != m_LastCameraAspectRatio)
+				if(cameraAspectChangeCallback.GetPersistentEventCount() > 0 && Camera.main.aspect != m_LastCameraAspectRatio)
                 {
 					
 					m_LastCameraAspectRatio = Camera.main.aspect;
