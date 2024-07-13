@@ -138,7 +138,7 @@ namespace Hybriona
 
             lock (accessLock)
             {
-                eventData.event_id = "Evt-" + System.Guid.NewGuid();
+                eventData.event_id = "Evt-" + System.Guid.NewGuid() +"_"+ userId.GetHashCode();
                 eventData.timestamp = System.DateTime.UtcNow.ToString("yyyy-MM-dd hh:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
                 eventData.event_name = eventName;
                 eventData.event_data = jsonData;
@@ -255,7 +255,10 @@ namespace Hybriona
 
 
       
+        private void ReportSessionTime()
+        {
 
+        }
 
        
         /// <summary>
@@ -286,7 +289,27 @@ namespace Hybriona
                 Destroy(gameObject);
             }
         }
-        
-		
-	}
+
+#if !UNITY_WEBGL
+        private void OnApplicationQuit()
+        {
+            ReportSessionTime();
+        }
+
+
+        private void OnApplicationPause(bool pause)
+        {
+            if (pause)
+            {
+                ReportSessionTime();
+            }
+            else
+            {
+                eventData.session_id = hybAnalyticsUser.GetNextSessionId();
+                ReportCustomEvent("newPlayer");
+            }
+        }
+#endif
+
+    }
 }
