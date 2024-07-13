@@ -118,6 +118,7 @@ namespace Hybriona
 
                     m_IsAdAvailable = true;
                     rewardedAd = ad;
+                   
                     InvokeAdLoadedEvent();
                 });
 
