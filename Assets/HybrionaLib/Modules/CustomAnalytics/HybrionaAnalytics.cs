@@ -174,10 +174,14 @@ namespace Hybriona
         IEnumerator SessionReportingLoop()
         {
             WaitForSecondsRealtime wait = new WaitForSecondsRealtime(60);
+            bool uploadFailed = false;
             while(true)
             {
-                yield return wait;
-
+                if (!uploadFailed)
+                {
+                    yield return wait;
+                }
+               
                 var playTimeMins = (System.DateTime.UtcNow - timeSessionStarted).TotalMinutes.ToString("0.00");
                 sessionLengthEventData.event_id = sessionLengthEventData.user_id + "_" + sessionLengthEventData.session_id;
                 sessionLengthEventData.event_name = "playTime";
@@ -195,7 +199,14 @@ namespace Hybriona
 #if UNITY_EDITOR && LOG_HYBRIONA_ANALYTICS
                     Debug.LogFormat("Analytics Reported {0} ", sessionLengthEventData.ToJSON());
 #endif
-
+                    if(request.responseCode == 201)
+                    {
+                        uploadFailed = false;
+                    }
+                    else
+                    {
+                        uploadFailed = true;
+                    }
                 }
 
             }
