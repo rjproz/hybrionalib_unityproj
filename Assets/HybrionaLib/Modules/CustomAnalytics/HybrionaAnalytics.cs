@@ -30,17 +30,19 @@ namespace Hybriona
 
         private HybAnalyticsUser hybAnalyticsUser;
         private HybAnalyticsEventData eventData = null;
+        private HybAnalyticsEventData sessionLengthEventData = null;
 
 
-  
 
-       
+        private System.DateTime timeSessionStarted;
+        private System.DateTime timeAppPaused;
+        
         private HybAnalyticsAllPendingEvents tempPendingEvents = new HybAnalyticsAllPendingEvents();
 
 
         private bool forcedFlush;
         static object accessLock = new object();
-
+        private Coroutine sessionTimeReportingRoutine;
 
         [System.ObsoleteAttribute("Use Init(,) instead and call StartDataCollection() to start!")]
         public void Initialize(string projectId, string storeName = null)
@@ -81,6 +83,8 @@ namespace Hybriona
             eventData.user_id = userId = hybAnalyticsUser.userId;
             eventData.session_id = hybAnalyticsUser.GetNextSessionId() ;
 
+
+            
             if (string.IsNullOrEmpty(this.storeName))
             {
 #if UNITY_IOS
@@ -96,8 +100,9 @@ namespace Hybriona
 
             eventData.store_name = this.storeName;
             isInitialized = true;
+            timeSessionStarted = System.DateTime.UtcNow;
 
-            
+            sessionLengthEventData = JsonUtility.FromJson<HybAnalyticsEventData>(eventData.ToJSON());
         }
 
         public void StartDataCollection()
@@ -109,6 +114,15 @@ namespace Hybriona
                 StartCoroutine(AutoFlushEvents());
             }
 
+        }
+
+        public void EnableSessionTimeReporting()
+        {
+            if(sessionTimeReportingRoutine != null)
+            {
+                StopCoroutine(sessionTimeReportingRoutine);
+            }
+            sessionTimeReportingRoutine = StartCoroutine(SessionReportingLoop());
         }
 
         public void SetUserId(string userId)
@@ -157,13 +171,44 @@ namespace Hybriona
             PlayerPrefs.Save();
         }
 
+        IEnumerator SessionReportingLoop()
+        {
+            WaitForSecondsRealtime wait = new WaitForSecondsRealtime(60);
+            while(true)
+            {
+                yield return wait;
+
+                var playTimeMins = (System.DateTime.UtcNow - timeSessionStarted).TotalMinutes.ToString("0.00");
+                sessionLengthEventData.event_id = sessionLengthEventData.user_id + "_" + sessionLengthEventData.session_id;
+                sessionLengthEventData.event_name = "playTime";
+                sessionLengthEventData.event_data = "{\"t\":"+ playTimeMins + "}";
+                sessionLengthEventData.timestamp = System.DateTime.UtcNow.ToString("yyyy-MM-dd hh:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
+
+                using (var request = new UnityWebRequest(REPORT_URL, UnityWebRequest.kHttpVerbPOST))
+                {
+                   
+                    var bytes = System.Text.Encoding.UTF8.GetBytes(sessionLengthEventData.ToJSON());
+                    request.uploadHandler = new UploadHandlerRaw(bytes);
+                    //request.downloadHandler = new DownloadHandlerBuffer();
+                    request.SetRequestHeader("Content-Type", "application/json");                
+                    yield return request.SendWebRequest();
+#if UNITY_EDITOR && LOG_HYBRIONA_ANALYTICS
+                    Debug.LogFormat("Analytics Reported {0} ", sessionLengthEventData.ToJSON());
+#endif
+
+                }
+
+            }
+        }
+
         IEnumerator AutoFlushEvents()
         {
-            float timer = 0;
+            
             while (true)
             {
                 forcedFlush = false;
-                timer = 0;
+                bool failedToUpload = false;
+                
                 if (hybAnalyticsUser.pendingEvents.eventsRaw.Count > 0 && Application.internetReachability != NetworkReachability.NotReachable)
                 {
                     
@@ -195,6 +240,7 @@ namespace Hybriona
                         }
                         else
                         {
+                            failedToUpload = true;
                             //retry again
 #if UNITY_EDITOR && LOG_HYBRIONA_ANALYTICS
                             Debug.LogErrorFormat("Analytics Failed {0} ", alleventDataString);
@@ -202,19 +248,24 @@ namespace Hybriona
                             lock (accessLock)
                             {
                                 JsonUtility.FromJsonOverwrite(alleventDataString, tempPendingEvents);
-     
                                 hybAnalyticsUser.pendingEvents.eventsRaw.AddRange(tempPendingEvents.eventsRaw);
-                                
                                 tempPendingEvents.eventsRaw.Clear();
 
                             }
                         }
-                        
                     }
                     hybAnalyticsUser.Save();
                 }
 
-                while (timer < 30 && !forcedFlush)
+                float waitTimer = 30;
+
+                if(failedToUpload && Application.internetReachability != NetworkReachability.NotReachable)
+                {
+                    waitTimer = 1;
+                }
+
+                float timer = 0;
+                while (timer < waitTimer && !forcedFlush)
                 {
                     timer += Time.fixedUnscaledDeltaTime;
                     yield return null;
@@ -254,13 +305,7 @@ namespace Hybriona
         }
 
 
-      
-        private void ReportSessionTime()
-        {
-
-        }
-
-       
+    
         /// <summary>
         /// 
         /// </summary>
@@ -291,22 +336,21 @@ namespace Hybriona
         }
 
 #if !UNITY_WEBGL
-        private void OnApplicationQuit()
-        {
-            ReportSessionTime();
-        }
-
-
+       
         private void OnApplicationPause(bool pause)
         {
             if (pause)
             {
-                ReportSessionTime();
+                timeAppPaused = System.DateTime.UtcNow;
             }
             else
             {
-                eventData.session_id = hybAnalyticsUser.GetNextSessionId();
-                ReportCustomEvent("newPlayer");
+                if ((System.DateTime.UtcNow - timeAppPaused).TotalMinutes > 30)
+                {
+                    timeSessionStarted = System.DateTime.UtcNow;
+                    eventData.session_id = hybAnalyticsUser.GetNextSessionId();
+                    ReportCustomEvent("newPlayer");
+                }
             }
         }
 #endif
