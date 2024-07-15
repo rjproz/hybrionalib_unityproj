@@ -35,7 +35,7 @@ namespace Hybriona
 
 
         private System.DateTime timeSessionStarted;
-        private System.DateTime timeAppPaused;
+       
         
         private HybAnalyticsAllPendingEvents tempPendingEvents = new HybAnalyticsAllPendingEvents();
 
@@ -105,25 +105,26 @@ namespace Hybriona
             sessionLengthEventData = JsonUtility.FromJson<HybAnalyticsEventData>(eventData.ToJSON());
         }
 
-        public void StartDataCollection()
+        public void StartDataCollection(bool enableSessionTimeReporting = false)
         {
             if (!isDataCollectionEnabled)
             {
                 isDataCollectionEnabled = true;
                 ReportCustomEvent("newPlayer");
                 StartCoroutine(AutoFlushEvents());
+                if(enableSessionTimeReporting)
+                {
+                    if (sessionTimeReportingRoutine != null)
+                    {
+                        StopCoroutine(sessionTimeReportingRoutine);
+                    }
+                    sessionTimeReportingRoutine = StartCoroutine(SessionReportingLoop());
+                }
             }
 
         }
 
-        public void EnableSessionTimeReporting()
-        {
-            if(sessionTimeReportingRoutine != null)
-            {
-                StopCoroutine(sessionTimeReportingRoutine);
-            }
-            sessionTimeReportingRoutine = StartCoroutine(SessionReportingLoop());
-        }
+       
 
         public void SetUserId(string userId)
         {
@@ -346,25 +347,7 @@ namespace Hybriona
             }
         }
 
-#if !UNITY_WEBGL
-       
-        private void OnApplicationPause(bool pause)
-        {
-            if (pause)
-            {
-                timeAppPaused = System.DateTime.UtcNow;
-            }
-            else
-            {
-                if ((System.DateTime.UtcNow - timeAppPaused).TotalMinutes > 30)
-                {
-                    timeSessionStarted = System.DateTime.UtcNow;
-                    eventData.session_id = hybAnalyticsUser.GetNextSessionId();
-                    ReportCustomEvent("newPlayer");
-                }
-            }
-        }
-#endif
+
 
     }
 }

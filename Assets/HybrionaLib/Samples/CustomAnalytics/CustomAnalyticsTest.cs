@@ -18,8 +18,8 @@ namespace Hybriona
 		void Start () 
 		{
 			HybrionaAnalytics.Instance.Init("hybriona-lib-project");
-			HybrionaAnalytics.Instance.StartDataCollection();
-			HybrionaAnalytics.Instance.EnableSessionTimeReporting();
+			HybrionaAnalytics.Instance.StartDataCollection(enableSessionTimeReporting: true);
+			
 			Debug.Log(HybrionaAnalytics.Instance.userId);
 		}
 
