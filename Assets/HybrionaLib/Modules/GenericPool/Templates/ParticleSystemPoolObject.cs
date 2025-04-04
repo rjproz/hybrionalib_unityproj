@@ -16,7 +16,7 @@ namespace Hybriona
 	public class ParticleSystemPoolObject : GOPoolObject 
 	{
 		public new ParticleSystem particleSystem;
-
+        public ParticleSystemRenderer particleSystemRenderer;
         public override void Activate()
         {
             if (!autoDestroy)
