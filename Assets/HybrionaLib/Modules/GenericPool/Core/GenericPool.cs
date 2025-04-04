@@ -26,6 +26,14 @@ namespace Hybriona
 
 		public int totalCopyGenerated { get; private set; }
 
+		public int totalActiveObjects
+        {
+			get
+            {
+				return totalCopyGenerated - poolCount;
+            }
+        }
+
 		public int poolCount
         {
 			get

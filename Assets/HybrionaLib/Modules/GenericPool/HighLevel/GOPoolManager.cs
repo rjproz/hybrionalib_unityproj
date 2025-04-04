@@ -57,11 +57,23 @@ namespace Hybriona
         }
 
 
+
+
 		
 		public static bool ContainsPool(string poolId)
         {
 			return pools.ContainsKey(poolId);
         }
+
+		public static GenericPool<MonobehaviorPoolObject> GetPool(string poolID)
+        {
+			if(ContainsPool(poolID))
+            {
+				return pools[poolID];
+
+			}
+			throw new System.Exception("Pool doesn't exist with poolId : " + poolID);
+		}
 
 		public static MonobehaviorPoolObject GetFromPool(string poolID)
         {
