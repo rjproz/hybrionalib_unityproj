@@ -1,10 +1,10 @@
 ﻿/*************************************************************************
  *------------------------------------------------------------------------
- *  File         :  ParticleSystemPoolObject.cs
+ *  File         :  AudioSourcePoolObject.cs
  *  Description  :  Null.
  *------------------------------------------------------------------------
  *  Author       :  rjproz
- *  Date         :  18-09-2023 23:19:27
+ *  Date         :  15-04-2025 10:10:50
 
 *************************************************************************/
 using System.Collections;
@@ -13,31 +13,42 @@ using UnityEngine;
 
 namespace Hybriona
 {
-	public class ParticleSystemPoolObject : GOPoolObject 
+	public class AudioSourcePoolObject : GOPoolObject
 	{
         [HideInInspector] public new bool autoDestroy;
-		public new ParticleSystem particleSystem;
 
-        [field: SerializeField]
-        public ParticleSystemRenderer particleSystemRenderer { get; private set; }
+        [field:SerializeField]
+        public AudioSource audioSource { get; private set; }
+ 
 
+      
         public override void Activate()
         {
-            if (particleSystem)
+            if (audioSource && audioSource.clip)
             {
                 autoDestroy = true;
-                lifeIfAutoDestroy = particleSystem.main.duration + .5f;
-
-                particleSystem.Clear(true);
+                lifeIfAutoDestroy = audioSource.clip.length + .5f;
             }
             base.Activate();
-
-          
+           
         }
 
-        public void SetParticle(ParticleSystem particleSystem)
+        public void SetClip(AudioClip clip)
         {
-            this.particleSystem = particleSystem;
+            if (audioSource)
+            {
+                audioSource.clip = clip;
+            }
         }
+
+        public void Play()
+        {
+            if (!audioSource.playOnAwake)
+            {
+                audioSource.Stop();
+                audioSource.Play();
+            }
+        }
+
     }
 }
