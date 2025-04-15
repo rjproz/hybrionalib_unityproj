@@ -34,16 +34,18 @@ namespace Hybriona
            
         }
 
-        public void SetClip(AudioClip clip)
+        public void SetClip(AudioClip clip,float volume = 1)
         {
             if (audioSource)
             {
+                audioSource.volume = volume;
                 audioSource.clip = clip;
             }
         }
 
-        public void Play()
+        public void Play(float volume = 1)
         {
+            audioSource.volume = volume;
             if (!audioSource.playOnAwake)
             {
                 audioSource.Stop();
