@@ -15,8 +15,10 @@ namespace Hybriona
 {
 	public class ParticleSystemPoolObject : GOPoolObject 
 	{
-        [HideInInspector] public new bool autoDestroy;
-		public new ParticleSystem particleSystem;
+        [HideInInspector] public bool autoDestroy;
+
+        [field: SerializeField]
+        public new ParticleSystem particleSystem { get; private set; }
 
         [field: SerializeField]
         public ParticleSystemRenderer particleSystemRenderer { get; private set; }

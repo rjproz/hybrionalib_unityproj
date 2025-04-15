@@ -15,7 +15,7 @@ namespace Hybriona
 {
 	public class AudioSourcePoolObject : GOPoolObject
 	{
-        [HideInInspector] public new bool autoDestroy;
+        [HideInInspector] public bool autoDestroy;
 
         [field:SerializeField]
         public AudioSource audioSource { get; private set; }
