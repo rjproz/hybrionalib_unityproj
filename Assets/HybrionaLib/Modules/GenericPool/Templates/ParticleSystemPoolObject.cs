@@ -16,7 +16,7 @@ namespace Hybriona
 {
 	public class ParticleSystemPoolObject : GOPoolObject 
 	{
-        [HideInInspector] public bool autoDestroy;
+       
 
         [field: SerializeField]
         public new ParticleSystem particleSystem { get; private set; }
@@ -41,6 +41,7 @@ namespace Hybriona
         public void SetParticle(ParticleSystem particleSystem)
         {
             this.particleSystem = particleSystem;
+            this.particleSystemRenderer = this.particleSystem.GetComponent<ParticleSystemRenderer>();
         }
     }
 
