@@ -37,7 +37,7 @@ namespace Hybriona
 
 		public static void ExtendedUI(ModulesData modulesData)
 		{
-			Debug.Log("ExtendedUI");
+			
 			GUILayout.Label("Admin Tools", EditorStyles.boldLabel);
 			if (GUILayout.Button("Export Library"))
 			{
