@@ -13,39 +13,39 @@ namespace Hybriona
 {
 	public sealed partial class HybrionaAnalytics : MonoBehaviour
 	{
-        public void ReportOnLevelStarted(int levelNum)
+        public static void ReportOnLevelStarted(int levelNum)
         {
             ReportCustomEvent("levelStartedInt", JsonUtility.ToJson( new IntegerVal() { value = levelNum }));
             
         }
 
-        public void ReportOnLevelCompleted(int levelNum)
+        public static void ReportOnLevelCompleted(int levelNum)
         {
             ReportCustomEvent("levelCompletedInt", JsonUtility.ToJson(new IntegerVal() { value = levelNum }));
         }
 
-        public void ReportOnLevelStarted(string levelName)
+        public static void ReportOnLevelStarted(string levelName)
         {
             ReportCustomEvent("levelStartedStr", JsonUtility.ToJson(new StringVal() { value = levelName }));
         }
 
-        public void ReportOnLevelCompleted(string levelName)
+        public static void ReportOnLevelCompleted(string levelName)
         {
             ReportCustomEvent("levelCompletedStr", JsonUtility.ToJson(new StringVal() { value = levelName }));
 
         }
 
-        public void ReportKeyValue(string key,string value)
+        public static void ReportKeyValue(string key,string value)
         {
             ReportCustomEvent("evtKeyVal", JsonUtility.ToJson(new StringKeyVal() {key = key, value = value }));
         }
 
-        public void ReportAdRequest(string unitId)
+        public static void ReportAdRequest(string unitId)
         {
             ReportCustomEvent("adRequest", JsonUtility.ToJson(new StringVal() { value = unitId }));
         }
 
-        public void ReportAdImpression(string unitId)
+        public static void ReportAdImpression(string unitId)
         {
             ReportCustomEvent("adImpression", JsonUtility.ToJson(new StringVal() { value = unitId }));
         }
