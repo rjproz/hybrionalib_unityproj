@@ -20,46 +20,47 @@ namespace Hybriona
 
         public const string REPORT_URL = "https://vps.hybriona.com/api/hybriona-services/analytics/report";
 
-        public bool isInitialized { get; private set; }
-        public bool isDataCollectionEnabled { get; private set; }
-        public string userId { get; private set; }
-        public string sessionId { get; private set; }
+        public static bool isInitialized { get; private set; }
+        public static bool isDataCollectionEnabled { get; private set; }
+        public static string userId { get; private set; }
+        public static string sessionId { get; private set; }
 
-        public string projectId { get; private set; }
-        public string storeName { get; private set; }
+        public static string projectId { get; private set; }
+        public static string storeName { get; private set; }
 
-        private HybAnalyticsUser hybAnalyticsUser;
-        private HybAnalyticsEventData eventData = null;
-        private HybAnalyticsEventData sessionLengthEventData = null;
+        private static HybAnalyticsUser hybAnalyticsUser;
+        private static HybAnalyticsEventData eventData = null;
+        private static HybAnalyticsEventData sessionLengthEventData = null;
 
 
 
-        private System.DateTime timeSessionStarted;
+        private static System.DateTime timeSessionStarted;
        
         
-        private HybAnalyticsAllPendingEvents tempPendingEvents = new HybAnalyticsAllPendingEvents();
+        private static HybAnalyticsAllPendingEvents tempPendingEvents = new HybAnalyticsAllPendingEvents();
 
 
-        private bool forcedFlush;
+        private static bool forcedFlush;
         static object accessLock = new object();
         private Coroutine sessionTimeReportingRoutine;
 
         [System.ObsoleteAttribute("Use Init(,) instead and call StartDataCollection() to start!")]
-        public void Initialize(string projectId, string storeName = null)
+        public static void Initialize(string projectId, string storeName = null)
         {
             Init(projectId, storeName);
             StartDataCollection();
         }
 
         
-        public void Init(string projectId,string storeName = null)
+        public static void Init(string projectId,string storeName = null)
         {
             if(isInitialized)
             {
                 return;
             }
-            this.projectId = projectId;
-            this.storeName = storeName;
+            var i = Instance;
+            HybrionaAnalytics.projectId = projectId;
+            HybrionaAnalytics.storeName = storeName;
 
             hybAnalyticsUser = new HybAnalyticsUser();
             hybAnalyticsUser.Load();
@@ -69,7 +70,7 @@ namespace Hybriona
 
 
             eventData.environment = (Application.isEditor || Debug.isDebugBuild) ? 0 : 1;
-            eventData.project_id = this.projectId;
+            eventData.project_id = HybrionaAnalytics.projectId;
             eventData.bundle_id = Application.identifier;
 
             eventData.client_version = Application.version;
@@ -85,40 +86,40 @@ namespace Hybriona
 
 
             
-            if (string.IsNullOrEmpty(this.storeName))
+            if (string.IsNullOrEmpty(HybrionaAnalytics.storeName))
             {
 #if UNITY_IOS
-                this.storeName = "Appstore";
+                HybrionaAnalytics.storeName = "Appstore";
 #elif UNITY_ANDROID
-                this.storeName = "GooglePlay";
+                HybrionaAnalytics.storeName = "GooglePlay";
 #elif UNITY_WEBGL
-                this.storeName = Application.absoluteURL.Replace("https://", "").Replace("http://", "").Split('/')[0];
+                HybrionaAnalytics.storeName = Application.absoluteURL.Replace("https://", "").Replace("http://", "").Split('/')[0];
 #else
-                this.storeName = "None";
+                HybrionaAnalytics.storeName = "None";
 #endif
             }
 
-            eventData.store_name = this.storeName;
+            eventData.store_name = HybrionaAnalytics.storeName;
             isInitialized = true;
             timeSessionStarted = System.DateTime.UtcNow;
 
             sessionLengthEventData = JsonUtility.FromJson<HybAnalyticsEventData>(eventData.ToJSON());
         }
 
-        public void StartDataCollection(bool enableSessionTimeReporting = false)
+        public static void StartDataCollection(bool enableSessionTimeReporting = false)
         {
             if (!isDataCollectionEnabled)
             {
                 isDataCollectionEnabled = true;
                 ReportCustomEvent("newPlayer");
-                StartCoroutine(AutoFlushEvents());
+                Instance.StartCoroutine(Instance.AutoFlushEvents());
                 if(enableSessionTimeReporting)
                 {
-                    if (sessionTimeReportingRoutine != null)
+                    if (Instance.sessionTimeReportingRoutine != null)
                     {
-                        StopCoroutine(sessionTimeReportingRoutine);
+                        Instance.StopCoroutine(Instance.sessionTimeReportingRoutine);
                     }
-                    sessionTimeReportingRoutine = StartCoroutine(SessionReportingLoop());
+                    Instance.sessionTimeReportingRoutine = Instance.StartCoroutine(Instance.SessionReportingLoop());
                 }
             }
 
@@ -126,7 +127,7 @@ namespace Hybriona
 
        
 
-        public void SetUserId(string userId)
+        public static void SetUserId(string userId)
         {
             hybAnalyticsUser.SetUserId(userId);
             eventData.user_id = userId = hybAnalyticsUser.userId;
@@ -135,12 +136,12 @@ namespace Hybriona
 
        
 
-        public void ReportCustomEvent(string eventName)
+        public static void ReportCustomEvent(string eventName)
         {
             ReportCustomEvent(eventName, "{ }");
         }
 
-        public void ReportCustomEvent(string eventName, string jsonData)
+        public static void ReportCustomEvent(string eventName, string jsonData)
         {
             if (!isDataCollectionEnabled)
                 return;
@@ -154,7 +155,7 @@ namespace Hybriona
             lock (accessLock)
             {
                 eventData.event_id = "Evt-" + System.Guid.NewGuid() +"_"+ userId.GetHashCode();
-                eventData.timestamp = System.DateTime.UtcNow.ToString("yyyy-MM-dd hh:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
+                eventData.timestamp = System.DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
                 eventData.event_name = eventName;
                 eventData.event_data = jsonData;
                 string eventDataString = eventData.ToJSON();
@@ -166,7 +167,7 @@ namespace Hybriona
             }
         }
 
-        public void Reset()
+        public static void Reset()
         {
             PlayerPrefs.DeleteKey(HybAnalyticsUser.HybrionaAnalyticsUserDataKey);
             PlayerPrefs.Save();
@@ -187,7 +188,7 @@ namespace Hybriona
                 sessionLengthEventData.event_id = sessionLengthEventData.user_id + "_" + sessionLengthEventData.session_id;
                 sessionLengthEventData.event_name = "playTime";
                 sessionLengthEventData.event_data = "{\"t\":"+ playTimeMins + "}";
-                sessionLengthEventData.timestamp = System.DateTime.UtcNow.ToString("yyyy-MM-dd hh:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
+                sessionLengthEventData.timestamp = System.DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
 
                 using (var request = new UnityWebRequest(REPORT_URL, UnityWebRequest.kHttpVerbPOST))
                 {
@@ -291,14 +292,14 @@ namespace Hybriona
        
 
 
-        public void Flush()
+        public static void Flush()
         {
             forcedFlush = true;
         }
 
 
 
-        private int PlatformToInt()
+        private static int PlatformToInt()
         {
 #if UNITY_IOS
             return 1;
@@ -322,7 +323,7 @@ namespace Hybriona
         /// 
         /// </summary>
         private static HybrionaAnalytics m_Instance;
-		public static HybrionaAnalytics Instance
+		private static HybrionaAnalytics Instance
         {
 			get
             {

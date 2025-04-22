@@ -28,7 +28,6 @@ namespace Hybriona
         static void Update()
         {
 			HybrionaUnityLibActivator.adminUIExtension = ExtendedUI;
-
 		}
 
         static string[] deleteFileFolders = new string[]
@@ -38,6 +37,7 @@ namespace Hybriona
 
 		public static void ExtendedUI(ModulesData modulesData)
 		{
+			Debug.Log("ExtendedUI");
 			GUILayout.Label("Admin Tools", EditorStyles.boldLabel);
 			if (GUILayout.Button("Export Library"))
 			{

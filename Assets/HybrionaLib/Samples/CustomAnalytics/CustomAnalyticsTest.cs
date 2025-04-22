@@ -17,10 +17,10 @@ namespace Hybriona
 	{
 		void Start () 
 		{
-			HybrionaAnalytics.Instance.Init("hybriona-lib-project");
-			HybrionaAnalytics.Instance.StartDataCollection(enableSessionTimeReporting: true);
+			HybrionaAnalytics.Init("hybriona-lib-project");
+			HybrionaAnalytics.StartDataCollection(enableSessionTimeReporting: true);
 			
-			Debug.Log(HybrionaAnalytics.Instance.userId);
+			Debug.Log(HybrionaAnalytics.userId);
 		}
 
 
