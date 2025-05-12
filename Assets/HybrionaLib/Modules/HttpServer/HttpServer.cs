@@ -81,6 +81,8 @@ namespace Hybriona
                 {
                     var kv = line.Split(new[] { ':' }, 2);
                     if (kv.Length == 2) headers[kv[0].Trim()] = kv[1].Trim();
+
+                   
                 }
 
                 // --- read body if present ---
@@ -183,6 +185,23 @@ namespace Hybriona
         public Dictionary<string, string> Query;
         public Dictionary<string, string> Headers;
         public string Body;
+
+        public bool IsContentTypeForm()
+        {
+            return Headers.ContainsKey("Content-Type") && Headers["Content-Type"].Contains("multipart/form-data");
+        }
+
+        public string ContentType
+        {
+            get
+            {
+                return Headers.ContainsKey("Content-Type") ? Headers["Content-Type"] : null;
+            }
+        }
+        //public bool IsContentTypeFormOnly()
+        //{
+        //    return Headers.ContainsKey("Content-Type") && Headers["Content-Type"] == "application/x-www-form-urlencoded";
+        //}
     }
 
     public class HttpContext
@@ -194,6 +213,7 @@ namespace Hybriona
     public class HttpResponse
     {
         private readonly StreamWriter _writer;
+
 
         public HttpResponse(StreamWriter writer)
         {
