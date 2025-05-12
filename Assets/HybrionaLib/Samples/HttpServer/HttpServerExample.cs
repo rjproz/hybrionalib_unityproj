@@ -56,8 +56,17 @@ public class HttpServerExample : MonoBehaviour
         {
             if(context.Request.IsContentTypeForm())
             {
+                Debug.Log("handle_upload");
                 var formData =RequestBodyParser.Parse(context.Request.Body, context.Request.ContentType);
-                context.Response.SendResponse($"<html><body><pre>{formData.Fields["text1"]}\n{formData.Fields["text2"]}</pre></body></html>", "text/html", HttpStatusCode.OK);
+
+                string fileData = "";
+                if(formData.Files.Count > 0)
+                {
+                    var file = formData.Files[0];
+                    fileData += file.FileName + " " + file.Data.Length + " bytes";
+
+                }
+                context.Response.SendResponse($"<html><body><pre>{formData.Fields["text1"]}\n{formData.Fields["text2"]}\n\n{fileData}</pre></body></html>", "text/html", HttpStatusCode.OK);
             }
             else
             {
@@ -74,7 +83,7 @@ public class HttpServerExample : MonoBehaviour
         Debug.Log("Server started");
     }
 
-    void OnApplicationQuit()
+    void OnDisable()
     {
         // Optional: Add stop logic to your HttpServer class if needed
          _server.Stop();

@@ -29,6 +29,7 @@ namespace Hybriona
         public HttpServer(string ipAddress, int port)
         {
             _listener = new TcpListener(IPAddress.Parse(ipAddress), port);
+           
         }
 
         public void Start()
@@ -41,7 +42,7 @@ namespace Hybriona
         public void Stop()
         {
             _listener.Stop();
-            _listenerThread?.Interrupt();
+            _listenerThread?.Abort();
         }
 
         private void ListenForClients()
@@ -55,80 +56,108 @@ namespace Hybriona
 
         private void HandleClient(TcpClient client)
         {
-            using (client)
-            using (var stream = client.GetStream())
-            //using (var reader = new StreamReader(stream, Encoding.UTF8, false, 8192, leaveOpen: true))
-            //using (var writer = new StreamWriter(stream, Encoding.UTF8, 8192, leaveOpen: true) { NewLine = "\r\n", AutoFlush = true })
-
-            using (var reader = new StreamReader(stream))
-            using (var writer = new StreamWriter(stream) { NewLine = "\r\n", AutoFlush = true })
+            try
             {
-                // --- parse request line ---
-                var requestLine = reader.ReadLine();
-                if (string.IsNullOrEmpty(requestLine)) return;
+                client.ReceiveTimeout = 5000;
+                using (client)
+                using (var stream = client.GetStream())
+                //using (var reader = new StreamReader(stream, Encoding.UTF8, false, 8192, leaveOpen: true))
+                //using (var writer = new StreamWriter(stream, Encoding.UTF8, 8192, leaveOpen: true) { NewLine = "\r\n", AutoFlush = true })
 
-                var parts = requestLine.Split(' ');
-                var method = parts[0];
-                var fullUrl = parts[1];                 // e.g. /user/123/profile/settings?foo=bar
-                var urlParts = fullUrl.Split('?', 2);
-                var path = urlParts[0];                 // e.g. /user/123/profile/settings
-                var queryString = urlParts.Length > 1 ? urlParts[1] : "";
-
-                // --- parse headers ---
-                var headers = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-                string line;
-                while (!string.IsNullOrEmpty(line = reader.ReadLine()))
+                using (var reader = new StreamReader(stream))
+                using (var writer = new StreamWriter(stream) { NewLine = "\r\n", AutoFlush = true })
                 {
-                    var kv = line.Split(new[] { ':' }, 2);
-                    if (kv.Length == 2) headers[kv[0].Trim()] = kv[1].Trim();
+                    // --- parse request line ---
+                    var requestLine = reader.ReadLine();
+                    if (string.IsNullOrEmpty(requestLine)) return;
 
-                   
-                }
+                    var parts = requestLine.Split(' ');
+                    var method = parts[0];
+                    var fullUrl = parts[1];                 // e.g. /user/123/profile/settings?foo=bar
+                    var urlParts = fullUrl.Split('?', 2);
+                    var path = urlParts[0];                 // e.g. /user/123/profile/settings
+                    var queryString = urlParts.Length > 1 ? urlParts[1] : "";
 
-                // --- read body if present ---
-                string body = null;
-                if (headers.TryGetValue("Content-Length", out var lenStr) && int.TryParse(lenStr, out var len) && len > 0)
-                {
-                    var buf = new char[len];
-                    reader.ReadBlock(buf, 0, len);
-                    body = new string(buf);
-                }
-
-                // --- build context ---
-                var context = new HttpContext
-                {
-                    Request = new HttpRequest
+                    // --- parse headers ---
+                    var headers = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+                    string line;
+                    while (!string.IsNullOrEmpty(line = reader.ReadLine()))
                     {
-                        Method = method,
-                        Path = path,
-                        Query = ParseQueryString(queryString),
-                        Headers = headers,
-                        Body = body
-                    },
-                    Response = new HttpResponse(writer)
-                };
+                        var kv = line.Split(new[] { ':' }, 2);
+                        if (kv.Length == 2) headers[kv[0].Trim()] = kv[1].Trim();
 
-                // --- route matching ---
-                var routes = method == "GET" ? _getRoutes : method == "POST" ? _postRoutes : null;
-                if (routes != null)
-                {
-                    foreach (var rt in routes)
-                    {
-                        var m = rt.Regex.Match(path);
-                        if (!m.Success) continue;
 
-                        // extract named params
-                        var paramValues = new Dictionary<string, string>();
-                        for (int i = 0; i < rt.ParamNames.Length; i++)
-                            paramValues[rt.ParamNames[i]] = Uri.UnescapeDataString(m.Groups[i + 1].Value);
-
-                        rt.Handler(context, paramValues);
-                        return;
                     }
-                }
 
-                // no route matched
-                context.Response.SendResponse("404 Not Found", "text/html", HttpStatusCode.NotFound);
+                    // --- read body if present ---
+
+                    int contentLength = 0;
+
+                    // --- build context ---
+                    var context = new HttpContext
+                    {
+                        Request = new HttpRequest
+                        {
+                            Method = method,
+                            Path = path,
+                            Query = ParseQueryString(queryString),
+                            Headers = headers
+
+                        },
+                        Response = new HttpResponse(writer)
+                    };
+
+                    UnityEngine.Debug.Log($"Method: {method}");
+                    if (headers.TryGetValue("Content-Length", out var lenStr) && int.TryParse(lenStr, out contentLength) && contentLength > 0)
+                    {
+
+                        var bodyBuffer = new byte[contentLength];
+                        int totalRead = 0;
+                        while (totalRead < contentLength)
+                        {
+                            int readedByte = reader.Read();
+
+                            UnityEngine.Debug.Log($"readed: {totalRead} out of {contentLength}");
+                            if (readedByte <= 0)
+                            {
+                                break;
+                            }
+                            bodyBuffer[totalRead] = (byte)readedByte;
+                            totalRead += 1;
+                        }
+
+                        // Store the raw bytes instead of a string
+                        context.Request.Body = bodyBuffer;
+                    }
+
+
+
+                    // --- route matching ---
+                    var routes = method == "GET" ? _getRoutes : method == "POST" ? _postRoutes : null;
+                    if (routes != null)
+                    {
+                        foreach (var rt in routes)
+                        {
+                            var m = rt.Regex.Match(path);
+                            if (!m.Success) continue;
+
+                            // extract named params
+                            var paramValues = new Dictionary<string, string>();
+                            for (int i = 0; i < rt.ParamNames.Length; i++)
+                                paramValues[rt.ParamNames[i]] = Uri.UnescapeDataString(m.Groups[i + 1].Value);
+
+                            rt.Handler(context, paramValues);
+                            return;
+                        }
+                    }
+
+                    // no route matched
+                    context.Response.SendResponse("404 Not Found", "text/html", HttpStatusCode.NotFound);
+                }
+            }
+            catch(System.Exception ex)
+            {
+                UnityEngine.Debug.Log($"{ex.Message}, {ex.StackTrace}");
             }
         }
 
@@ -184,7 +213,7 @@ namespace Hybriona
         public string Path;
         public Dictionary<string, string> Query;
         public Dictionary<string, string> Headers;
-        public string Body;
+        public byte [] Body;
 
         public bool IsContentTypeForm()
         {
