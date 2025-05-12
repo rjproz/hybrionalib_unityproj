@@ -107,7 +107,7 @@ namespace Hybriona
                         Response = new HttpResponse(writer)
                     };
 
-                    UnityEngine.Debug.Log($"Method: {method}");
+                  
                     if (headers.TryGetValue("Content-Length", out var lenStr) && int.TryParse(lenStr, out contentLength) && contentLength > 0)
                     {
 

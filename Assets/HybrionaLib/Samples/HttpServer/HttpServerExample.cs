@@ -13,12 +13,14 @@ public class HttpServerExample : MonoBehaviour
         _server.Get("/home/:userid/profile", (context, routeParams) =>
         {
             context.Response.SendResponse($"<html><body><h1>Welcome  {routeParams["userid"]} to Home!</h1></body></html>", "text/html", HttpStatusCode.OK);
+            context.Dispose();
         });
 
         _server.Get("/home", (context, routeParams) =>
         {
            
             context.Response.SendResponse("<html><body><h1>Welcome to Home!</h1></body></html>", "text/html", HttpStatusCode.OK);
+            context.Dispose();
         });
 
         _server.Get("/upload", (ctx, routeParams) =>
@@ -49,6 +51,7 @@ public class HttpServerExample : MonoBehaviour
             </html>";
 
             ctx.Response.SendResponse(html, "text/html", HttpStatusCode.OK);
+            ctx.Dispose();
         });
 
 
@@ -56,7 +59,7 @@ public class HttpServerExample : MonoBehaviour
         {
             if(context.Request.IsContentTypeForm())
             {
-                Debug.Log("handle_upload");
+               
                 var formData =RequestBodyParser.Parse(context.Request.Body, context.Request.ContentType);
 
                 string fileData = "";
@@ -72,7 +75,9 @@ public class HttpServerExample : MonoBehaviour
             {
                 context.Response.SendResponse($"<html><body>Not found any data {context.Request.ContentType}</body></html>", "text/html", HttpStatusCode.OK);
             }
-            
+
+            context.Dispose();
+
         });
 
         // Handle POST for file upload
