@@ -9,21 +9,32 @@ namespace Hybriona
     /// <summary>
     /// Represents a single uploaded file.
     /// </summary>
-    public class ParsedFile
+    public class ParsedFile : IDisposable
     {
         public string FieldName { get; set; }
         public string FileName { get; set; }
         public string ContentType { get; set; }
         public byte[] Data { get; set; }
+
+        public void Dispose()
+        {
+            Data = null;
+        }
     }
 
     /// <summary>
     /// Holds parsed form fields and file uploads.
     /// </summary>
-    public class FormData
+    public class FormData : IDisposable
     {
         public Dictionary<string, string> Fields { get; } = new Dictionary<string, string>();
         public List<ParsedFile> Files { get; } = new List<ParsedFile>();
+
+        public void Dispose()
+        {
+            Fields.Clear();
+            Files.Clear();
+        }
     }
 
     /// <summary>

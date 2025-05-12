@@ -117,7 +117,7 @@ namespace Hybriona
                         {
                             int readedByte = reader.Read();
 
-                            UnityEngine.Debug.Log($"readed: {totalRead} out of {contentLength}");
+                            //UnityEngine.Debug.Log($"readed: {totalRead} out of {contentLength}");
                             if (readedByte <= 0)
                             {
                                 break;
@@ -233,17 +233,36 @@ namespace Hybriona
         //}
     }
 
-    public class HttpContext
+    public class HttpContext : IDisposable
     {
         public HttpRequest Request;
         public HttpResponse Response;
+
+        public void Dispose()
+        {
+            Request.Body = null;
+            Request.Headers.Clear();
+            Request.Headers = null;
+
+            Request.Query.Clear();
+            Request.Query = null;
+
+            Response = null;
+            Request = null;
+            
+            
+        }
     }
 
-    public class HttpResponse
+    public class HttpResponse : IDisposable
     {
-        private readonly StreamWriter _writer;
+        private StreamWriter _writer;
 
-
+        public void Dispose()
+        {
+            _writer.Close();
+            _writer = null;
+        }
         public HttpResponse(StreamWriter writer)
         {
             _writer = writer;
