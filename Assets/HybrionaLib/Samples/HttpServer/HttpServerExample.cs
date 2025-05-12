@@ -70,6 +70,8 @@ public class HttpServerExample : MonoBehaviour
 
                 }
                 context.Response.SendResponse($"<html><body><pre>{formData.Fields["text1"]}\n{formData.Fields["text2"]}\n\n{fileData}</pre></body></html>", "text/html", HttpStatusCode.OK);
+                formData.Dispose();
+                formData = null;
             }
             else
             {

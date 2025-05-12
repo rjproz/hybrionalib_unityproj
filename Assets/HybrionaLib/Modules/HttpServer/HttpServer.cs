@@ -64,10 +64,12 @@ namespace Hybriona
                 //using (var reader = new StreamReader(stream, Encoding.UTF8, false, 8192, leaveOpen: true))
                 //using (var writer = new StreamWriter(stream, Encoding.UTF8, 8192, leaveOpen: true) { NewLine = "\r\n", AutoFlush = true })
 
+                
                 using (var reader = new StreamReader(stream))
                 using (var writer = new StreamWriter(stream) { NewLine = "\r\n", AutoFlush = true })
                 {
-                    // --- parse request line ---
+                    
+                    // --- parse request lrine ---
                     var requestLine = reader.ReadLine();
                     if (string.IsNullOrEmpty(requestLine)) return;
 
