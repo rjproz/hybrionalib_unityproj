@@ -110,7 +110,15 @@
 
             "root": "Modules/CustomAnalytics",
             "sample": "Samples/CustomAnalytics"
+        },
+        {
+            "id": "hybriona.httpserver",
+            "displayname": "Http Server",
+            "description": "Http Server for Unity. WebGL Not supported.",
+            "root": "Modules/HttpServer",
+            "sample": "Samples/HttpServer",
+            "dependencies": [ "hybriona.core" ]
         }
-        
+
     ]
 }

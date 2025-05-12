@@ -26,11 +26,11 @@ namespace Hybriona
         public void ThrowRandomUp()
         {
             var direction = new Vector3(Random.Range(-.1f, .1f), 1,Random.Range(-.1f,.1f));
-            rigidbody.velocity = direction * 30;
+            rigidbody.linearVelocity = direction * 30;
         }
         public override void OnReturnToPool()
         {
-            rigidbody.velocity = Vector3.zero;
+            rigidbody.linearVelocity = Vector3.zero;
             rigidbody.angularVelocity = Vector3.zero;
             gameObject.SetActive(false);
            

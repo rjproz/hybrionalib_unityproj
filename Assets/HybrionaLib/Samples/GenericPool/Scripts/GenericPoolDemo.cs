@@ -36,7 +36,7 @@ namespace Hybriona
 			},onReturnedToPoolCallback: (rb) =>{
 
 				//Reset Values
-				rb.velocity = Vector3.zero;
+				rb.linearVelocity = Vector3.zero;
 				rb.angularVelocity = Vector3.zero;
 				rb.gameObject.SetActive(false);
 			});
@@ -49,7 +49,7 @@ namespace Hybriona
 				var rb = cubeRigidBodyPool.FetchFromPool();
 				rb.transform.position = cubeRigidBodyPrefab.transform.position; // set position
 				rb.gameObject.SetActive(true);
-				rb.velocity = new Vector3(Random.Range(-.1f, .1f), 1, Random.Range(-.1f, .1f)) * 30;
+				rb.linearVelocity = new Vector3(Random.Range(-.1f, .1f), 1, Random.Range(-.1f, .1f)) * 30;
 
 				StartCoroutine(CustomLife(rb, 10));
 			}
