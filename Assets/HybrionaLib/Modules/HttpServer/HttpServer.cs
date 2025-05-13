@@ -249,10 +249,7 @@ namespace Hybriona
                 return Headers.ContainsKey("Content-Type") ? Headers["Content-Type"] : null;
             }
         }
-        //public bool IsContentTypeFormOnly()
-        //{
-        //    return Headers.ContainsKey("Content-Type") && Headers["Content-Type"] == "application/x-www-form-urlencoded";
-        //}
+       
     }
 
     public class HttpContext : IDisposable
