@@ -4,9 +4,10 @@ using Hybriona;
 public class HttpServerExample : MonoBehaviour
 {
     private HttpServer _server;
-
+    public Texture2D img;
     void Start()
     {
+        byte[] imageData = img.EncodeToJPG();
         _server = new HttpServer("127.0.0.1", 8081);
 
         // Handle GET requests
@@ -20,6 +21,13 @@ public class HttpServerExample : MonoBehaviour
         {
            
             context.Response.SendResponse("<html><body><h1>Welcome to Home!</h1></body></html>", "text/html", HttpStatusCode.OK);
+            context.Dispose();
+        });
+
+        _server.Get("/image", (context, routeParams) =>
+        {
+
+            context.Response.SendBytes(imageData, "image/jpg", HttpStatusCode.OK);
             context.Dispose();
         });
 
@@ -79,6 +87,7 @@ public class HttpServerExample : MonoBehaviour
             }
             else
             {
+               
                 context.Response.SendResponse($"<html><body>Not found any data {context.Request.ContentType}</body></html>", "text/html", HttpStatusCode.OK);
             }
 
