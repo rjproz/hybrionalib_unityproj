@@ -351,6 +351,34 @@ namespace Hybriona
             _writer.Flush();  // push headers
             _writer.BaseStream.Write(fileBytes, 0, fileBytes.Length);
         }
+
+        /// <summary>
+        /// Sends a binary file (images, PDFs, etc.) as the HTTP response.
+        /// </summary>
+        /// <param name="data">Byte Array.</param>
+        /// <param name="contentType">MIME type (e.g. "image/png", "application/pdf").</param>
+        /// <param name="statusCode">Custom HttpStatusCode enum.</param>
+        public void SendBytes(
+            byte [] data,
+            string contentType = "application/octet-stream",
+            HttpStatusCode statusCode = HttpStatusCode.OK)
+        {
+           
+            int code = (int)statusCode;
+            string statusTxt = statusCode.ToString().Replace('_', ' ');
+
+            // --- Status line ---
+            _writer.WriteLine($"HTTP/1.1 {code} {statusTxt}");
+            // --- Headers ---
+            _writer.WriteLine($"Content-Type: {contentType}");
+            _writer.WriteLine($"Content-Length: {data.Length}");
+            _writer.WriteLine("Connection: close");
+            _writer.WriteLine();  // blank line
+
+            // --- Body ---
+            _writer.Flush();  // push headers
+            _writer.BaseStream.Write(data, 0, data.Length);
+        }
     }
 
     // your custom status codes
