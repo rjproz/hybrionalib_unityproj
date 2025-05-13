@@ -35,6 +35,7 @@ namespace Hybriona
         public void Start()
         {
             _listener.Start();
+            _listener.Server.NoDelay = true;
             _listenerThread = new Thread(ListenForClients) { IsBackground = true };
             _listenerThread.Start();
         }
@@ -59,6 +60,8 @@ namespace Hybriona
             try
             {
                 client.ReceiveTimeout = 5000;
+                client.NoDelay = true;
+
                 using (client)
                 using (var stream = client.GetStream())
                 //using (var reader = new StreamReader(stream, Encoding.UTF8, false, 8192, leaveOpen: true))
@@ -87,8 +90,6 @@ namespace Hybriona
                     {
                         var kv = line.Split(new[] { ':' }, 2);
                         if (kv.Length == 2) headers[kv[0].Trim()] = kv[1].Trim();
-
-
                     }
 
                     // --- read body if present ---

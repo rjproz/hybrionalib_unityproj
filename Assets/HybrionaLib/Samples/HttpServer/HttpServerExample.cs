@@ -60,15 +60,17 @@ public class HttpServerExample : MonoBehaviour
             if(context.Request.IsContentTypeForm())
             {
                
-                var formData =RequestBodyParser.Parse(context.Request.Body, context.Request.ContentType);
+                var formData = RequestBodyParser.Parse(context.Request.Body, context.Request.ContentType);
 
                 string fileData = "";
                 if(formData.Files.Count > 0)
                 {
                     var file = formData.Files[0];
                     fileData += file.FileName + " " + file.Data.Length + " bytes";
+                    System.IO.File.WriteAllBytes(file.FileName, file.Data);
 
                 }
+               
                 context.Response.SendResponse($"<html><body><pre>{formData.Fields["text1"]}\n{formData.Fields["text2"]}\n\n{fileData}</pre></body></html>", "text/html", HttpStatusCode.OK);
                 formData.Dispose();
                 formData = null;
@@ -82,8 +84,7 @@ public class HttpServerExample : MonoBehaviour
 
         });
 
-        // Handle POST for file upload
-        //_server.Post("/upload_file", FileUploadHandler.HandleFileUpload);
+      
 
         // Start the server
         _server.Start();
