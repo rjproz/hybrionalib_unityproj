@@ -35,7 +35,7 @@ namespace Hybriona
     {
         private TcpListener _listener;
         private Thread _listenerThread;
-
+        private int listenClientsDelayMS;
         // each route holds: the original pattern, the compiled regex, the param names, and the handler
         private class Route
         {
@@ -47,8 +47,9 @@ namespace Hybriona
         private List<Route> _getRoutes = new List<Route>();
         private List<Route> _postRoutes = new List<Route>();
 
-        public HttpServer(int port)
+        public HttpServer(int port,int listenClientsDelayMS = 500)
         {
+            this.listenClientsDelayMS = listenClientsDelayMS;
             HttpServerMainThreadDispatcher.Instance.Init();
             _listener = new TcpListener(IPAddress.Parse("127.0.0.1"), port);
            
@@ -81,6 +82,7 @@ namespace Hybriona
             {
                 var client = _listener.AcceptTcpClient();
                 new Thread(() => HandleClient(client)) { IsBackground = true }.Start();
+                Thread.Sleep(this.listenClientsDelayMS);
             }
         }
 
