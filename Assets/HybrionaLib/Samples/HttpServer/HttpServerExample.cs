@@ -31,7 +31,7 @@ public class HttpServerExample : MonoBehaviour
             var task = HttpServer.RunInMainThread(() =>
             {
                 var imageData = img.EncodeToJPG();
-                context.Response.SendBytes(imageData, "image/jpg", HttpStatusCode.OK);
+                context.Response.SendBytes(imageData, HttpContentType.Jpeg, HttpStatusCode.OK);
                 context.Dispose();
             });
 
