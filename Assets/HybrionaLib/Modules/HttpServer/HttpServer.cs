@@ -7,6 +7,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Hybriona
 {
@@ -26,14 +27,22 @@ namespace Hybriona
         private List<Route> _getRoutes = new List<Route>();
         private List<Route> _postRoutes = new List<Route>();
 
-        public HttpServer(string ipAddress, int port)
+        public HttpServer(int port)
         {
-            _listener = new TcpListener(IPAddress.Parse(ipAddress), port);
+            HttpServerMainThreadDispatcher.Instance.Init();
+            _listener = new TcpListener(IPAddress.Parse("127.0.0.1"), port);
            
+        }
+
+        public static Task RunInMainThread(System.Action action)
+        {
+            return HttpServerMainThreadDispatcher.Dispatch(action);
         }
 
         public void Start()
         {
+           
+
             _listener.Start();
             _listener.Server.NoDelay = true;
             _listenerThread = new Thread(ListenForClients) { IsBackground = true };

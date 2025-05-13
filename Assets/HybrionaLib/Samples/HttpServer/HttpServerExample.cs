@@ -7,8 +7,8 @@ public class HttpServerExample : MonoBehaviour
     public Texture2D img;
     void Start()
     {
-        byte[] imageData = img.EncodeToJPG();
-        _server = new HttpServer("127.0.0.1", 8081);
+      
+        _server = new HttpServer(8081);
 
         // Handle GET requests
         _server.Get("/home/:userid/profile", (context, routeParams) =>
@@ -26,9 +26,30 @@ public class HttpServerExample : MonoBehaviour
 
         _server.Get("/image", (context, routeParams) =>
         {
+           
+          
+            var task = HttpServer.RunInMainThread(() =>
+            {
+                var imageData = img.EncodeToJPG();
+                context.Response.SendBytes(imageData, "image/jpg", HttpStatusCode.OK);
+                context.Dispose();
+            });
 
-            context.Response.SendBytes(imageData, "image/jpg", HttpStatusCode.OK);
-            context.Dispose();
+           
+            while(!task.IsCompleted)
+            {
+
+            }
+           
+
+            if(task.IsFaulted)
+            {
+                context.Response.SendResponse("Error "+task.Exception);
+                context.Dispose();
+            }
+
+            
+           
         });
 
         _server.Get("/upload", (ctx, routeParams) =>
