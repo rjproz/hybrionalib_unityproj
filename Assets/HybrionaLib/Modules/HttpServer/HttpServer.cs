@@ -51,7 +51,7 @@ namespace Hybriona
         {
             this.listenClientsDelayMS = listenClientsDelayMS;
             HttpServerMainThreadDispatcher.Instance.Init();
-            _listener = new TcpListener(IPAddress.Parse("127.0.0.1"), port);
+            _listener = new TcpListener(IPAddress.Any, port);
            
         }
 
