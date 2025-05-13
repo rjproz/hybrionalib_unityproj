@@ -25,6 +25,7 @@ public class HttpServerExample : MonoBehaviour
 
         _server.Get("/upload", (ctx, routeParams) =>
         {
+           
             // Build a multipart/form-data upload form
             string html = @"
             <html>
@@ -67,6 +68,7 @@ public class HttpServerExample : MonoBehaviour
                 {
                     var file = formData.Files[0];
                     fileData += file.FileName + " " + file.Data.Length + " bytes";
+                    Debug.Log($"fileData: {fileData}");
                     System.IO.File.WriteAllBytes(file.FileName, file.Data);
 
                 }

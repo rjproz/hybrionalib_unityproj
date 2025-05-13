@@ -64,16 +64,12 @@ namespace Hybriona
 
                 using (client)
                 using (var stream = client.GetStream())
-                //using (var reader = new StreamReader(stream, Encoding.UTF8, false, 8192, leaveOpen: true))
-                //using (var writer = new StreamWriter(stream, Encoding.UTF8, 8192, leaveOpen: true) { NewLine = "\r\n", AutoFlush = true })
-
-                
-                using (var reader = new StreamReader(stream))
+               
                 using (var writer = new StreamWriter(stream) { NewLine = "\r\n", AutoFlush = true })
                 {
-                    
+
                     // --- parse request lrine ---
-                    var requestLine = reader.ReadLine();
+                    var requestLine = ReadLineFromStream(stream);
                     if (string.IsNullOrEmpty(requestLine)) return;
 
                     var parts = requestLine.Split(' ');
@@ -86,7 +82,7 @@ namespace Hybriona
                     // --- parse headers ---
                     var headers = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
                     string line;
-                    while (!string.IsNullOrEmpty(line = reader.ReadLine()))
+                    while (!string.IsNullOrEmpty(line = ReadLineFromStream(stream))) 
                     {
                         var kv = line.Split(new[] { ':' }, 2);
                         if (kv.Length == 2) headers[kv[0].Trim()] = kv[1].Trim();
@@ -118,18 +114,16 @@ namespace Hybriona
                         int totalRead = 0;
                         while (totalRead < contentLength)
                         {
-                            int readedByte = reader.Read();
-
-                            //UnityEngine.Debug.Log($"readed: {totalRead} out of {contentLength}");
-                            if (readedByte <= 0)
+                            
+                            int readedCount = stream.Read(bodyBuffer, totalRead, contentLength - totalRead);
+                            if (readedCount <= 0)
                             {
                                 break;
                             }
-                            bodyBuffer[totalRead] = (byte)readedByte;
-                            totalRead += 1;
+                            totalRead += readedCount;
                         }
 
-                        // Store the raw bytes instead of a string
+                       
                         context.Request.Body = bodyBuffer;
                     }
 
@@ -206,6 +200,31 @@ namespace Hybriona
                 d[k] = v;
             }
             return d;
+        }
+
+        public static string ReadLineFromStream(NetworkStream stream)
+        {
+            
+
+            using var memoryStream = new MemoryStream();
+            int readByte;
+
+            while ((readByte = stream.ReadByte()) != -1)
+            {
+                // '\n' signifies the end of a line
+                if (readByte == '\n')
+                    break;
+
+                // Avoid including '\r' if the line ends with "\r\n"
+                if (readByte != '\r')
+                    memoryStream.WriteByte((byte)readByte);
+            }
+
+            // End of stream reached with no data
+            if (memoryStream.Length == 0 && readByte == -1)
+                return null;
+
+            return Encoding.UTF8.GetString(memoryStream.ToArray());
         }
     }
 
