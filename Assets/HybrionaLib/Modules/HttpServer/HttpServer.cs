@@ -11,6 +11,26 @@ using System.Threading.Tasks;
 
 namespace Hybriona
 {
+    public static class HttpContentType
+    {
+        public const string Json = "application/json";
+        public const string Xml = "application/xml";
+        public const string Html = "text/html";
+        public const string PlainText = "text/plain";
+        public const string FormUrlEncoded = "application/x-www-form-urlencoded";
+        public const string MultipartFormData = "multipart/form-data";
+        public const string OctetStream = "application/octet-stream";
+        public const string Pdf = "application/pdf";
+        public const string Csv = "text/csv";
+        public const string JavaScript = "application/javascript";
+        public const string Css = "text/css";
+        public const string Svg = "image/svg+xml";
+        public const string Png = "image/png";
+        public const string Jpeg = "image/jpeg";
+        public const string Gif = "image/gif";
+        public const string Webp = "image/webp";
+    }
+
     public class HttpServer
     {
         private TcpListener _listener;
