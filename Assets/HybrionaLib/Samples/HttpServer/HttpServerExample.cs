@@ -3,28 +3,28 @@ using Hybriona;
 
 public class HttpServerExample : MonoBehaviour
 {
-    private HttpServer _server;
+    private HttpServer server;
     public Texture2D img;
     void Start()
     {
       
-        _server = new HttpServer(8081);
+        server = new HttpServer(8081);
 
         // Handle GET requests
-        _server.Get("/home/:userid/profile", (context, routeParams) =>
+        server.Get("/home/:userid/profile", (context, routeParams) =>
         {
             context.Response.SendResponse($"<html><body><h1>Welcome  {routeParams["userid"]} to Home!</h1></body></html>", HttpContentType.Html , HttpStatusCode.OK);
             context.Dispose();
         });
 
-        _server.Get("/home", (context, routeParams) =>
+        server.Get("/home", (context, routeParams) =>
         {
            
             context.Response.SendResponse("<html><body><h1>Welcome to Home!</h1></body></html>", HttpContentType.Html, HttpStatusCode.OK);
             context.Dispose();
         });
 
-        _server.Get("/image", (context, routeParams) =>
+        server.Get("/image", (context, routeParams) =>
         {
            
           
@@ -52,7 +52,7 @@ public class HttpServerExample : MonoBehaviour
            
         });
 
-        _server.Get("/upload", (ctx, routeParams) =>
+        server.Get("/upload", (ctx, routeParams) =>
         {
            
             // Build a multipart/form-data upload form
@@ -85,7 +85,7 @@ public class HttpServerExample : MonoBehaviour
         });
 
 
-        _server.Post("/handle_upload", (context, routeParams) =>
+        server.Post("/handle_upload", (context, routeParams) =>
         {
             if(context.Request.IsContentTypeForm())
             {
@@ -119,13 +119,13 @@ public class HttpServerExample : MonoBehaviour
       
 
         // Start the server
-        _server.Start();
+        server.Start();
         Debug.Log("Server started");
     }
 
     void OnDisable()
     {
         // Optional: Add stop logic to your HttpServer class if needed
-         _server.Stop();
+         server.Stop();
     }
 }
