@@ -315,11 +315,11 @@ namespace Hybriona
                         }
                         if (isActivated)
                         {
-                            GUILayout.Label(EditorGUIUtility.IconContent("Installed"), uiStyle.moduleInstalledIconStyle, GUILayout.Width(20),GUILayout.Height(20));
+                            GUILayout.Label(EditorGUIUtility.IconContent("d_GreenCheckmark"), uiStyle.moduleInstalledIconStyle, GUILayout.Width(20),GUILayout.Height(20));
                         }
                         else
                         {
-                            GUILayout.Label(EditorGUIUtility.IconContent("Add-Available"), uiStyle.moduleInstalledIconStyle, GUILayout.Width(20), GUILayout.Height(20));
+                            GUILayout.Label(EditorGUIUtility.IconContent("Cancel"), uiStyle.moduleInstalledIconStyle, GUILayout.Width(20), GUILayout.Height(20));
                            
                         }
                         EditorGUILayout.EndHorizontal();
