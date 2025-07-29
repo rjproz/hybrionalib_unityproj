@@ -18,7 +18,7 @@ namespace Hybriona
 	{
 
 
-        public const string REPORT_URL = "https://vps.hybriona.com/api/hybriona-services/analytics/report";
+        public const string REPORT_URL = "https://vps.hybriona.com/api/hybriona-services/analytics/report?v=2";
 
         public static bool isInitialized { get; private set; }
         public static bool isDataCollectionEnabled { get; private set; }
@@ -34,7 +34,7 @@ namespace Hybriona
 
 
 
-        private static System.DateTime timeSessionStarted;
+        private static float timeSessionStarted;
        
         
         private static HybAnalyticsAllPendingEvents tempPendingEvents = new HybAnalyticsAllPendingEvents();
@@ -52,9 +52,10 @@ namespace Hybriona
         }
 
         
-        public static void Init(string projectId,string storeName = null)
+
+        public static void Init(string projectId, string storeName = null)
         {
-            if(isInitialized)
+            if (isInitialized)
             {
                 return;
             }
@@ -66,7 +67,7 @@ namespace Hybriona
             hybAnalyticsUser.Load();
 
             eventData = new HybAnalyticsEventData();
-           
+
 
 
             eventData.environment = (Application.isEditor || Debug.isDebugBuild) ? 0 : 1;
@@ -82,10 +83,10 @@ namespace Hybriona
             eventData.country = System.Globalization.RegionInfo.CurrentRegion.ThreeLetterISORegionName;
 
             eventData.user_id = userId = hybAnalyticsUser.userId;
-            eventData.session_id = hybAnalyticsUser.GetNextSessionId() ;
+            eventData.session_id = hybAnalyticsUser.GetNextSessionId();
 
 
-            
+
             if (string.IsNullOrEmpty(HybrionaAnalytics.storeName))
             {
 #if UNITY_IOS
@@ -101,7 +102,7 @@ namespace Hybriona
 
             eventData.store_name = HybrionaAnalytics.storeName;
             isInitialized = true;
-            timeSessionStarted = System.DateTime.UtcNow;
+            timeSessionStarted = Time.fixedUnscaledTime;// System.DateTime.UtcNow;
 
             sessionLengthEventData = JsonUtility.FromJson<HybAnalyticsEventData>(eventData.ToJSON());
         }
@@ -184,7 +185,7 @@ namespace Hybriona
                     yield return wait;
                 }
                
-                var playTimeMins = (System.DateTime.UtcNow - timeSessionStarted).TotalMinutes.ToString("0.00");
+                var playTimeMins = ((Time.fixedUnscaledTime- timeSessionStarted)/60f).ToString("0.00");
                 sessionLengthEventData.event_id = sessionLengthEventData.user_id + "_" + sessionLengthEventData.session_id;
                 sessionLengthEventData.event_name = "playTime";
                 sessionLengthEventData.event_data = "{\"t\":"+ playTimeMins + "}";
