@@ -35,7 +35,7 @@ namespace Hybriona
 
 
         private static float timeSessionStarted;
-       
+        private static float totalPlayTimeMinutes;
         
         private static HybAnalyticsAllPendingEvents tempPendingEvents = new HybAnalyticsAllPendingEvents();
 
@@ -180,12 +180,37 @@ namespace Hybriona
             bool uploadFailed = false;
             while(true)
             {
+                
+
                 if (!uploadFailed)
                 {
-                    yield return wait;
+                    float reportTimeDelaySec = 60;
+                    if (totalPlayTimeMinutes < 1)
+                    {
+                        reportTimeDelaySec = 30;
+                    }
+                    else if (totalPlayTimeMinutes < 30)
+                    {
+                        reportTimeDelaySec = 60;
+                    }
+                    else if (totalPlayTimeMinutes < 60)
+                    {
+                        reportTimeDelaySec = 180;
+                    }
+                    else 
+                    {
+                        reportTimeDelaySec = 240;
+                    }
+
+                    float timer = reportTimeDelaySec;
+                    while (timer > 0)
+                    {
+                        timer -= Time.fixedUnscaledDeltaTime;
+                        yield return null;
+                    }
                 }
-               
-                var playTimeMins = ((Time.fixedUnscaledTime- timeSessionStarted)/60f).ToString("0.00");
+                totalPlayTimeMinutes = (Time.fixedUnscaledTime - timeSessionStarted) / 60f;
+                var playTimeMins = totalPlayTimeMinutes.ToString("0.00");
                 sessionLengthEventData.event_id = sessionLengthEventData.user_id + "_" + sessionLengthEventData.session_id;
                 sessionLengthEventData.event_name = "playTime";
                 sessionLengthEventData.event_data = "{\"t\":"+ playTimeMins + "}";
