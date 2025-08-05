@@ -16,7 +16,8 @@ namespace Hybriona
 	{
 		//public string poolId { get; private set; }
 
-		
+		public System.Func<bool> notNullRule { get; private set; }
+		public System.Action destroyProcedure { get;  private set;}
 		private System.Action<T> onReturnedToPoolCallback;
 		private System.Func<T> createCopyFunction;
 
