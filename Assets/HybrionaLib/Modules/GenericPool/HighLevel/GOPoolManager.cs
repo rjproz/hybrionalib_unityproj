@@ -10,31 +10,33 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.SceneManagement;
 namespace Hybriona
 {
 	public class GOPoolManager : HybSingleton<GOPoolManager>
 	{
 		private static Dictionary<string, GenericPool<MonobehaviorPoolObject>> pools = new Dictionary<string, GenericPool<MonobehaviorPoolObject>>();
 
-		/// <summary>
-        /// Register GameObject Pool
-        /// </summary>
-        /// <param name="poolId">Unique Pool Id</param>
-        /// <param name="prefabObj">Source Prefab Object</param>
-        /// <param name="preCache">Number of copies preloaded</param>
-		public static void RegisterPool(string poolId,GOPoolObject prefabObj,uint preCache = 0)
-        {
-			var pool = prefabObj.RegisterPool();
-			
 
-			if(pools.ContainsKey(poolId))
-            {
+
+		/// <summary>
+		/// Register GameObject Pool
+		/// </summary>
+		/// <param name="poolId">Unique Pool Id</param>
+		/// <param name="prefabObj">Source Prefab Object</param>
+		/// <param name="preCache">Number of copies preloaded</param>
+		public static void RegisterPool(string poolId, GOPoolObject prefabObj, uint preCache = 0)
+		{
+			var pool = prefabObj.RegisterPool();
+
+
+			if (pools.ContainsKey(poolId))
+			{
 				pools.Add(poolId, pool);
 
 			}
 			else
-            {
+			{
 				pools[poolId] = pool;
 
 			}
@@ -46,29 +48,29 @@ namespace Hybriona
 
 
 		public static void RemovePool(string poolId)
-        {
-			if(ContainsPool(poolId))
-            {
+		{
+			if (ContainsPool(poolId))
+			{
 				var pool = pools[poolId];
-				pool.Clean(); 
+				pool.Clean();
 				pools.Remove(poolId);
 				System.GC.Collect();
-            }
-        }
+			}
+		}
 
 
 
 
-		
+
 		public static bool ContainsPool(string poolId)
-        {
+		{
 			return pools.ContainsKey(poolId);
-        }
+		}
 
 		public static GenericPool<MonobehaviorPoolObject> GetPool(string poolID)
-        {
-			if(ContainsPool(poolID))
-            {
+		{
+			if (ContainsPool(poolID))
+			{
 				return pools[poolID];
 
 			}
@@ -76,14 +78,14 @@ namespace Hybriona
 		}
 
 		public static MonobehaviorPoolObject GetFromPool(string poolID)
-        {
-			if(ContainsPool(poolID))
-            {
-				var obj = (GOPoolObject) pools[poolID].FetchFromPool();
+		{
+			if (ContainsPool(poolID))
+			{
+				var obj = (GOPoolObject)pools[poolID].FetchFromPool();
 				return obj;
-            }
-			throw new System.Exception("Pool doesn't exist with poolId : "+poolID);
-        }
+			}
+			throw new System.Exception("Pool doesn't exist with poolId : " + poolID);
+		}
 
 		public static void ReturnToPool(GOPoolObject obj)
 		{
@@ -91,6 +93,31 @@ namespace Hybriona
 		}
 
 
-	}
+		private static void CleanAll()
+		{
+			foreach (var poolPair in pools)
+			{
+				var key = poolPair.Key;
+				var pool = poolPair.Value;
+				pool.Clean();
+				pool = null;
+				pools.Remove(key);
+			}
+
+			pools.Clear();
+
+			System.GC.Collect();
+		}
+
+        private void Awake()
+        {
+			
+			SceneManager.sceneUnloaded += (Scene scene) =>
+			{
+				CleanAll();
+			};
+        }
+
+    }
 }
 

@@ -15,14 +15,23 @@ using UnityEditor;
 
 namespace Hybriona
 {
-	public class GOPoolDataManager : MonoBehaviour 
+	public class GOPoolDataManager : MonoBehaviour
 	{
+		[SerializeField] private bool registerOnAwake = true;
 		[SerializeField]
 		private List<GOPoolDataSource> registerOnStartList = new List<GOPoolDataSource>();
-		void Awake () 
+		void Awake()
 		{
-			for(int i=0;i< registerOnStartList.Count;i++)
-            {
+			if (registerOnAwake)
+			{
+				RegisterPools();
+			}
+		}
+
+		public void RegisterPools()
+		{
+			for (int i = 0; i < registerOnStartList.Count; i++)
+			{
 				var poolSource = registerOnStartList[i];
 				if (poolSource != null)
 				{
@@ -30,16 +39,23 @@ namespace Hybriona
 					{
 
 					}
-					else if(string.IsNullOrEmpty(poolSource.poolId))
-                    {
+					else if (string.IsNullOrEmpty(poolSource.poolId))
+					{
 						Debug.Log("poolSource's poolId is null or empty");
-                    }
+					}
 					else
 					{
-						GOPoolManager.RegisterPool(poolSource.poolId, poolSource.source, poolSource.preCache);
+						if (!GOPoolManager.ContainsPool(poolSource.poolId))
+						{
+							GOPoolManager.RegisterPool(poolSource.poolId, poolSource.source, poolSource.preCache);
+						}
+						else
+						{
+							Debug.LogError($"GOPoolManager poolId='{poolSource.poolId}' already exist");
+						}
 					}
 				}
-            }
+			}
 		}
 
 	}
