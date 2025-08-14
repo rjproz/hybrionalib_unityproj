@@ -28,6 +28,7 @@ namespace Hybriona
         public static string projectId { get; private set; }
         public static string storeName { get; private set; }
 
+        public static bool isEditorLogEnabled { get; private set; } = false;
         private static HybAnalyticsUser hybAnalyticsUser;
         private static HybAnalyticsEventData eventData = null;
         private static HybAnalyticsEventData sessionLengthEventData = null;
@@ -41,6 +42,7 @@ namespace Hybriona
 
 
         private static bool forcedFlush;
+        
         static object accessLock = new object();
         private Coroutine sessionTimeReportingRoutine;
 
@@ -126,7 +128,15 @@ namespace Hybriona
 
         }
 
-       
+        public void EnableEditorLog()
+        {
+            isEditorLogEnabled = true;
+        }
+
+        public void DisableEditorLog()
+        {
+            isEditorLogEnabled = false;
+        }
 
         public static void SetUserId(string userId)
         {
@@ -224,16 +234,28 @@ namespace Hybriona
                     //request.downloadHandler = new DownloadHandlerBuffer();
                     request.SetRequestHeader("Content-Type", "application/json");                
                     yield return request.SendWebRequest();
-#if UNITY_EDITOR && LOG_HYBRIONA_ANALYTICS
-                    Debug.LogFormat("Analytics Reported {0} ", sessionLengthEventData.ToJSON());
-#endif
-                    if(request.responseCode == 201)
+
+                    if (request.responseCode == 201)
                     {
                         uploadFailed = false;
+
+#if UNITY_EDITOR
+                        if (isEditorLogEnabled)
+                        {
+                            Debug.LogFormat("Analytics Reported {0} ", sessionLengthEventData.ToJSON());
+                        }
+#endif
                     }
                     else
                     {
                         uploadFailed = true;
+                        
+                         #if UNITY_EDITOR
+                        if (isEditorLogEnabled)
+                        {
+                            Debug.LogFormat($"Analytics Reported Failed {sessionLengthEventData.ToJSON()} due to {request.error}");
+                        }
+                        #endif
                     }
                 }
 
@@ -273,23 +295,30 @@ namespace Hybriona
                         if (request.responseCode == 201)
                         {
                             //success
-#if UNITY_EDITOR && LOG_HYBRIONA_ANALYTICS
-                            Debug.LogFormat("Analytics Reported {0} ",alleventDataString);
+#if UNITY_EDITOR  
+                        if (isEditorLogEnabled)
+                        {
+                             Debug.LogFormat("Analytics Reported {0} ",alleventDataString);
+                        }
+                           
 #endif
                         }
                         else
                         {
                             failedToUpload = true;
                             //retry again
-#if UNITY_EDITOR && LOG_HYBRIONA_ANALYTICS
-                            Debug.LogErrorFormat("Analytics Failed {0} ", alleventDataString);
+#if UNITY_EDITOR
+                            if (isEditorLogEnabled)
+                            {
+                               
+                                Debug.LogErrorFormat("Analytics Failed {0} due to {1} ", alleventDataString,request.error);
+                            }    
 #endif
                             lock (accessLock)
                             {
                                 JsonUtility.FromJsonOverwrite(alleventDataString, tempPendingEvents);
                                 hybAnalyticsUser.pendingEvents.eventsRaw.AddRange(tempPendingEvents.eventsRaw);
                                 tempPendingEvents.eventsRaw.Clear();
-
                             }
                         }
                     }
@@ -355,7 +384,7 @@ namespace Hybriona
             {
 				if(m_Instance == null)
                 {
-					m_Instance = GameObject.FindObjectOfType<HybrionaAnalytics>();
+					m_Instance = GameObject.FindFirstObjectByType<HybrionaAnalytics>();
 					if(m_Instance == null)
                     {
 						m_Instance = new GameObject("HybrionaAnalytics").AddComponent<HybrionaAnalytics>();
