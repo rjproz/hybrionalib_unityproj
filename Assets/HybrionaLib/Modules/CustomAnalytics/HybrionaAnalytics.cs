@@ -104,7 +104,7 @@ namespace Hybriona
 
             eventData.store_name = HybrionaAnalytics.storeName;
             isInitialized = true;
-            timeSessionStarted = Time.fixedUnscaledTime;// System.DateTime.UtcNow;
+            timeSessionStarted = Time.unscaledTime;// System.DateTime.UtcNow;
 
             sessionLengthEventData = JsonUtility.FromJson<HybAnalyticsEventData>(eventData.ToJSON());
         }
@@ -191,7 +191,8 @@ namespace Hybriona
             while(true)
             {
                 
-
+                totalPlayTimeMinutes = (Time.unscaledTime - timeSessionStarted) / 60f;
+                
                 if (!uploadFailed)
                 {
                     float reportTimeDelaySec = 60;
@@ -207,7 +208,7 @@ namespace Hybriona
                     {
                         reportTimeDelaySec = 180;
                     }
-                    else 
+                    else
                     {
                         reportTimeDelaySec = 240;
                     }
@@ -215,17 +216,17 @@ namespace Hybriona
                     float timer = reportTimeDelaySec;
                     while (timer > 0)
                     {
-                        timer -= Time.fixedUnscaledDeltaTime;
+                        timer -= Time.unscaledDeltaTime;
                         yield return null;
                     }
                 }
-                totalPlayTimeMinutes = (Time.fixedUnscaledTime - timeSessionStarted) / 60f;
+              
                 var playTimeMins = totalPlayTimeMinutes.ToString("0.00");
                 sessionLengthEventData.event_id = sessionLengthEventData.user_id + "_" + sessionLengthEventData.session_id;
                 sessionLengthEventData.event_name = "playTime";
                 sessionLengthEventData.event_data = "{\"t\":"+ playTimeMins + "}";
                 sessionLengthEventData.timestamp = System.DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
-
+                
                 using (var request = new UnityWebRequest(REPORT_URL, UnityWebRequest.kHttpVerbPOST))
                 {
                    
@@ -253,7 +254,7 @@ namespace Hybriona
                          #if UNITY_EDITOR
                         if (isEditorLogEnabled)
                         {
-                            Debug.LogFormat($"Analytics Reported Failed {sessionLengthEventData.ToJSON()} due to {request.error}");
+                            Debug.LogFormat($"Analytics Reported Failed {sessionLengthEventData.event_name} due to {request.error}");
                         }
                         #endif
                     }
