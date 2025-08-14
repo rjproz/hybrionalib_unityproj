@@ -191,7 +191,7 @@ namespace Hybriona
             while(true)
             {
                 
-                totalPlayTimeMinutes = (Time.unscaledTime - timeSessionStarted) / 60f;
+               
                 
                 if (!uploadFailed)
                 {
@@ -220,7 +220,7 @@ namespace Hybriona
                         yield return null;
                     }
                 }
-              
+                totalPlayTimeMinutes = (Time.unscaledTime - timeSessionStarted) / 60f;
                 var playTimeMins = totalPlayTimeMinutes.ToString("0.00");
                 sessionLengthEventData.event_id = sessionLengthEventData.user_id + "_" + sessionLengthEventData.session_id;
                 sessionLengthEventData.event_name = "playTime";
