@@ -128,12 +128,12 @@ namespace Hybriona
 
         }
 
-        public void EnableEditorLog()
+        public static void EnableEditorLog()
         {
             isEditorLogEnabled = true;
         }
 
-        public void DisableEditorLog()
+        public static void DisableEditorLog()
         {
             isEditorLogEnabled = false;
         }
