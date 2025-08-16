@@ -18,7 +18,7 @@ namespace Hybriona
 	{
 
 
-        public const string REPORT_URL = "https://vps.hybriona.com/api/hybriona-services/analytics/report?v=2";
+        public const string REPORT_URL = "https://vps.hybriona.com/api/hybriona-services/analytics/report?v=3";
 
         public static bool isInitialized { get; private set; }
         public static bool isDataCollectionEnabled { get; private set; }
@@ -221,7 +221,7 @@ namespace Hybriona
                     }
                 }
                 totalPlayTimeMinutes = (Time.unscaledTime - timeSessionStarted) / 60f;
-                var playTimeMins = totalPlayTimeMinutes.ToString("0.00");
+                var playTimeMins = totalPlayTimeMinutes.ToString("0.00",System.Globalization.CultureInfo.InvariantCulture);
                 sessionLengthEventData.event_id = sessionLengthEventData.user_id + "_" + sessionLengthEventData.session_id;
                 sessionLengthEventData.event_name = "playTime";
                 sessionLengthEventData.event_data = "{\"t\":"+ playTimeMins + "}";

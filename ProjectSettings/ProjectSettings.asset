@@ -140,7 +140,7 @@ PlayerSettings:
   loadStoreDebugModeEnabled: 0
   visionOSBundleVersion: 1.0
   tvOSBundleVersion: 1.0
-  bundleVersion: 0.5.3
+  bundleVersion: 0.5.9
   preloadedAssets: []
   metroInputSource: 0
   wsaTransparentSwapchain: 0
@@ -167,12 +167,12 @@ PlayerSettings:
     Standalone: com.DefaultCompany.HybrionaLibUnityProj
     iPhone: com.DefaultCompany.HybrionaLibUnityProj
   buildNumber:
-    Standalone: 223
+    Standalone: 229
     VisionOS: 0
-    iPhone: 223
+    iPhone: 229
     tvOS: 0
   overrideDefaultApplicationIdentifier: 0
-  AndroidBundleVersionCode: 223
+  AndroidBundleVersionCode: 229
   AndroidMinSdkVersion: 23
   AndroidTargetSdkVersion: 0
   AndroidPreferredInstallLocation: 1
