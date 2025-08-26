@@ -53,9 +53,14 @@ namespace Hybriona
             StartDataCollection();
         }
 
-        
+
 
         public static void Init(string projectId, string storeName = null)
+        {
+            Init(projectId, null, storeName);
+        }
+
+        public static void Init(string projectId,string userId, string storeName = null)
         {
             if (isInitialized)
             {
@@ -67,6 +72,10 @@ namespace Hybriona
 
             hybAnalyticsUser = new HybAnalyticsUser();
             hybAnalyticsUser.Load();
+            if(!string.IsNullOrEmpty(userId))
+            {
+                hybAnalyticsUser.SetUserId(userId);
+            }
 
             eventData = new HybAnalyticsEventData();
 
@@ -109,6 +118,7 @@ namespace Hybriona
             sessionLengthEventData = JsonUtility.FromJson<HybAnalyticsEventData>(eventData.ToJSON());
         }
 
+      
         public static void StartDataCollection(bool enableSessionTimeReporting = false)
         {
             if (!isDataCollectionEnabled)
@@ -116,7 +126,7 @@ namespace Hybriona
                 isDataCollectionEnabled = true;
                 ReportCustomEvent("newPlayer");
                 Instance.StartCoroutine(Instance.AutoFlushEvents());
-                if(enableSessionTimeReporting)
+                if (enableSessionTimeReporting)
                 {
                     if (Instance.sessionTimeReportingRoutine != null)
                     {
@@ -127,6 +137,9 @@ namespace Hybriona
             }
 
         }
+
+
+       
 
         public static void EnableEditorLog()
         {
