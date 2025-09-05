@@ -22,7 +22,7 @@ namespace Hybriona
 
         public static bool isInitialized { get; private set; }
         public static bool isDataCollectionEnabled { get; private set; }
-        public static string userId { get; private set; }
+       
         public static string sessionId { get; private set; }
 
         public static string projectId { get; private set; }
@@ -33,7 +33,17 @@ namespace Hybriona
         private static HybAnalyticsEventData eventData = null;
         private static HybAnalyticsEventData sessionLengthEventData = null;
 
-
+        public static string userId
+        {
+            get
+            {
+                if(hybAnalyticsUser != null)
+                {
+                    return hybAnalyticsUser.userId;
+                }
+                return null;
+            }
+        }
 
         float timerGamePlayNotInBackground = 0;
         float timerGamePlay = 0;
@@ -96,7 +106,7 @@ namespace Hybriona
             eventData.platform = PlatformToInt();
             eventData.country = System.Globalization.RegionInfo.CurrentRegion.ThreeLetterISORegionName;
 
-            eventData.user_id = userId = hybAnalyticsUser.userId;
+            eventData.user_id = hybAnalyticsUser.userId;
             eventData.session_id = hybAnalyticsUser.GetNextSessionId();
 
 
@@ -134,11 +144,12 @@ namespace Hybriona
                 {
                     if (Instance.sessionTimeReportingRoutine != null)
                     {
-                    
+
                         Instance.StopCoroutine(Instance.sessionTimeReportingRoutine);
                     }
-                    Instance.StartCoroutine(Instance.GamePlayTimerCounter());
+
                     Instance.sessionTimeReportingRoutine = Instance.StartCoroutine(Instance.SessionReportingLoop());
+                    Instance.StartCoroutine(Instance.GamePlayTimerCounter());
                 }
             }
 
@@ -184,7 +195,7 @@ namespace Hybriona
 
             lock (accessLock)
             {
-                eventData.event_id = "Evt-" + System.Guid.NewGuid() +"_"+ userId.GetHashCode();
+                eventData.event_id = "Evt-" + System.Guid.NewGuid() +"_"+ hybAnalyticsUser.userId.GetHashCode();
                 eventData.timestamp = System.DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
                 eventData.event_name = eventName;
                 eventData.event_data = jsonData;
