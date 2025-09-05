@@ -35,9 +35,12 @@ namespace Hybriona
 
 
 
-        private static float timeSessionStarted;
+        float timerGamePlayNotInBackground = 0;
+        float timerGamePlay = 0;
         private static float totalPlayTimeMinutes;
-        
+        private static float totalPlayTimeMinutesNotInBackground;
+        private static bool isRunningInBackground;
+
         private static HybAnalyticsAllPendingEvents tempPendingEvents = new HybAnalyticsAllPendingEvents();
 
 
@@ -113,7 +116,7 @@ namespace Hybriona
 
             eventData.store_name = HybrionaAnalytics.storeName;
             isInitialized = true;
-            timeSessionStarted = Time.unscaledTime;// System.DateTime.UtcNow;
+           
 
             sessionLengthEventData = JsonUtility.FromJson<HybAnalyticsEventData>(eventData.ToJSON());
         }
@@ -125,13 +128,16 @@ namespace Hybriona
             {
                 isDataCollectionEnabled = true;
                 ReportCustomEvent("newPlayer");
+                Instance.StopAllCoroutines();
                 Instance.StartCoroutine(Instance.AutoFlushEvents());
                 if (enableSessionTimeReporting)
                 {
                     if (Instance.sessionTimeReportingRoutine != null)
                     {
+                    
                         Instance.StopCoroutine(Instance.sessionTimeReportingRoutine);
                     }
+                    Instance.StartCoroutine(Instance.GamePlayTimerCounter());
                     Instance.sessionTimeReportingRoutine = Instance.StartCoroutine(Instance.SessionReportingLoop());
                 }
             }
@@ -197,23 +203,36 @@ namespace Hybriona
             PlayerPrefs.Save();
         }
 
+        IEnumerator GamePlayTimerCounter()
+        {
+           isRunningInBackground  = Application.runInBackground ;
+            
+            while (true)
+            {
+
+                if (isRunningInBackground && applicationIsInFocus)
+                {
+                   timerGamePlayNotInBackground += Time.unscaledDeltaTime;
+                }
+                timerGamePlay += Time.unscaledDeltaTime;
+                yield return null;
+            }
+        }
         IEnumerator SessionReportingLoop()
         {
-            WaitForSecondsRealtime wait = new WaitForSecondsRealtime(60);
+           
             bool uploadFailed = false;
-            while(true)
+            
+          
+            while (true)
             {
-                
-               
-                
+
+
+
                 if (!uploadFailed)
                 {
                     float reportTimeDelaySec = 60;
-                    if (totalPlayTimeMinutes < 1)
-                    {
-                        reportTimeDelaySec = 30;
-                    }
-                    else if (totalPlayTimeMinutes < 30)
+                    if (totalPlayTimeMinutes < 30)
                     {
                         reportTimeDelaySec = 60;
                     }
@@ -233,20 +252,33 @@ namespace Hybriona
                         yield return null;
                     }
                 }
-                totalPlayTimeMinutes = (Time.unscaledTime - timeSessionStarted) / 60f;
-                var playTimeMins = totalPlayTimeMinutes.ToString("0.00",System.Globalization.CultureInfo.InvariantCulture);
+                totalPlayTimeMinutes = timerGamePlay / 60f;
+                
+                
+                var playTimeMins = totalPlayTimeMinutes.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
+               
                 sessionLengthEventData.event_id = sessionLengthEventData.user_id + "_" + sessionLengthEventData.session_id;
                 sessionLengthEventData.event_name = "playTime";
-                sessionLengthEventData.event_data = "{\"t\":"+ playTimeMins + "}";
-                sessionLengthEventData.timestamp = System.DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
                 
+                if (isRunningInBackground)
+                {
+                    totalPlayTimeMinutesNotInBackground = timerGamePlayNotInBackground / 60f;
+                    var playTimeMinsNotInBackground = totalPlayTimeMinutesNotInBackground.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
+                    sessionLengthEventData.event_data = "{\"t\":" + playTimeMinsNotInBackground + ",\"tb\":" + playTimeMins + "}";
+                }
+                else
+                {
+                    sessionLengthEventData.event_data = "{\"t\":" + playTimeMins + "}";
+                }
+                sessionLengthEventData.timestamp = System.DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
+
                 using (var request = new UnityWebRequest(REPORT_URL, UnityWebRequest.kHttpVerbPOST))
                 {
-                   
+
                     var bytes = System.Text.Encoding.UTF8.GetBytes(sessionLengthEventData.ToJSON());
                     request.uploadHandler = new UploadHandlerRaw(bytes);
                     //request.downloadHandler = new DownloadHandlerBuffer();
-                    request.SetRequestHeader("Content-Type", "application/json");                
+                    request.SetRequestHeader("Content-Type", "application/json");
                     yield return request.SendWebRequest();
 
                     if (request.responseCode == 201)
@@ -263,13 +295,13 @@ namespace Hybriona
                     else
                     {
                         uploadFailed = true;
-                        
-                         #if UNITY_EDITOR
+
+#if UNITY_EDITOR
                         if (isEditorLogEnabled)
                         {
                             Debug.LogFormat($"Analytics Reported Failed {sessionLengthEventData.event_name} due to {request.error}");
                         }
-                        #endif
+#endif
                     }
                 }
 
@@ -357,7 +389,7 @@ namespace Hybriona
 
 
 
-
+     
        
 
 
@@ -386,8 +418,13 @@ namespace Hybriona
             return 0;
         }
 
+        private static bool applicationIsInFocus = true;
+        private void OnApplicationFocus(bool focus)
+        {
+            applicationIsInFocus = focus;
+        }
 
-    
+
         /// <summary>
         /// 
         /// </summary>
