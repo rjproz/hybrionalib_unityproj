@@ -18,7 +18,7 @@ namespace Hybriona
 	{
 
 
-        public const string REPORT_URL = "https://vps.hybriona.com/api/hybriona-services/analytics/report?v=3";
+        public const string REPORT_URL = "https://vps.hybriona.com/api/hybriona-services/analytics/report?v=4";
 
         public static bool isInitialized { get; private set; }
         public static bool isDataCollectionEnabled { get; private set; }
