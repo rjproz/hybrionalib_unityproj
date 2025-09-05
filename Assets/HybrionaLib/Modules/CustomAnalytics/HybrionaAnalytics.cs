@@ -216,12 +216,11 @@ namespace Hybriona
 
         IEnumerator GamePlayTimerCounter()
         {
-           isRunningInBackground  = Application.runInBackground ;
-            
+            isRunningInBackground  = Application.runInBackground ; 
             while (true)
             {
 
-                if (isRunningInBackground && applicationIsInFocus)
+                if (isRunningInBackground && Application.isFocused)
                 {
                    timerGamePlayNotInBackground += Time.unscaledDeltaTime;
                 }
@@ -429,12 +428,7 @@ namespace Hybriona
             return 0;
         }
 
-        private static bool applicationIsInFocus = true;
-        private void OnApplicationFocus(bool focus)
-        {
-            applicationIsInFocus = focus;
-        }
-
+      
 
         /// <summary>
         /// 
