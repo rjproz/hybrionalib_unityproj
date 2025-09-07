@@ -174,8 +174,30 @@ namespace Hybriona
             eventData.user_id = userId = hybAnalyticsUser.userId;
         }
 
+        public static void EnableErrorReporting()
+        {
+            Application.logMessageReceived += (condition, stackTrace, type) =>
+            {
+                if (type == LogType.Error || type == LogType.Exception)
+                {
+                    if(string.IsNullOrEmpty(condition))
+                    {
+                        condition = "No Error Message";
+                    }
 
-       
+                    if (string.IsNullOrEmpty(stackTrace))
+                    {
+                        stackTrace = "No Stacktrace";
+                    }
+                    ReportCustomEvent("error", "{\"msg\":\"" + condition.Replace("\"", "'") + "\",\"stack\":\"" + stackTrace.Replace("\"", "'") + "\"}");
+                }
+            };
+        }
+
+        public static void ReportMessage(string message)
+        {
+            ReportCustomEvent("message", "{\"msg\":\"" + message.Replace("\"", "'") + "\"}");
+        }
 
         public static void ReportCustomEvent(string eventName)
         {
