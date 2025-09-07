@@ -11,12 +11,12 @@ using UnityEngine;
 
 namespace Hybriona
 {
-	public sealed partial class HybrionaAnalytics : MonoBehaviour
-	{
+    public sealed partial class HybrionaAnalytics : MonoBehaviour
+    {
         public static void ReportOnLevelStarted(int levelNum)
         {
-            ReportCustomEvent("levelStartedInt", JsonUtility.ToJson( new IntegerVal() { value = levelNum }));
-            
+            ReportCustomEvent("levelStartedInt", JsonUtility.ToJson(new IntegerVal() { value = levelNum }));
+
         }
 
         public static void ReportOnLevelCompleted(int levelNum)
@@ -35,9 +35,9 @@ namespace Hybriona
 
         }
 
-        public static void ReportKeyValue(string key,string value)
+        public static void ReportKeyValue(string key, string value)
         {
-            ReportCustomEvent("evtKeyVal", JsonUtility.ToJson(new StringKeyVal() {key = key, value = value }));
+            ReportCustomEvent("evtKeyVal", JsonUtility.ToJson(new StringKeyVal() { key = key, value = value }));
         }
 
         public static void ReportAdRequest(string unitId)
@@ -49,6 +49,13 @@ namespace Hybriona
         {
             ReportCustomEvent("adImpression", JsonUtility.ToJson(new StringVal() { value = unitId }));
         }
+        
+         public static void ReportMessage(string message)
+        {
+            ReportCustomEvent("message", "{\"m\":\"" + message.Replace("\"", "'") + "\"}");
+        }
+
+       
 
     }
 }

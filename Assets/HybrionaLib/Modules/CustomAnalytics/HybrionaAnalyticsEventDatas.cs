@@ -12,20 +12,26 @@
 
 namespace Hybriona
 {
-	public struct IntegerVal 
+    public struct IntegerVal
     {
         public int value;
     }
 
     public struct StringVal
     {
-        public string value; 
+        public string value;
     }
 
     public struct StringKeyVal
     {
         public string key;
         public string value;
+    }
+    
+    public struct ErrorData
+    {
+        public string m;
+        public string s;
     }
 
 }

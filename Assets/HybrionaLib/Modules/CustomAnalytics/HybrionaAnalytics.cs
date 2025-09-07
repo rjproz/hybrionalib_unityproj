@@ -129,11 +129,12 @@ namespace Hybriona
             eventData.store_name = HybrionaAnalytics.storeName;
             isInitialized = true;
            
+           
 
             sessionLengthEventData = JsonUtility.FromJson<HybAnalyticsEventData>(eventData.ToJSON());
         }
 
-      
+       
         public static void StartDataCollection(bool enableSessionTimeReporting = false)
         {
             if (!isDataCollectionEnabled)
@@ -196,15 +197,11 @@ namespace Hybriona
                     if (!Instance.reportedErrors.Contains(errorId))
                     {
                         Instance.reportedErrors.Add(errorId);
-                        ReportCustomEvent("error", "{\"msg\":\"" + condition.Replace("\"", "'") + "\",\"s\":\"" + stackTrace.Replace("\"", "'") + "\"}");
-                    }  
+                        var errorData = new ErrorData() { m = condition, s = stackTrace };
+                        ReportCustomEvent("err", JsonUtility.ToJson(errorData));
+                    }
                 }
             };
-        }
-
-        public static void ReportMessage(string message)
-        {
-            ReportCustomEvent("message", "{\"m\":\"" + message.Replace("\"", "'") + "\"}");
         }
 
         public static void ReportCustomEvent(string eventName)
