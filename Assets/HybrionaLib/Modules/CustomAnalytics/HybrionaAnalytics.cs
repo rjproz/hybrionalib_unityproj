@@ -203,7 +203,7 @@ namespace Hybriona
         public static void ReportCustomEvent(string eventName)
         {
             ReportCustomEvent(eventName, "{ }");
-            Flush();
+           
         }
 
         public static void ReportCustomEvent(string eventName, string jsonData)
@@ -219,7 +219,7 @@ namespace Hybriona
 
             lock (accessLock)
             {
-                eventData.event_id = "Evt-" + System.Guid.NewGuid() +"_"+ hybAnalyticsUser.userId.GetHashCode();
+                eventData.event_id = "Evt-" + System.Guid.NewGuid() + "_" + hybAnalyticsUser.userId.GetHashCode();
                 eventData.timestamp = System.DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
                 eventData.event_name = eventName;
                 eventData.event_data = jsonData;
@@ -230,6 +230,7 @@ namespace Hybriona
                     hybAnalyticsUser.Save();
                 }
             }
+            Flush();
         }
 
         public static void Reset()
