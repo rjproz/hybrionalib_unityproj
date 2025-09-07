@@ -180,7 +180,7 @@ namespace Hybriona
             {
                 if (type == LogType.Error || type == LogType.Exception)
                 {
-                    if(string.IsNullOrEmpty(condition))
+                    if (string.IsNullOrEmpty(condition))
                     {
                         condition = "No Error Message";
                     }
@@ -189,19 +189,21 @@ namespace Hybriona
                     {
                         stackTrace = "No Stacktrace";
                     }
-                    ReportCustomEvent("error", "{\"msg\":\"" + condition.Replace("\"", "'") + "\",\"stack\":\"" + stackTrace.Replace("\"", "'") + "\"}");
+                    ReportCustomEvent("error", "{\"msg\":\"" + condition.Replace("\"", "'") + "\",\"s\":\"" + stackTrace.Replace("\"", "'") + "\"}");
+                   
                 }
             };
         }
 
         public static void ReportMessage(string message)
         {
-            ReportCustomEvent("message", "{\"msg\":\"" + message.Replace("\"", "'") + "\"}");
+            ReportCustomEvent("message", "{\"m\":\"" + message.Replace("\"", "'") + "\"}");
         }
 
         public static void ReportCustomEvent(string eventName)
         {
             ReportCustomEvent(eventName, "{ }");
+            Flush();
         }
 
         public static void ReportCustomEvent(string eventName, string jsonData)
@@ -254,16 +256,14 @@ namespace Hybriona
         {
            
             bool uploadFailed = false;
-            
-          
+
+
             while (true)
             {
 
-
-
+                float reportTimeDelaySec = 60;
                 if (!uploadFailed)
                 {
-                    float reportTimeDelaySec = 60;
                     if (totalPlayTimeMinutes < 30)
                     {
                         reportTimeDelaySec = 60;
@@ -276,14 +276,23 @@ namespace Hybriona
                     {
                         reportTimeDelaySec = 240;
                     }
-
-                    float timer = reportTimeDelaySec;
-                    while (timer > 0)
-                    {
-                        timer -= Time.unscaledDeltaTime;
-                        yield return null;
-                    }
                 }
+                else
+                {
+                    reportTimeDelaySec = 5;
+                }
+                float timer = reportTimeDelaySec;
+                while (timer > 0)
+                {
+                    timer -= Time.unscaledDeltaTime;
+                    yield return null;
+                }
+                
+                if(Application.internetReachability == NetworkReachability.NotReachable)
+                {
+                    continue;
+                }
+               
                 totalPlayTimeMinutes = timerGamePlay / 60f;
                 
                 
@@ -413,7 +422,7 @@ namespace Hybriona
                 float timer = 0;
                 while (timer < waitTimer && !forcedFlush)
                 {
-                    timer += Time.fixedUnscaledDeltaTime;
+                    timer += Time.unscaledDeltaTime;
                     yield return null;
                 }
             }
@@ -425,7 +434,7 @@ namespace Hybriona
        
 
 
-        public static void Flush()
+        private static void Flush()
         {
             forcedFlush = true;
         }
