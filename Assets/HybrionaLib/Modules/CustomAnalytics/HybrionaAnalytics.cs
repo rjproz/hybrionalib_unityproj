@@ -10,6 +10,7 @@
 using UnityEngine;
 using UnityEngine.Networking;
 using System.Collections;
+using System.Collections.Generic;
 
 
 namespace Hybriona
@@ -33,6 +34,7 @@ namespace Hybriona
         private static HybAnalyticsEventData eventData = null;
         private static HybAnalyticsEventData sessionLengthEventData = null;
 
+        private List<string> reportedErrors = new List<string>();
         public static string userId
         {
             get
@@ -189,8 +191,13 @@ namespace Hybriona
                     {
                         stackTrace = "No Stacktrace";
                     }
-                    ReportCustomEvent("error", "{\"msg\":\"" + condition.Replace("\"", "'") + "\",\"s\":\"" + stackTrace.Replace("\"", "'") + "\"}");
-                   
+
+                    string errorId = condition + " " + stackTrace;
+                    if (!Instance.reportedErrors.Contains(errorId))
+                    {
+                        Instance.reportedErrors.Add(errorId);
+                        ReportCustomEvent("error", "{\"msg\":\"" + condition.Replace("\"", "'") + "\",\"s\":\"" + stackTrace.Replace("\"", "'") + "\"}");
+                    }  
                 }
             };
         }
