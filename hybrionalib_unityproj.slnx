@@ -1,0 +1,19 @@
+﻿<Solution>
+  <Project Path="Assembly-CSharp.csproj" />
+  <Project Path="hybriona.simple_zip.csproj" />
+  <Project Path="hybriona.cache.csproj" />
+  <Project Path="hybriona.httpclient.csproj" />
+  <Project Path="hybriona.adsmanager.csproj" />
+  <Project Path="hybriona.version_manager.csproj" />
+  <Project Path="hybriona.hybanalytics.csproj" />
+  <Project Path="hybriona.core.csproj" />
+  <Project Path="hybriona.tween_animation.csproj" />
+  <Project Path="hybriona.event_trigger.csproj" />
+  <Project Path="hybriona.httpserver.csproj" />
+  <Project Path="GoogleMobileAds.Editor.csproj" />
+  <Project Path="hybriona.generic_pool.csproj" />
+  <Project Path="hybriona.persistentData.csproj" />
+  <Project Path="hybriona.ui.csproj" />
+  <Project Path="hybriona.screenutils.csproj" />
+  <Project Path="Assembly-CSharp-Editor.csproj" />
+</Solution>

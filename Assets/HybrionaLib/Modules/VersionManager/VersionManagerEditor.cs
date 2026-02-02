@@ -11,8 +11,8 @@ namespace Hybriona
 		{
 			AppVersion version = VersionManager.Version();
 			version.major = 0;
-			version.minor = 1;
-			version.patch = 100;
+			version.minor = 0;
+			version.patch = 1;
 			version.build_number = 0;
 			version.description = "";
 			Save(version);
@@ -34,7 +34,16 @@ namespace Hybriona
 		public static void IncrementMinorVersion()
 		{
 			AppVersion version = VersionManager.Version();
-			version.minor++;
+			if(version.minor >= 9)
+			{
+				version.major++;
+				version.minor = 0;
+			}
+			else
+			{
+				version.minor++;
+			}
+			
             version.patch = 0;
             version.build_number++;
 			Save(version);
@@ -44,7 +53,24 @@ namespace Hybriona
 		public static void IncrementPatchVersion()
 		{
 			AppVersion version = VersionManager.Version();
-			version.patch++;
+			if(version.patch >= 9)
+			{
+				if(version.minor >= 9)
+				{
+					version.major++;
+					version.minor = 0;
+				}
+				else
+				{
+					version.minor++;
+				}
+				version.patch = 0;
+			}
+			else
+			{
+				version.patch++;
+			}
+		
 			version.build_number++;
 			Save(version);
 		}
