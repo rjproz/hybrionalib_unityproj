@@ -15,14 +15,12 @@ namespace Hybriona
 {
 	public class MethodDispatcher : MonoBehaviour 
 	{
-
 		private Queue<UnityAction> methodsQueue = new Queue<UnityAction>();
 
 
 		public static void Enqueue(UnityAction action)
         {
 			GetInstance().methodsQueue.Enqueue(action);
-
 		}
 
         private void Update()
@@ -30,7 +28,6 @@ namespace Hybriona
             while(methodsQueue.Count > 0)
             {
 				methodsQueue.Dequeue()();
-
 			}
         }
 
@@ -39,7 +36,7 @@ namespace Hybriona
 		{
 			if (m_instance == null)
 			{
-				m_instance = GameObject.FindObjectOfType<MethodDispatcher>();
+				m_instance = GameObject.FindAnyObjectByType<MethodDispatcher>();
 				if (m_instance == null)
 				{
 					m_instance = new GameObject("Hybriona.MethodDispatcher").AddComponent<MethodDispatcher>();

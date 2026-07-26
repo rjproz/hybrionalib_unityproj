@@ -30,16 +30,7 @@ namespace Hybriona
 			var pool = prefabObj.RegisterPool();
 
 
-			if (pools.ContainsKey(poolId))
-			{
-				pools.Add(poolId, pool);
-
-			}
-			else
-			{
-				pools[poolId] = pool;
-
-			}
+			pools[poolId] = pool;
 			if (preCache > 0)
 			{
 				pool.PreCache(preCache);
@@ -49,9 +40,8 @@ namespace Hybriona
 
 		public static void RemovePool(string poolId)
 		{
-			if (ContainsPool(poolId))
+			if (pools.TryGetValue(poolId, out var pool))
 			{
-				var pool = pools[poolId];
 				pool.Clean();
 				pools.Remove(poolId);
 				System.GC.Collect();
@@ -69,9 +59,9 @@ namespace Hybriona
 
 		public static GenericPool<MonobehaviorPoolObject> GetPool(string poolID)
 		{
-			if (ContainsPool(poolID))
+			if (pools.TryGetValue(poolID, out var pool))
 			{
-				return pools[poolID];
+				return pool;
 
 			}
 			throw new System.Exception("Pool doesn't exist with poolId : " + poolID);
@@ -79,9 +69,9 @@ namespace Hybriona
 
 		public static MonobehaviorPoolObject GetFromPool(string poolID)
 		{
-			if (ContainsPool(poolID))
+			if (pools.TryGetValue(poolID, out var pool))
 			{
-				var obj = (GOPoolObject)pools[poolID].FetchFromPool();
+				var obj = (GOPoolObject)pool.FetchFromPool();
 				return obj;
 			}
 			throw new System.Exception("Pool doesn't exist with poolId : " + poolID);
@@ -97,11 +87,7 @@ namespace Hybriona
 		{
 			foreach (var poolPair in pools)
 			{
-				var key = poolPair.Key;
-				var pool = poolPair.Value;
-				pool.Clean();
-				pool = null;
-				pools.Remove(key);
+				poolPair.Value.Clean();
 			}
 
 			pools.Clear();
