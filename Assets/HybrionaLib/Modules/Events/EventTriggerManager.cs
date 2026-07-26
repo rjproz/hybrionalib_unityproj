@@ -14,8 +14,10 @@ namespace Hybriona
 
         private Queue<EventTriggerData> evenTriggerDataPool = new Queue<EventTriggerData>();
         private List<EventTriggerData> activeEventTriggers = new List<EventTriggerData>();
+        private Dictionary<ulong, EventTriggerData> activeLookup = new Dictionary<ulong, EventTriggerData>();
+        private List<int> _removeBuffer = new List<int>();
 
-        
+
         private static EventTriggerManager instance;
         private static object readLock = new object();
         private static ulong idCounter;
@@ -31,7 +33,7 @@ namespace Hybriona
                     {
                         GameObject o = new GameObject("EventTriggerManager (DontDestroy)");
                         instance = o.AddComponent<EventTriggerManager>();
-                        
+
                     }
                     DontDestroyOnLoad(instance.gameObject);
 
@@ -62,86 +64,99 @@ namespace Hybriona
 
         public static ulong AddTriggerEvent(float triggerTimeElasped, System.Func<bool> conditionTrigger,  System.Action completion)
         {
-            return AddTriggerEvent(triggerTimeElasped, conditionTrigger, completion);
+            return AddTriggerEvent(triggerTimeElasped, false, conditionTrigger, completion);
         }
 
         public static ulong AddTriggerEvent(float triggerTimeElasped, bool timeScaleIndependent, System.Func<bool> conditionTrigger, System.Action completion)
         {
             EventTriggerData evenTriggerData = null;
 
+            var inst = Instance;
+
             lock (readLock)
             {
-                if (Instance.evenTriggerDataPool.Count == 0)
+                ulong newId = ++idCounter;
+                if (inst.evenTriggerDataPool.Count == 0)
                 {
                     evenTriggerData = new EventTriggerData();
                 }
                 else
                 {
-                    evenTriggerData = Instance.evenTriggerDataPool.Dequeue();
+                    evenTriggerData = inst.evenTriggerDataPool.Dequeue();
                     evenTriggerData.Clean();
                 }
 
-                evenTriggerData.Id = ++idCounter;
+                evenTriggerData.Id = newId;
                 evenTriggerData.triggerTimeElasped = triggerTimeElasped;
                 evenTriggerData.isTimeScaleIndependent = timeScaleIndependent;
                 evenTriggerData.conditionTrigger = conditionTrigger;
                 evenTriggerData.completionAction = completion;
                 evenTriggerData.StartTracking();
-                Instance.activeEventTriggers.Add(evenTriggerData);
+                inst.activeEventTriggers.Add(evenTriggerData);
+                inst.activeLookup.Add(newId, evenTriggerData);
 
 #if UNITY_EDITOR
-                Instance.poolCount = Instance.evenTriggerDataPool.Count;
-                Instance.activeCount = Instance.activeEventTriggers.Count;
+                inst.poolCount = inst.evenTriggerDataPool.Count;
+                inst.activeCount = inst.activeEventTriggers.Count;
 #endif
+                return newId;
             }
-            return evenTriggerData.Id;
 
         }
 
         public static void AbortEvent(ulong eventTriggerId)
         {
-            var eventTriggerData = Instance.activeEventTriggers.FindLast(o => o.Id == eventTriggerId);
-            if(eventTriggerData != null)
+            var inst = Instance;
+            lock (readLock)
             {
-                eventTriggerData.isStopped = true;
+                if (inst.activeLookup.TryGetValue(eventTriggerId, out var eventTriggerData))
+                {
+                    eventTriggerData.isStopped = true;
+                }
             }
         }
 
         private IEnumerator LoopProcess()
         {
-            while(true)
+            while (this != null)
             {
+                _removeBuffer.Clear();
+
                 for(int i = activeEventTriggers.Count - 1; i >=0; i--)
                 {
                     var triggerData = activeEventTriggers[i];
                     if(triggerData.isStopped || triggerData.HasCompleted())
                     {
-                        
-                        if (triggerData.completionAction != null)
-                        {
-                            triggerData.completionAction();
-                        }
-
-                       
-                        lock (readLock)
-                        {
-                            evenTriggerDataPool.Enqueue(triggerData);
-                            activeEventTriggers.RemoveAt(i);
-                        }
-                        
-#if UNITY_EDITOR
-                        Instance.poolCount = Instance.evenTriggerDataPool.Count;
-                        Instance.activeCount = Instance.activeEventTriggers.Count;
-#endif
-                        
-                       
+                        triggerData.completionAction?.Invoke();
+                        _removeBuffer.Add(i);
                     }
                 }
+
+                if (_removeBuffer.Count > 0)
+                {
+                    lock (readLock)
+                    {
+                        for (int j = 0; j < _removeBuffer.Count; j++)
+                        {
+                            int i = _removeBuffer[j];
+                            var triggerData = activeEventTriggers[i];
+                            evenTriggerDataPool.Enqueue(triggerData);
+                            activeLookup.Remove(triggerData.Id);
+                            activeEventTriggers.RemoveAt(i);
+                        }
+                    }
+
+#if UNITY_EDITOR
+                    poolCount = evenTriggerDataPool.Count;
+                    activeCount = activeEventTriggers.Count;
+#endif
+                }
+
                 yield return null;
             }
         }
-        
+
     }
 
-    
+
 }
