@@ -13,7 +13,7 @@ using UnityEngine;
 using UnityEditor;
 using System.IO;
 using UnityEditorInternal;
-using SimpleJSON;
+using Hybriona.SimpleJSON;
 
 namespace Hybriona
 {

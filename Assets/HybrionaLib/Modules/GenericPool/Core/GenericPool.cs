@@ -24,6 +24,7 @@ namespace Hybriona
 
 		
 		private Queue<T> pool = new Queue<T>();
+		private HashSet<T> poolSet = new HashSet<T>();
 
 		public int totalCopyGenerated { get; private set; }
 
@@ -45,7 +46,7 @@ namespace Hybriona
 
 		public GenericPool(System.Func<T> createCopyFunction, System.Action<T> onReturnedToPoolCallback = null)
 		{
-			Initialized( createCopyFunction: createCopyFunction, onReturnedToPoolCallback);
+			Initialized(createCopyFunction, onReturnedToPoolCallback);
 		}
 
 		
@@ -69,6 +70,7 @@ namespace Hybriona
 				var copy = createCopyFunction();
 				totalCopyGenerated++;
 				pool.Enqueue(copy);
+				poolSet.Add(copy);
 
 			}
 		}
@@ -78,8 +80,8 @@ namespace Hybriona
 			
 			if(pool.Count > 0)
             {
-				var obj =  pool.Dequeue();
-				
+				var obj = pool.Dequeue();
+				poolSet.Remove(obj);
 				return obj;
 
             }
@@ -96,7 +98,7 @@ namespace Hybriona
 
 		public void ReturnToPool(T obj)
         {
-			if (!pool.Contains(obj))
+			if (poolSet.Add(obj))
 			{
 				pool.Enqueue(obj);
 				if (onReturnedToPoolCallback != null)
@@ -109,14 +111,14 @@ namespace Hybriona
 
 		public bool ObjectInsidePool(T obj)
         {
-			return pool.Contains(obj);
+			return poolSet.Contains(obj);
 		}
 
 
 		public void Clean()
         {
 			pool.Clear();
-
+			poolSet.Clear();
 		}
 		
 		

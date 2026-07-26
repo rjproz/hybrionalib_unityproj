@@ -19,6 +19,7 @@ namespace Hybriona
         private ulong animationIdCounter = 1;
         private List<TweenAnimData> activeAnimations = new List<TweenAnimData>();
         private List<TweenAnimData> activeFixedUpdateAnimations = new List<TweenAnimData>();
+        private Dictionary<ulong, TweenAnimData> animLookup = new Dictionary<ulong, TweenAnimData>();
 
         public static TweenAnimHandler Animate(float from, float to, float timeLength, System.Action<float> onValueUpdated,System.Func<float,float> easingCurveFunc = null, TweenAnimationLoopMode loopMode = TweenAnimationLoopMode.Clamped, bool timeScaleIndependent = false , bool useFixedUpdate = false)
 		{
@@ -93,7 +94,8 @@ namespace Hybriona
             {
                 easingCurveFunc = TweenCurve.Linear;
             }
-            animData.id = ++Instance.animationIdCounter;
+            var inst = Instance;
+            animData.id = ++inst.animationIdCounter;
             animData.timeLength = timeLength;
             animData.loopMode = loopMode;
             animData.easingCurveFunc = easingCurveFunc;
@@ -102,14 +104,14 @@ namespace Hybriona
             animData.Reset();
             var handler = new TweenAnimHandler(animData.id);
             animData.assignedHandler = handler;
+            inst.animLookup[animData.id] = animData;
             if (useFixedUpdate)
             {
-                Instance.activeFixedUpdateAnimations.Add(animData);
+                inst.activeFixedUpdateAnimations.Add(animData);
             }
             else
             {
-
-                Instance.activeAnimations.Add(animData);
+                inst.activeAnimations.Add(animData);
             }
             return handler;
         }
@@ -120,11 +122,7 @@ namespace Hybriona
 
         internal static TweenAnimData FindAnimDataById(ulong animId)
         {
-            var result = Instance.activeAnimations.FindLast(o => o.id == animId);
-            if(result == null)
-            {
-                result = Instance.activeFixedUpdateAnimations.FindLast(o => o.id == animId);
-            }
+            Instance.animLookup.TryGetValue(animId, out var result);
             return result;
         }
 
@@ -149,6 +147,7 @@ namespace Hybriona
                     if (activeAnim.Update())
                     {
                         activeAnimations.RemoveAt(i);
+                        animLookup.Remove(activeAnim.id);
                         activeAnim.assignedHandler.Release();
                         activeAnim.ReturnToPool();
                     }
@@ -165,6 +164,7 @@ namespace Hybriona
                 if (activeAnim.FixedUpdate())
                 {
                     activeFixedUpdateAnimations.RemoveAt(i);
+                    animLookup.Remove(activeAnim.id);
                     activeAnim.assignedHandler.Release();
                     activeAnim.ReturnToPool();
                 }
@@ -173,69 +173,23 @@ namespace Hybriona
 
         public override void OnInstantiated()
         {
+            floatAnimPool = CreateAnimPool<TweenAnimFloatData>();
+            vec3AnimPool = CreateAnimPool<TweenAnimVector3Data>();
+            vec4AnimPool = CreateAnimPool<TweenAnimVector4Data>();
+            quaternionAnimPool = CreateAnimPool<TweenAnimQuaternionData>();
+            colorAnimPool = CreateAnimPool<TweenAnimColorData>();
+        }
 
+        private GenericPool<T> CreateAnimPool<T>() where T : TweenAnimData, new()
+        {
+            GenericPool<T> pool = null;
+            pool = new GenericPool<T>(createCopyFunction: () =>
             {
-                floatAnimPool = new GenericPool<TweenAnimFloatData>(createCopyFunction: () =>
-                {
-
-                    var animData = new TweenAnimFloatData();
-                    animData.returnToPoolCallback = () => { floatAnimPool.ReturnToPool(animData); };
-                    return animData;
-                }, onReturnedToPoolCallback: null);
-
-
-            }
-
-            {
-                vec3AnimPool = new GenericPool<TweenAnimVector3Data>(createCopyFunction: () =>
-                {
-
-                    var animData = new TweenAnimVector3Data();
-                    animData.returnToPoolCallback = () => { vec3AnimPool.ReturnToPool(animData); };
-                    return animData;
-                }, onReturnedToPoolCallback: null);
-
-
-            }
-
-            {
-                vec4AnimPool = new GenericPool<TweenAnimVector4Data>(createCopyFunction: () =>
-                {
-
-                    var animData = new TweenAnimVector4Data();
-                    animData.returnToPoolCallback = () => { vec4AnimPool.ReturnToPool(animData); };
-                    return animData;
-                }, onReturnedToPoolCallback: null);
-
-
-            }
-
-            {
-                quaternionAnimPool = new GenericPool<TweenAnimQuaternionData>(createCopyFunction: () =>
-                {
-
-                    var animData = new TweenAnimQuaternionData();
-                    animData.returnToPoolCallback = () => { quaternionAnimPool.ReturnToPool(animData); };
-                    return animData;
-                }, onReturnedToPoolCallback: null);
-
-
-            }
-
-            {
-                colorAnimPool = new GenericPool<TweenAnimColorData>(createCopyFunction: () =>
-                {
-
-                    var animData = new TweenAnimColorData();
-                    animData.returnToPoolCallback = () => { colorAnimPool.ReturnToPool(animData); };
-                    return animData;
-                }, onReturnedToPoolCallback: null);
-
-
-            }
-
-
-            
+                var animData = new T();
+                animData.returnToPoolCallback = () => { pool.ReturnToPool(animData); };
+                return animData;
+            });
+            return pool;
         }
 
         private void OnEnable()

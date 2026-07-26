@@ -6,6 +6,7 @@ public class SampleEventTrigger : MonoBehaviour
    
     void Start()
     {
+        // Simple delay: fires after 5 seconds (no parameter)
         EventTriggerManager.AddTriggerEvent(5,()=>
         {
             SlowDownTime();
@@ -22,28 +23,36 @@ public class SampleEventTrigger : MonoBehaviour
 
     void RunNewEvent()
     {
+        // Delay-only trigger (no condition, no parameter)
         EventTriggerManager.AddTriggerEvent(2, () =>
         {
-            Debug.Log("This should be called after 20 second but actual delay is 2");
+            Debug.Log("This should be called after 2 seconds");
         });
 
+        // Time scale independent delay (no condition, no parameter)
         EventTriggerManager.AddTriggerEvent(2,true, () =>
         {
-            Debug.Log("This should be called after 2 second and delay is 2 because it is time scale independent");
+            Debug.Log("This should be called after 2 real seconds");
         });
     }
 
 
     void CheckExtraCondition()
     {
-        EventTriggerManager.AddTriggerEvent(triggerTimeElasped: 10,timeScaleIndependent: true, conditionTrigger: IsMouseClicked, () =>
+        // Condition + timeout: fires when mouse clicked OR after 10 seconds
+        // Callback receives bool: true = condition met, false = timed out
+        EventTriggerManager.AddTriggerEvent(triggerTimeoutTime: 10,timeScaleIndependent: true, conditionTrigger: IsMouseClicked, (conditionMet) =>
         {
-            Debug.Log("This should be called after 10 second or in user clicks mouse left button");
+            if (conditionMet)
+                Debug.Log("Mouse clicked! Condition was met.");
+            else
+                Debug.Log("Timed out after 10 seconds.");
         });
 
-        EventTriggerManager.AddTriggerEvent( conditionTrigger: IsMouseClicked, () =>
+        // Condition only (no timeout): runs until mouse is clicked
+        EventTriggerManager.AddTriggerEvent( conditionTrigger: IsMouseClicked, (conditionMet) =>
         {
-            Debug.Log("This should be called when user clicks mouse left button");
+            Debug.Log("Mouse clicked! Condition was met.");
         });
     }
    

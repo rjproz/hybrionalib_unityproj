@@ -12,7 +12,7 @@ public class HybSingleton<T> : HybMonoBehaviourForSingleton where T : HybMonoBeh
 		{
 			if(m_instance == null)
 			{
-				m_instance = GameObject.FindObjectOfType<T>();
+				m_instance = GameObject.FindAnyObjectByType<T>();
 				if(m_instance == null)
 				{
 					Debug.Log("Creating new instance of "+typeof(T).ToString());

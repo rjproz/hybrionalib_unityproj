@@ -1,7 +1,7 @@
 #if UNITY_EDITOR
 using UnityEngine;
 using UnityEditor;
-using SimpleJSON;
+using Hybriona.SimpleJSON;
 using System.IO;
 using UnityEditorInternal;
 using System.Collections.Generic;
