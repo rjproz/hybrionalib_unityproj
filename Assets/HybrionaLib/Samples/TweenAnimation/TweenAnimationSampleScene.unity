@@ -251,15 +251,15 @@ MonoBehaviour:
   timeLength: 5
   position:
     timeLength: 5
-    loopMode: 2
+    loopMode: 0
     timeScaleIndependent: 0
     useFixedUpdate: 0
-    timeTracker: 0
+    timeTracker: 5.0205436
     fromValue: {x: 0, y: 0.5, z: 2}
     targetValue: {x: 0, y: 2, z: 2}
   scale:
     timeLength: 0
-    loopMode: 0
+    loopMode: 3
     timeScaleIndependent: 0
     useFixedUpdate: 0
     timeTracker: 0
@@ -353,7 +353,7 @@ Transform:
   m_GameObject: {fileID: 191287378}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.4998773, z: 2}
+  m_LocalPosition: {x: 0, y: 2, z: 2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
